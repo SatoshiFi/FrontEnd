@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "SatoshiFi - إدارة مجمعات التعدين على Ethereum",
+    "description": "مجمعات التعدين الفيدرالية مع ضمانات رموز mp التلقائية. دعم Bitcoin و Dogecoin و Bitcoin Cash و Litecoin."
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "إدارة المجمعات",
+      "platform": "المنصة",
+      "sandbox": "بيئة المطورين",
+      "docs": "التوثيق"
+    },
+    "connect": "ربط المحفظة"
+  },
+  "hero": {
+    "title": "إدارة مجمعات التعدين على Ethereum",
+    "subtitle": "مجمعات التعدين الفيدرالية مع ضمانات رموز mp التلقائية من خلال عناوين coinbase. دعم Bitcoin و Dogecoin و Bitcoin Cash و Litecoin.",
+    "cta_primary": "تشغيل المنصة",
+    "cta_secondary": "عرض التوثيق"
+  },
+  "features": {
+    "title": "المميزات الأساسية",
+    "multichain": {
+      "title": "مجمعات التعدين متعددة السلاسل",
+      "description": "مجمعات Bitcoin و Dogecoin و Bitcoin Cash و Litecoin مع عناوين coinbase الفيدرالية وإدارة الأموال المحكومة بـ TSS."
+    },
+    "withdrawals": {
+      "title": "السحب بأقل رسوم",
+      "description": "معالجة السحب المميزة من خلال بنية المجمع تقلل تكاليف المعاملات إلى الحد الأدنى للشبكة بالإضافة إلى النفقات التشغيلية الدنيا."
+    },
+    "staking": {
+      "title": "تخزين Bitcoin مع مدفوعات مرنة",
+      "description": "قم بتخزين BTC واحصل على عوائد بالعملة المفضلة لديك، بما في ذلك المدفوعات المباشرة بالعملة الورقية على البطاقات المصرفية بعملتك المحلية."
+    },
+    "algorithms": {
+      "title": "نظام الخوارزميات المفتوح",
+      "description": "خوارزميات توزيع المكافآت البارامترية مع حوافز اقتصادية للمطورين وهياكل رسوم شفافة."
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "إدارة المجمعات",
+      "management": "واجهة إدارة المجمعات",
+      "dashboard": "لوحة التعدين والتحليلات"
+    },
+    "platform": {
+      "title": "منصة SatoshiFi",
+      "main": "واجهة المنصة الرئيسية",
+      "lending": "خدمات الإقراض غير الموثوق",
+      "exchange": "تبادل رموز mp"
+    },
+    "sandbox": {
+      "title": "بيئة المطورين",
+      "description": "بيئة Bitcoin testnet للتطوير والاختبار",
+      "manager": "واجهة إدارة العقد",
+      "wallet": "تكامل محفظة Bitcoin",
+      "scanner": "مراقب الشبكة والتحليلات"
+    }
+  },
+  "stats": {
+    "networks": "الشبكات المدعومة",
+    "pools": "المجمعات النشطة",
+    "miners": "المعدنون المتصلون",
+    "volume": "الحجم اليومي"
+  },
+  "technical": {
+    "title": "التنفيذ التقني",
+    "tss": {
+      "title": "اتحاد TSS",
+      "description": "مخطط التوقيع العتبي 5-من-7 مع بروتوكول FROST للحفظ الآمن متعدد الأطراف"
+    },
+    "collateral": {
+      "title": "الضمان التلقائي",
+      "description": "مكافآت التعدين تؤمن تلقائياً إصدار رموز mp من خلال عناوين coinbase الفيدرالية"
+    },
+    "algorithms": {
+      "title": "الخوارزميات البارامترية",
+      "description": "PPLNS، PPS، FPPS، PPLNT مع معاملات قابلة للتكوين وحوافز للمطورين"
+    }
+  },
+  "footer": {
+    "documentation": "التوثيق",
+    "github": "مستودع GitHub",
+    "whitepaper": "الورقة التقنية",
+    "community": "مجتمع Discord"
+  }
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Testnet Manager - UniLayer Solutions</title>
+    <link rel="stylesheet" href="/css/unilayer.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Bitcoin Testnet Manager</h1>
+            <p>Complete management dashboard for SatoshiFi Bitcoin network</p>
+        </div>
+
+        <!-- Wallet Setup Section -->
+        <div class="setup-section">
+            <div class="setup-title">🔧 System Setup & Wallet Management</div>
+            <div class="setup-actions">
+                <button class="btn setup" onclick="initializeAllWallets()">🏗️ Initialize All Wallets</button>
+                <button class="btn setup" onclick="checkWalletStatus()">📋 Check Wallet Status</button>
+                <button class="btn setup" onclick="createMissingWallets()">➕ Create Missing Wallets</button>
+                <button class="btn setup" onclick="loadAllWallets()">📂 Load All Wallets</button>
+                <button class="btn setup" onclick="distributeFunds()">💰 Distribute Initial Funds</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Network Height</h3>
+                <div class="value" id="blockHeight">---</div>
+                <div class="change">Last: <span id="lastUpdate">---</span></div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Nodes</h3>
+                <div class="value"><span id="activeNodes">---</span>/11</div>
+                <div class="change">Coordinator + Workers</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Balance</h3>
+                <div class="value" id="totalBalance">---</div>
+                <div class="change">All wallets combined</div>
+            </div>
+            <div class="stat-card">
+                <h3>Mempool</h3>
+                <div class="value" id="mempoolSize">---</div>
+                <div class="change">Pending transactions</div>
+            </div>
+            <div class="stat-card">
+                <h3>Hash Rate</h3>
+                <div class="value" id="hashRate">Regtest</div>
+                <div class="change">Network power</div>
+            </div>
+        </div>
+
+        <!-- Technical Wallets Grid -->
+        <div class="section" style="margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>💼 Technical Wallets</h2>
+                <div>
+                    <button class="btn primary" onclick="refreshAllWallets()">🔄 Refresh All</button>
+                    <button class="btn" onclick="generateNewBlock()">⛏️ Generate Block</button>
+                </div>
+            </div>
+            
+            <div class="wallet-grid" id="walletGrid">
+                <div class="loading">Loading wallets...</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="section">
+                <h2>🏗️ Mining Nodes</h2>
+                <div class="controls">
+                    <button class="btn primary" onclick="refreshNodes()">🔄 Refresh</button>
+                    <button class="btn" onclick="toggleAutoRefresh()">⏱️ Auto-refresh</button>
+                </div>
+                <div class="node-list" id="nodeList">
+                    <div class="loading">Loading nodes...</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Recent Transactions</h2>
+                <div class="controls">
+                    <button class="btn primary" onclick="refreshTransactions()">🔄 Refresh</button>
+                    <button class="btn" onclick="generateTransaction()">💸 Generate TX</button>
+                </div>
+                <div class="transaction-list" id="transactionList">
+                    <div class="loading">Loading transactions...</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Admin Tools</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn" onclick="showBulkSendModal()">💸 Bulk Transfer</button>
+                    <button class="btn" onclick="consolidateFunds()">🔄 Consolidate Funds</button>
+                    <button class="btn" onclick="exportWalletInfo()">📄 Export Wallet Info</button>
+                    <button class="btn" onclick="showNodeStatsModal()">📊 Node Statistics</button>
+                    <button class="btn" onclick="clearMempool()">🧹 Clear Mempool</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Modal -->
+    <div id="sendModal" class="modal">
+        <div class="modal-content">
+            <h3>💸 Send Bitcoin</h3>
+            <div class="form-group">
+                <label class="form-label">From Wallet</label>
+                <input type="text" id="fromWallet" class="form-input" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">To Address</label>
+                <input type="text" id="toAddress" class="form-input" placeholder="bcrt1q...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Amount (BTC)</label>
+                <input type="number" id="sendAmount" class="form-input" placeholder="0.00000000" step="0.00000001" min="0">
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeSendModal()">Cancel</button>
+                <button class="btn primary" onclick="executeSend()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="/js/btc/btc-core.js"></script>
+    <script src="/js/btc/btcmanager-module.js"></script>
+</body>
+</html>

@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SatoshiFi Technical Whitepaper - Decentralized PoW Mining Pool Management System">
+    <title>SatoshiFi: Technical Whitepaper</title>
+
+    <style>
+        :root {
+            --primary-color: #0a0a0a;
+            --accent-color: #f7931a;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #495057;
+            --white: #ffffff;
+            --code-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: var(--primary-color);
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2c2c2c 100%);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .header .version {
+            font-size: 1rem;
+            opacity: 0.7;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--light-gray);
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toc h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .toc-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .toc-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .toc-section a {
+            display: block;
+            color: var(--dark-gray);
+            text-decoration: none;
+            padding: 5px 0;
+            border-left: 3px solid transparent;
+            padding-left: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-section a:hover {
+            color: var(--accent-color);
+            border-left-color: var(--accent-color);
+        }
+
+        /* Main Content */
+        .content {
+            padding: 60px 0;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 40px 0 20px 0;
+            position: relative;
+        }
+
+        .section h3::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .section h4 {
+            font-size: 1.4rem;
+            color: var(--dark-gray);
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        .section p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+        .section ol, .section ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px 25px 25px 25px;
+            margin: 25px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: attr(data-title);
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            max-width: calc(100% - 30px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* SVG Diagrams */
+        .diagram-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .diagram-svg {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            background: var(--white);
+        }
+
+        /* Tables */
+        .table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        tr:hover {
+            background: var(--light-gray);
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+            border-left: 5px solid;
+            position: relative;
+        }
+
+        .callout.info {
+            background: #e7f3ff;
+            border-left-color: #0066cc;
+            color: #003d7a;
+        }
+
+        .callout.warning {
+            background: #fff3cd;
+            border-left-color: var(--warning-color);
+            color: #856404;
+        }
+
+        .callout.success {
+            background: #d4edda;
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .callout.danger {
+            background: #f8d7da;
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--dark-gray);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 50px 0;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-btn {
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: #e07f00;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.prev::before {
+            content: '← ';
+        }
+
+        .nav-btn.next::after {
+            content: ' →';
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+
+            .section h3 {
+                font-size: 1.5rem;
+            }
+
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .toc-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Print styles */
+        @media print {
+            .header, .toc, .nav-buttons, .footer {
+                display: none;
+            }
+
+            .content {
+                padding: 0;
+            }
+
+            .section {
+                page-break-inside: avoid;
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>SatoshiFi</h1>
+            <div class="subtitle">Decentralized PoW Mining Pool Management System</div>
+            <div class="version">Technical Whitepaper v2.0 • August 2025</div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <section class="toc">
+        <div class="container">
+            <h2>Table of Contents</h2>
+            <div class="toc-grid">
+                <div class="toc-section">
+                    <h3>Foundation</h3>
+                    <a href="#introduction">Introduction</a>
+                    <a href="#architecture">System Architecture</a>
+                    <a href="#frost">FROST Protocol</a>
+                    <a href="#tokens">Two-Level Tokens</a>
+                </div>
+                <div class="toc-section">
+                    <h3>Core Technology</h3>
+                    <a href="#federated">Federated Addresses</a>
+                    <a href="#custodians">Independent Custodians</a>
+                    <a href="#economics">Economic Model</a>
+                    <a href="#security">Security Analysis</a>
+                </div>
+                <div class="toc-section">
+                    <h3>Implementation</h3>
+                    <a href="#pool-management">Pool Management</a>
+                    <a href="#deployment">Deployment</a>
+                    <a href="#conclusion">Conclusion</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="content">
+        <div class="container">
+
+            <!-- Abstract -->
+            <section class="section">
+                <div class="callout info">
+                    <div class="callout-title">Abstract</div>
+                    SatoshiFi is a decentralized solution for managing mining pools across all major PoW networks, built on Ethereum blockchain. The system addresses problems of traditional pools: lack of transparency in reward distribution, insecure distribution mechanisms, and miners' lack of access to financial markets. Key innovations include federated coinbase addresses controlled through FROST threshold signatures, two-level token architecture (mp-tokens → S-tokens), and independent custodian federation with economic incentives for innovation.
+                </div>
+            </section>
+
+            <!-- Introduction -->
+            <section id="introduction" class="section">
+                <h2>1. Introduction</h2>
+
+                <h3>1.1 Problem Statement</h3>
+                <p>Traditional mining pools operate with centralized reward distribution systems that require miners to trust pool operators. Key problems include:</p>
+                <ul>
+                    <li><strong>Lack of transparency:</strong> Pool operators control reward distribution without cryptographic guarantees</li>
+                    <li><strong>High withdrawal fees:</strong> Moving assets between pools or to external addresses is expensive</li>
+                    <li><strong>Limited DeFi access:</strong> Mining rewards are locked in specific networks without cross-chain functionality</li>
+                    <li><strong>Centralization risks:</strong> Single points of failure in pool management</li>
+                </ul>
+
+                <h3>1.2 Solution Overview</h3>
+                <p>SatoshiFi solves these problems through federated coinbase addresses controlled by independent custodians using FROST threshold signatures. The system provides:</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Supported Networks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">85-95%</div>
+                        <div class="stat-label">Fee Reduction</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5/7</div>
+                        <div class="stat-label">TSS Threshold</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Transparency</div>
+                    </div>
+                </div>
+
+                <h3>1.3 Supported Networks</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Network</th>
+                                <th>Token</th>
+                                <th>Block Time</th>
+                                <th>Current Reward</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Bitcoin</td>
+                                <td>mpBTC → SBTC</td>
+                                <td>~10 minutes</td>
+                                <td>3.125 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Dogecoin</td>
+                                <td>mpDOGE → SDOGE</td>
+                                <td>~1 minute</td>
+                                <td>10,000 DOGE</td>
+                            </tr>
+                            <tr>
+                                <td>Bitcoin Cash</td>
+                                <td>mpBCH → SBCH</td>
+                                <td>~10 minutes</td>
+                                <td>6.25 BCH</td>
+                            </tr>
+                            <tr>
+                                <td>Litecoin</td>
+                                <td>mpLTC → SLTC</td>
+                                <td>~2.5 minutes</td>
+                                <td>12.5 LTC</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- System Architecture -->
+            <section id="architecture" class="section">
+                <h2>2. System Architecture</h2>
+
+                <h3>2.1 Multi-Layer Architecture</h3>
+                <div class="diagram-container">
+                    <div class="diagram-title">SatoshiFi System Architecture</div>
+                    <svg class="diagram-svg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ethereum Layer -->
+                        <rect x="50" y="50" width="700" height="120" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="75" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Ethereum Smart Contracts</text>
+
+                        <!-- Smart Contract Boxes -->
+                        <rect x="80" y="90" width="120" height="60" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="140" y="115" text-anchor="middle" font-size="12" fill="#495057">mp-Token</text>
+                        <text x="140" y="130" text-anchor="middle" font-size="12" fill="#495057">Contracts</text>
+
+                        <rect x="220" y="90" width="120" height="60" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="280" y="115" text-anchor="middle" font-size="12" fill="#495057">S-Token</text>
+                        <text x="280" y="130" text-anchor="middle" font-size="12" fill="#495057">Contracts</text>
+
+                        <rect x="360" y="90" width="120" height="60" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="420" y="115" text-anchor="middle" font-size="12" fill="#495057">Staking</text>
+                        <text x="420" y="130" text-anchor="middle" font-size="12" fill="#495057">Protocol</text>
+
+                        <rect x="500" y="90" width="120" height="60" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="560" y="115" text-anchor="middle" font-size="12" fill="#495057">Lending</text>
+                        <text x="560" y="130" text-anchor="middle" font-size="12" fill="#495057">Protocol</text>
+
+                        <rect x="640" y="90" width="100" height="60" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="690" y="115" text-anchor="middle" font-size="12" fill="#495057">DEX</text>
+                        <text x="690" y="130" text-anchor="middle" font-size="12" fill="#495057">Integration</text>
+
+                        <!-- Arrow -->
+                        <line x1="400" y1="180" x2="400" y2="220" stroke="#f7931a" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+                        <!-- TSS Layer -->
+                        <rect x="50" y="240" width="700" height="140" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="265" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Independent Custodian Federation</text>
+
+                        <!-- Custodian Boxes -->
+                        <rect x="80" y="280" width="90" height="80" fill="#ffffff" stroke="#28a745" stroke-width="2" rx="5"/>
+                        <text x="125" y="300" text-anchor="middle" font-size="10" fill="#495057" font-weight="bold">Custodian 1</text>
+                        <text x="125" y="315" text-anchor="middle" font-size="9" fill="#495057">Stake: 6.25</text>
+                        <text x="125" y="330" text-anchor="middle" font-size="9" fill="#495057">BTC</text>
+                        <text x="125" y="345" text-anchor="middle" font-size="9" fill="#495057">Rate: 0.8%</text>
+
+                        <rect x="190" y="280" width="90" height="80" fill="#ffffff" stroke="#28a745" stroke-width="2" rx="5"/>
+                        <text x="235" y="300" text-anchor="middle" font-size="10" fill="#495057" font-weight="bold">Custodian 2</text>
+                        <text x="235" y="315" text-anchor="middle" font-size="9" fill="#495057">Stake: 12.5</text>
+                        <text x="235" y="330" text-anchor="middle" font-size="9" fill="#495057">BTC</text>
+                        <text x="235" y="345" text-anchor="middle" font-size="9" fill="#495057">Rate: 0.9%</text>
+
+                        <rect x="300" y="280" width="90" height="80" fill="#ffffff" stroke="#28a745" stroke-width="2" rx="5"/>
+                        <text x="345" y="300" text-anchor="middle" font-size="10" fill="#495057" font-weight="bold">Custodian 3</text>
+                        <text x="345" y="315" text-anchor="middle" font-size="9" fill="#495057">Stake: 3.125</text>
+                        <text x="345" y="330" text-anchor="middle" font-size="9" fill="#495057">BTC</text>
+                        <text x="345" y="345" text-anchor="middle" font-size="9" fill="#495057">Rate: 0.7%</text>
+
+                        <text x="450" y="320" text-anchor="middle" font-size="12" fill="#495057">...</text>
+
+                        <rect x="500" y="280" width="90" height="80" fill="#ffffff" stroke="#28a745" stroke-width="2" rx="5"/>
+                        <text x="545" y="300" text-anchor="middle" font-size="10" fill="#495057" font-weight="bold">Custodian 7</text>
+                        <text x="545" y="315" text-anchor="middle" font-size="9" fill="#495057">Stake: 6.25</text>
+                        <text x="545" y="330" text-anchor="middle" font-size="9" fill="#495057">BTC</text>
+                        <text x="545" y="345" text-anchor="middle" font-size="9" fill="#495057">Rate: 0.85%</text>
+
+                        <text x="400" y="375" text-anchor="middle" font-size="12" fill="#f7931a" font-weight="bold">5-of-7 FROST Threshold Signatures</text>
+
+                        <!-- Arrow -->
+                        <line x1="400" y1="390" x2="400" y2="430" stroke="#f7931a" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+                        <!-- PoW Layer -->
+                        <rect x="50" y="450" width="700" height="120" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="475" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">PoW Network Layer</text>
+
+                        <!-- Network Boxes -->
+                        <rect x="80" y="490" width="130" height="60" fill="#f7931a" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="145" y="510" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Bitcoin</text>
+                        <text x="145" y="525" text-anchor="middle" font-size="11" fill="#ffffff">Fed Address</text>
+                        <text x="145" y="540" text-anchor="middle" font-size="11" fill="#ffffff">(Coinbase)</text>
+
+                        <rect x="230" y="490" width="130" height="60" fill="#c2a633" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="295" y="510" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Dogecoin</text>
+                        <text x="295" y="525" text-anchor="middle" font-size="11" fill="#ffffff">Fed Address</text>
+                        <text x="295" y="540" text-anchor="middle" font-size="11" fill="#ffffff">(Coinbase)</text>
+
+                        <rect x="380" y="490" width="130" height="60" fill="#0ac18e" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="445" y="510" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Bitcoin Cash</text>
+                        <text x="445" y="525" text-anchor="middle" font-size="11" fill="#ffffff">Fed Address</text>
+                        <text x="445" y="540" text-anchor="middle" font-size="11" fill="#ffffff">(Coinbase)</text>
+
+                        <rect x="530" y="490" width="130" height="60" fill="#345d9d" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="595" y="510" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Litecoin</text>
+                        <text x="595" y="525" text-anchor="middle" font-size="11" fill="#ffffff">Fed Address</text>
+                        <text x="595" y="540" text-anchor="middle" font-size="11" fill="#ffffff">(Coinbase)</text>
+
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#f7931a"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h3>2.2 Key Components</h3>
+                <p><strong>Federated Coinbase Addresses:</strong> Mining pool rewards go directly to TSS-controlled addresses, providing automatic collateralization for issued tokens.</p>
+
+                <p><strong>Independent Custodians:</strong> Professional operators who stake collateral and run client software to participate in the federation. They compete on rates and service quality.</p>
+
+                <p><strong>Two-Level Tokens:</strong> mp-tokens are pool-specific vouchers, while S-tokens are fungible wrapped tokens accepted by all DeFi protocols.</p>
+            </section>
+
+            <!-- FROST Protocol -->
+            <section id="frost" class="section">
+                <h2>3. FROST Protocol Implementation</h2>
+
+                <h3>3.1 Cryptographic Foundation</h3>
+                <p>SatoshiFi uses FROST (Flexible Round-Optimized Schnorr Threshold) protocol with direct Ethereum integration through the frost-secp256k1-evm library.</p>
+
+                <div class="callout success">
+                    <div class="callout-title">FROST Advantages</div>
+                    <strong>Gas Efficiency:</strong> ~4200 gas per verification vs traditional multisig<br>
+                    <strong>Scalability:</strong> O(1) verification regardless of participant count<br>
+                    <strong>Privacy:</strong> Individual participants remain anonymous<br>
+                    <strong>Compatibility:</strong> Works with all supported PoW networks
+                </div>
+
+                <h3>3.2 Trust Assumptions</h3>
+                <ul>
+                    <li><strong>Honest Majority:</strong> More than 50% of TSS operators act honestly</li>
+                    <li><strong>Network Synchrony:</strong> Synchronous network model for critical operations</li>
+                    <li><strong>Cryptographic Security:</strong> Discrete logarithm in secp256k1 is hard</li>
+                    <li><strong>Liveness:</strong> Threshold number of operators available for signing</li>
+                </ul>
+
+                <h3>3.3 On-Chain Verification Process</h3>
+                <div class="code-block" data-title="FROST Signature Verification">// Ethereum smart contract verification
+function verifyPoolOperation(
+    uint256 newNonce,
+    bytes32 operationHash,
+    uint256 signatureCommitmentX,
+    uint256 signatureCommitmentY,
+    uint256 signatureZ
+) public {
+    // Create message for signing
+    bytes32 messageHash = keccak256(abi.encodePacked(
+        block.chainid,
+        address(this),
+        nonce,
+        newNonce,
+        operationHash
+    ));
+
+    // Increment nonce
+    nonce++;
+
+    // Verify FROST signature
+    require(
+        FROST.verifySignature(
+            poolPublicKeyX,
+            poolPublicKeyY,
+            signatureCommitmentX,
+            signatureCommitmentY,
+            signatureZ,
+            messageHash
+        ),
+        "Invalid FROST signature"
+    );
+
+    // Execute operation
+    executePoolOperation(operationHash);
+}</div>
+
+                <h3>3.4 Heartbeat Mechanism</h3>
+                <p>Every configurable block interval, TSS groups must provide proof-of-liveness signatures to demonstrate continued operation and prevent fund lockup.</p>
+            </section>
+
+            <!-- Two-Level Token System -->
+            <section id="tokens" class="section">
+                <h2>4. Two-Level Token Architecture</h2>
+
+                <h3>4.1 Level 1: mp-tokens (Pool-Specific Vouchers)</h3>
+                <p>Mining pool tokens represent withdrawal vouchers from specific pools:</p>
+                <ul>
+                    <li><strong>Pool-specific:</strong> mpBTC from Pool A ≠ mpBTC from Pool B</li>
+                    <li><strong>Limited functionality:</strong> Only redeemable through originating pool</li>
+                    <li><strong>No DeFi access:</strong> Not accepted by financial services without custody</li>
+                    <li><strong>Automatic issuance:</strong> Minted when pool finds blocks</li>
+                </ul>
+
+                <h3>4.2 Level 2: S-tokens (Custodial Wrapped Tokens)</h3>
+                <p>Standardized wrapped tokens with full DeFi functionality:</p>
+                <ul>
+                    <li><strong>Fungible:</strong> SBTC from any source is identical</li>
+                    <li><strong>DeFi compatible:</strong> Works with all Ethereum protocols</li>
+                    <li><strong>Cross-chain utility:</strong> Bridge between all supported networks</li>
+                    <li><strong>Flexible redemption:</strong> Through any qualified custodian</li>
+                </ul>
+
+                <div class="diagram-container">
+                    <div class="diagram-title">Token Flow Diagram</div>
+                    <svg class="diagram-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- mp-Token Flow -->
+                        <text x="50" y="30" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">mp-Token Flow:</text>
+
+                        <!-- Pool Finds Block -->
+                        <rect x="50" y="50" width="120" height="60" fill="#f7931a" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="75" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Pool Finds</text>
+                        <text x="110" y="90" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Block</text>
+
+                        <!-- Arrow 1 -->
+                        <line x1="180" y1="80" x2="230" y2="80" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- Reward Collection -->
+                        <rect x="250" y="50" width="120" height="60" fill="#28a745" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="75" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Reward</text>
+                        <text x="310" y="90" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Collection</text>
+
+                        <!-- Arrow 2 -->
+                        <line x1="380" y1="80" x2="430" y2="80" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- mp-Token Mint -->
+                        <rect x="450" y="50" width="120" height="60" fill="#0066cc" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="75" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">mp-Token</text>
+                        <text x="510" y="90" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Mint</text>
+
+                        <!-- Downward arrow -->
+                        <line x1="510" y1="120" x2="510" y2="150" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- Pool Queue -->
+                        <rect x="450" y="170" width="120" height="60" fill="#ffc107" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="195" text-anchor="middle" font-size="12" fill="#000000" font-weight="bold">Pool</text>
+                        <text x="510" y="210" text-anchor="middle" font-size="12" fill="#000000" font-weight="bold">Queue</text>
+
+                        <!-- Arrow back -->
+                        <line x1="440" y1="200" x2="380" y2="200" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- mp-Token Burn -->
+                        <rect x="250" y="170" width="120" height="60" fill="#dc3545" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="190" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">mp-Token</text>
+                        <text x="310" y="205" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">Burn + Queue</text>
+
+                        <!-- Arrow to withdrawal -->
+                        <line x1="240" y1="200" x2="180" y2="200" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- Miner Withdrawal -->
+                        <rect x="50" y="170" width="120" height="60" fill="#6f42c1" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="195" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Miner</text>
+                        <text x="110" y="210" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Withdrawal</text>
+
+                        <!-- S-Token Flow - ВЫРОВНЕНА ВЫСОТА -->
+                        <text x="50" y="290" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">S-Token Flow:</text>
+
+                        <!-- mp-Token Deposit -->
+                        <rect x="50" y="310" width="120" height="60" fill="#0066cc" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="335" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">mp-Token</text>
+                        <text x="110" y="350" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Deposit</text>
+
+                        <!-- Arrow -->
+                        <line x1="180" y1="340" x2="230" y2="340" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- Custodian Verification -->
+                        <rect x="250" y="310" width="120" height="60" fill="#28a745" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="335" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Custodian</text>
+                        <text x="310" y="350" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Verification</text>
+
+                        <!-- Arrow -->
+                        <line x1="380" y1="340" x2="430" y2="340" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- S-Token Mint -->
+                        <rect x="450" y="310" width="120" height="60" fill="#e83e8c" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="335" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">S-Token</text>
+                        <text x="510" y="350" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Mint</text>
+
+                        <!-- Downward arrow -->
+                        <line x1="510" y1="380" x2="510" y2="410" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- DeFi Integration -->
+                        <rect x="450" y="430" width="120" height="60" fill="#17a2b8" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="455" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">DeFi</text>
+                        <text x="510" y="470" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Integration</text>
+
+                        <!-- Left arrow -->
+                        <line x1="440" y1="460" x2="380" y2="460" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- Full Access -->
+                        <rect x="250" y="430" width="120" height="60" fill="#fd7e14" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="455" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Full</text>
+                        <text x="310" y="470" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Access</text>
+
+                        <!-- Left arrow -->
+                        <line x1="240" y1="460" x2="180" y2="460" stroke="#495057" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                        <!-- S-Token Usage -->
+                        <rect x="50" y="430" width="120" height="60" fill="#6610f2" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="455" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">S-Token</text>
+                        <text x="110" y="470" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Usage</text>
+
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#495057"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h3>4.3 Custody Transformation Process</h3>
+                <ol>
+                    <li><strong>Deposit:</strong> User sends mp-tokens to custodial contract</li>
+                    <li><strong>Verification:</strong> SPV proof validates backing in source network</li>
+                    <li><strong>Mint:</strong> S-tokens issued 1:1 with mp-tokens</li>
+                    <li><strong>Access:</strong> Full DeFi functionality becomes available</li>
+                </ol>
+            </section>
+
+            <!-- Federated Address System -->
+            <section id="federated" class="section">
+                <h2>5. Federated Address System</h2>
+
+                <h3>5.1 Coinbase Address Control</h3>
+                <p>The core innovation is using mining pool coinbase addresses as federated multi-signature addresses controlled through FROST threshold signatures.</p>
+
+                <div class="callout warning">
+                    <div class="callout-title">Security Properties</div>
+                    <strong>Threshold Security:</strong> Requires 5 of 7 operators to sign any transaction<br>
+                    <strong>Fault Tolerance:</strong> System continues operating with up to 2 operator failures<br>
+                    <strong>No Single Point of Failure:</strong> No individual can compromise the system
+                </div>
+
+                <h3>5.2 Automatic Collateralization</h3>
+                <p>Block rewards automatically flow to federated addresses, providing instant collateralization for mp-token issuance.</p>
+
+                <div class="diagram-container">
+                    <div class="diagram-title">Automatic Collateralization Flow</div>
+                    <svg class="diagram-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Flow Header -->
+                        <text x="400" y="30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Block Found → Reward Collection → Collateral Update → mp-Token Mint</text>
+
+                        <!-- Mining Pool -->
+                        <rect x="50" y="60" width="150" height="100" fill="#f7931a" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="125" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Mining Pool</text>
+                        <text x="125" y="105" text-anchor="middle" font-size="12" fill="#ffffff">Finds Block</text>
+                        <text x="125" y="125" text-anchor="middle" font-size="12" fill="#ffffff">3.125 BTC</text>
+                        <text x="125" y="145" text-anchor="middle" font-size="11" fill="#ffffff">Reward</text>
+
+                        <!-- Arrow 1 -->
+                        <line x1="210" y1="110" x2="250" y2="110" stroke="#f7931a" stroke-width="3" marker-end="url(#arrowhead4)"/>
+
+                        <!-- Fed Address -->
+                        <rect x="270" y="60" width="150" height="100" fill="#28a745" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="345" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Fed Address</text>
+                        <text x="345" y="105" text-anchor="middle" font-size="12" fill="#ffffff">Receives</text>
+                        <text x="345" y="125" text-anchor="middle" font-size="12" fill="#ffffff">3.125 BTC</text>
+                        <text x="345" y="145" text-anchor="middle" font-size="11" fill="#ffffff">Automatically</text>
+
+                        <!-- Arrow 2 -->
+                        <line x1="430" y1="110" x2="470" y2="110" stroke="#f7931a" stroke-width="3" marker-end="url(#arrowhead4)"/>
+
+                        <!-- Smart Contract -->
+                        <rect x="490" y="60" width="150" height="100" fill="#0066cc" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="565" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Ethereum</text>
+                        <text x="565" y="105" text-anchor="middle" font-size="12" fill="#ffffff">Smart Contract</text>
+                        <text x="565" y="125" text-anchor="middle" font-size="12" fill="#ffffff">Update</text>
+                        <text x="565" y="145" text-anchor="middle" font-size="11" fill="#ffffff">State</text>
+
+                        <!-- Downward arrow -->
+                        <line x1="345" y1="170" x2="345" y2="200" stroke="#f7931a" stroke-width="3" marker-end="url(#arrowhead4)"/>
+
+                        <!-- Fee Distribution Box -->
+                        <rect x="200" y="220" width="290" height="120" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="345" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="#0a0a0a">Fee Distribution</text>
+
+                        <!-- Fee Breakdown -->
+                        <text x="220" y="270" font-size="12" fill="#495057">Pool Fee (2%): 0.0625 BTC</text>
+                        <text x="220" y="290" font-size="12" fill="#495057">Protocol (0.5%): 0.015625 BTC</text>
+                        <text x="220" y="310" font-size="12" fill="#495057">TSS (0.75%): 0.0234375 BTC</text>
+                        <text x="220" y="330" font-size="12" font-weight="bold" fill="#28a745">Available for Mint: 3.03125 BTC</text>
+
+                        <!-- Arrow to Available -->
+                        <line x1="500" y1="280" x2="540" y2="280" stroke="#f7931a" stroke-width="3" marker-end="url(#arrowhead4)"/>
+
+                        <!-- Available Amount -->
+                        <rect x="560" y="240" width="140" height="80" fill="#28a745" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="630" y="265" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">Available</text>
+                        <text x="630" y="285" text-anchor="middle" font-size="12" fill="#ffffff">for Mint</text>
+                        <text x="630" y="305" text-anchor="middle" font-size="11" fill="#ffffff">3.03125 mpBTC</text>
+
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#f7931a"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h3>5.3 Multi-Network Support</h3>
+                <p>Each supported PoW network has its own federated address configuration:</p>
+                <ul>
+                    <li><strong>Bitcoin:</strong> Taproot-compatible addresses with FROST signatures</li>
+                    <li><strong>Dogecoin:</strong> ECDSA adaptation with secp256k1 conversion</li>
+                    <li><strong>Bitcoin Cash:</strong> Schnorr support with ECDSA fallback</li>
+                    <li><strong>Litecoin:</strong> MWEB compatibility plus legacy support</li>
+                </ul>
+            </section>
+
+            <!-- Independent Custodians -->
+            <section id="custodians" class="section">
+                <h2>6. Independent Custodian System</h2>
+
+                <h3>6.1 Custodian Requirements</h3>
+                <p>To become a custodian, operators must:</p>
+                <ol>
+                    <li><strong>Stake collateral:</strong> Significant deposit in the target network</li>
+                    <li><strong>Install software:</strong> Run specialized client for FROST participation</li>
+                    <li><strong>Maintain uptime:</strong> High availability for signature operations</li>
+                    <li><strong>Demonstrate competence:</strong> Technical expertise in cryptographic protocols</li>
+                </ol>
+
+                <h3>6.2 Federated Operation Model</h3>
+                <div class="diagram-container">
+                    <div class="diagram-title">Custodian Federation Structure</div>
+                    <svg class="diagram-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Main Federation Box -->
+                        <rect x="50" y="50" width="700" height="400" fill="#f8f9fa" stroke="#495057" stroke-width="3" rx="15"/>
+                        <text x="400" y="80" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#0a0a0a">Independent Custodian Federation</text>
+
+                        <!-- Top Row Custodians -->
+                        <rect x="80" y="120" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="145" y="140" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian A</text>
+                        <text x="145" y="155" text-anchor="middle" font-size="10" fill="#495057">Rate: 0.8%</text>
+                        <text x="145" y="170" text-anchor="middle" font-size="10" fill="#495057">Stake: 6.25 BTC</text>
+                        <text x="145" y="185" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <rect x="235" y="120" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="300" y="140" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian B</text>
+                        <text x="300" y="155" text-anchor="middle" font-size="10" fill="#495057">Rate: 0.9%</text>
+                        <text x="300" y="170" text-anchor="middle" font-size="10" fill="#495057">Stake: 12.5 BTC</text>
+                        <text x="300" y="185" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <rect x="390" y="120" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="455" y="140" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian C</text>
+                        <text x="455" y="155" text-anchor="middle" font-size="10" fill="#495057">Rate: 0.7%</text>
+                        <text x="455" y="170" text-anchor="middle" font-size="10" fill="#495057">Stake: 3.125 BTC</text>
+                        <text x="455" y="185" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <rect x="545" y="120" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="610" y="140" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian D</text>
+                        <text x="610" y="155" text-anchor="middle" font-size="10" fill="#495057">Rate: 1.0%</text>
+                        <text x="610" y="170" text-anchor="middle" font-size="10" fill="#495057">Stake: 12.5 BTC</text>
+                        <text x="610" y="185" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <!-- Bottom Row Custodians -->
+                        <rect x="160" y="280" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="225" y="300" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian E</text>
+                        <text x="225" y="315" text-anchor="middle" font-size="10" fill="#495057">Rate: 0.6%</text>
+                        <text x="225" y="330" text-anchor="middle" font-size="10" fill="#495057">Stake: 12.5 BTC</text>
+                        <text x="225" y="345" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <rect x="315" y="280" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="380" y="300" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian F</text>
+                        <text x="380" y="315" text-anchor="middle" font-size="10" fill="#495057">Rate: 0.95%</text>
+                        <text x="380" y="330" text-anchor="middle" font-size="10" fill="#495057">Stake: 3.125 BTC</text>
+                        <text x="380" y="345" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <rect x="470" y="280" width="130" height="80" fill="#ffffff" stroke="#28a745" stroke-width="3" rx="8"/>
+                        <text x="535" y="300" text-anchor="middle" font-size="12" font-weight="bold" fill="#0a0a0a">Custodian G</text>
+                        <text x="535" y="315" text-anchor="middle" font-size="10" fill="#495057">Rate: 0.85%</text>
+                        <text x="535" y="330" text-anchor="middle" font-size="10" fill="#495057">Stake: 6.25 BTC</text>
+                        <text x="535" y="345" text-anchor="middle" font-size="10" fill="#28a745" font-weight="bold">✓ Active</text>
+
+                        <!-- ИСПРАВЛЕННЫЕ соединительные линии - показывают 5 из 7 -->
+                        <!-- Центральный узел -->
+                        <circle cx="400" cy="240" r="15" fill="#f7931a" stroke="#495057" stroke-width="2"/>
+                        <text x="400" y="245" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">5/7</text>
+
+                        <!-- Линии от активных кастодианов к центру (первые 5) -->
+                        <line x1="145" y1="200" x2="390" y2="230" stroke="#f7931a" stroke-width="3"/>
+                        <line x1="300" y1="200" x2="395" y2="235" stroke="#f7931a" stroke-width="3"/>
+                        <line x1="455" y1="200" x2="405" y2="235" stroke="#f7931a" stroke-width="3"/>
+                        <line x1="225" y1="280" x2="390" y2="250" stroke="#f7931a" stroke-width="3"/>
+                        <line x1="380" y1="280" x2="400" y2="255" stroke="#f7931a" stroke-width="3"/>
+
+                        <!-- Резервные кастодианы (неактивные в текущей подписи) -->
+                        <line x1="610" y1="200" x2="410" y2="230" stroke="#dee2e6" stroke-width="2" stroke-dasharray="5,5"/>
+                        <line x1="535" y1="280" x2="410" y2="250" stroke="#dee2e6" stroke-width="2" stroke-dasharray="5,5"/>
+
+                        <!-- Threshold Text -->
+                        <rect x="200" y="390" width="400" height="35" fill="#f7931a" stroke="#495057" stroke-width="2" rx="15"/>
+                        <text x="400" y="405" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">5-of-7 Threshold Required for Operations</text>
+                        <text x="400" y="420" text-anchor="middle" font-size="12" fill="#ffffff">Any 5 custodians can authorize transactions</text>
+
+                        <!-- Legend -->
+                        <rect x="620" y="380" width="150" height="65" fill="#ffffff" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="695" y="395" text-anchor="middle" font-size="10" font-weight="bold" fill="#0a0a0a">Legend:</text>
+                        <line x1="630" y1="405" x2="660" y2="405" stroke="#f7931a" stroke-width="3"/>
+                        <text x="670" y="408" font-size="9" fill="#495057">Active in signature</text>
+                        <line x1="630" y1="420" x2="660" y2="420" stroke="#dee2e6" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="670" y="423" font-size="9" fill="#495057">Standby/Reserve</text>
+                    </svg>
+                </div>
+
+                <h3>6.3 Economic Incentives</h3>
+                <p>Custodians earn revenue from multiple sources:</p>
+                <ul>
+                    <li><strong>TSS operations:</strong> Agreed percentage from each block found</li>
+                    <li><strong>Custody services:</strong> Fees for mp-token to S-token conversion</li>
+                    <li><strong>Bridge operations:</strong> Cross-network transfer fees</li>
+                    <li><strong>Staking rewards:</strong> From S-token staking protocols</li>
+                </ul>
+
+                <h3>6.3 Pool Operating Modes</h3>
+                <p><strong>Simplified Mode (No Custodians):</strong></p>
+                <ul>
+                    <li>Basic FROST security for pool operations</li>
+                    <li>Standard unpeg through token burning</li>
+                    <li>Limited DeFi access without additional custody</li>
+                    <li>Lower operational costs</li>
+                </ul>
+
+                <p><strong>Full-Featured Mode (With Custodians):</strong></p>
+                <ul>
+                    <li>Complete security through federated custodians</li>
+                    <li>Full DeFi access for all miners</li>
+                    <li>Cross-chain bridge services</li>
+                    <li>Professional infrastructure management</li>
+                </ul>
+            </section>
+
+            <!-- Economic Model -->
+            <section id="economics" class="section">
+                <h2>7. Economic Model</h2>
+
+                <h3>7.1 Fee Structure</h3>
+                <p>All fees are configurable and agreed upon before operation begins:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Default Rate</th>
+                                <th>Recipient</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Miners</td>
+                                <td>96.75%</td>
+                                <td>Mining participants</td>
+                                <td>Primary reward distribution</td>
+                            </tr>
+                            <tr>
+                                <td>Pool Operation</td>
+                                <td>2.0%</td>
+                                <td>Pool operators</td>
+                                <td>Infrastructure and management</td>
+                            </tr>
+                            <tr>
+                                <td>Protocol Development</td>
+                                <td>0.5%</td>
+                                <td>Protocol treasury</td>
+                                <td>Core development and governance</td>
+                            </tr>
+                            <tr>
+                                <td>TSS Operators</td>
+                                <td>0.75%</td>
+                                <td>Custodian federation</td>
+                                <td>Security infrastructure</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>7.2 Revenue Sources</h3>
+                <p>The ecosystem generates revenue through multiple streams:</p>
+                <ul>
+                    <li><strong>Block rewards:</strong> Primary income from mining operations</li>
+                    <li><strong>Transaction fees:</strong> Network fees from PoW transactions</li>
+                    <li><strong>DeFi integration:</strong> Yields from staking, lending, and trading</li>
+                    <li><strong>Bridge operations:</strong> Cross-chain transfer fees</li>
+                    <li><strong>Premium services:</strong> Advanced features and priority support</li>
+                </ul>
+
+                <h3>7.3 Withdrawal Mechanisms</h3>
+                <div class="diagram-container">
+                    <div class="diagram-title">Withdrawal Comparison</div>
+                    <svg class="diagram-svg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Traditional Withdrawal -->
+                        <text x="50" y="30" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Traditional Withdrawal:</text>
+
+                        <rect x="50" y="50" width="120" height="80" fill="#dc3545" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="75" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">User</text>
+                        <text x="110" y="95" text-anchor="middle" font-size="11" fill="#ffffff">Pays $20-100</text>
+                        <text x="110" y="110" text-anchor="middle" font-size="11" fill="#ffffff">Fee</text>
+
+                        <line x1="180" y1="90" x2="230" y2="90" stroke="#495057" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                        <rect x="250" y="50" width="120" height="80" fill="#ffc107" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="75" text-anchor="middle" font-size="12" fill="#000000" font-weight="bold">Mempool</text>
+                        <text x="310" y="95" text-anchor="middle" font-size="11" fill="#000000">Variable</text>
+                        <text x="310" y="110" text-anchor="middle" font-size="11" fill="#000000">Time</text>
+
+                        <line x1="380" y1="90" x2="430" y2="90" stroke="#495057" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                        <rect x="450" y="50" width="120" height="80" fill="#6c757d" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="75" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Block</text>
+                        <text x="510" y="95" text-anchor="middle" font-size="11" fill="#ffffff">Variable</text>
+                        <text x="510" y="110" text-anchor="middle" font-size="11" fill="#ffffff">Time</text>
+
+                        <!-- SatoshiFi Privileged Withdrawal -->
+                        <text x="50" y="200" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">SatoshiFi Privileged Withdrawal:</text>
+
+                        <rect x="50" y="220" width="120" height="80" fill="#28a745" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="245" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">User</text>
+                        <text x="110" y="265" text-anchor="middle" font-size="11" fill="#ffffff">Pays ~$3</text>
+                        <text x="110" y="280" text-anchor="middle" font-size="11" fill="#ffffff">Fee</text>
+
+                        <line x1="180" y1="260" x2="230" y2="260" stroke="#495057" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                        <rect x="250" y="220" width="120" height="80" fill="#0066cc" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="245" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Pool Queue</text>
+                        <text x="310" y="265" text-anchor="middle" font-size="11" fill="#ffffff">Guaranteed</text>
+                        <text x="310" y="280" text-anchor="middle" font-size="11" fill="#ffffff">Inclusion</text>
+
+                        <line x1="380" y1="260" x2="430" y2="260" stroke="#495057" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                        <rect x="450" y="220" width="120" height="80" fill="#f7931a" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="245" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Next Block</text>
+                        <text x="510" y="265" text-anchor="middle" font-size="11" fill="#ffffff">Guaranteed</text>
+                        <text x="510" y="280" text-anchor="middle" font-size="11" fill="#ffffff">Inclusion</text>
+
+                        <!-- Emergency CPFP Withdrawal -->
+                        <text x="50" y="370" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Fast CPFP Withdrawal:</text>
+
+                        <rect x="50" y="390" width="120" height="80" fill="#e83e8c" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="110" y="415" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">User</text>
+                        <text x="110" y="435" text-anchor="middle" font-size="11" fill="#ffffff">Pays Premium</text>
+                        <text x="110" y="450" text-anchor="middle" font-size="11" fill="#ffffff">Fee</text>
+
+                        <line x1="180" y1="430" x2="230" y2="430" stroke="#495057" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                        <rect x="250" y="390" width="120" height="80" fill="#fd7e14" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="310" y="410" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">Child Pays</text>
+                        <text x="310" y="425" text-anchor="middle" font-size="11" fill="#ffffff">Fee</text>
+                        <text x="310" y="440" text-anchor="middle" font-size="11" fill="#ffffff">For Parent</text>
+
+                        <line x1="380" y1="430" x2="430" y2="430" stroke="#495057" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                        <rect x="450" y="390" width="120" height="80" fill="#20c997" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="510" y="415" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="bold">Priority</text>
+                        <text x="510" y="435" text-anchor="middle" font-size="11" fill="#ffffff">Processing</text>
+                        <text x="510" y="450" text-anchor="middle" font-size="11" fill="#ffffff">Next Block</text>
+
+                        <!-- Fee Comparison Box -->
+                        <rect x="600" y="100" width="180" height="300" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="690" y="125" text-anchor="middle" font-size="14" font-weight="bold" fill="#0a0a0a">Fee Comparison</text>
+
+                        <text x="620" y="155" font-size="12" font-weight="bold" fill="#dc3545">Traditional:</text>
+                        <text x="620" y="175" font-size="11" fill="#495057">• $20-100 typical</text>
+                        <text x="620" y="195" font-size="11" fill="#495057">• Variable time</text>
+                        <text x="620" y="215" font-size="11" fill="#495057">• No guarantees</text>
+
+                        <text x="620" y="250" font-size="12" font-weight="bold" fill="#28a745">SatoshiFi:</text>
+                        <text x="620" y="270" font-size="11" fill="#495057">• ~$3 typical</text>
+                        <text x="620" y="290" font-size="11" fill="#495057">• Next pool block</text>
+                        <text x="620" y="310" font-size="11" fill="#495057">• Guaranteed</text>
+
+                        <text x="620" y="345" font-size="12" font-weight="bold" fill="#e83e8c">Fast:</text>
+                        <text x="620" y="365" font-size="11" fill="#495057">• Affordable fee</text>
+                        <text x="620" y="385" font-size="11" fill="#495057">• Immediate</text>
+
+                        <!-- 90% reduction highlight -->
+                        <rect x="610" y="520" width="160" height="50" fill="#28a745" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="690" y="540" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">90% Fee</text>
+                        <text x="690" y="555" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Reduction</text>
+
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#495057"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h3>7.4 DeFi Integration Benefits</h3>
+                <p>S-tokens provide access to the complete Ethereum DeFi ecosystem:</p>
+                <ul>
+                    <li><strong>Staking:</strong> Earn yields on wrapped PoW assets</li>
+                    <li><strong>Lending:</strong> Use S-tokens as collateral for loans</li>
+                    <li><strong>Trading:</strong> DEX access for all supported assets</li>
+                    <li><strong>Yield farming:</strong> Participate in liquidity mining</li>
+                    <li><strong>Insurance:</strong> Protect holdings through DeFi protocols</li>
+                </ul>
+            </section>
+
+            <!-- Security Analysis -->
+            <section id="security" class="section">
+                <h2>8. Security Analysis</h2>
+
+                <h3>8.1 Threat Model</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Attack Vector</th>
+                                <th>Likelihood</th>
+                                <th>Impact</th>
+                                <th>Mitigation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Custodian Collusion (5+ of 7)</td>
+                                <td>Low</td>
+                                <td>High</td>
+                                <td>Large stake requirements, reputation systems, slashing</td>
+                            </tr>
+                            <tr>
+                                <td>Smart Contract Bugs</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td>Formal verification, audits, bug bounties</td>
+                            </tr>
+                            <tr>
+                                <td>Oracle Manipulation</td>
+                                <td>Medium</td>
+                                <td>Medium</td>
+                                <td>Time-weighted prices, multiple sources</td>
+                            </tr>
+                            <tr>
+                                <td>Network Congestion</td>
+                                <td>High</td>
+                                <td>Low</td>
+                                <td>Emergency mechanisms, L2 scaling</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>8.2 FROST Security Properties</h3>
+                <div class="callout success">
+                    <div class="callout-title">Cryptographic Guarantees</div>
+                    <strong>Unforgeability:</strong> Cannot create valid signatures without threshold keys<br>
+                    <strong>Robustness:</strong> Continues functioning with up to 2 faulty participants<br>
+                    <strong>Privacy:</strong> Individual key shares remain confidential<br>
+                    <strong>Verifiability:</strong> All operations are publicly verifiable on-chain
+                </div>
+
+                <h3>8.3 Economic Security</h3>
+                <p>The system's security is reinforced through economic incentives:</p>
+                <ul>
+                    <li><strong>High stake requirements:</strong> Custodians risk significant capital</li>
+                    <li><strong>Reputation systems:</strong> Poor performance affects future earnings</li>
+                    <li><strong>Slashing mechanisms:</strong> Automatic penalties for protocol violations</li>
+                    <li><strong>Competition:</strong> Market forces reward good actors</li>
+                </ul>
+            </section>
+
+            <!-- Pool Management Section -->
+            <section id="pool-management" class="section">
+                <h2>9. Mining Pool Management Infrastructure</h2>
+
+                <div class="callout info">
+                    <div class="callout-title">Section Overview</div>
+                    This section describes the comprehensive mining pool management capabilities of SatoshiFi, covering the complete lifecycle from pool creation to reward distribution. The system provides enterprise-grade pool management with cryptographic security guarantees and seamless DeFi integration.
+                </div>
+
+                <h3>9.1 Pool Creation and Initialization</h3>
+
+                <h4>9.1.1 Pool Registration Process</h4>
+                <p>SatoshiFi pools are created through a multi-step on-chain registration process that establishes cryptographic identity and operational parameters:</p>
+
+                <div class="code-block" data-title="Pool Creation Smart Contract">// Pool registration with FROST configuration
+function createPool(
+    string memory poolName,
+    address[] memory operators,
+    uint256 threshold,
+    bytes32 groupPublicKeyX,
+    bytes32 groupPublicKeyY,
+    PoolConfig memory config
+) external {
+    require(operators.length >= threshold, "Invalid threshold");
+    require(FROST.verifyGroupKey(groupPublicKeyX, groupPublicKeyY), "Invalid group key");
+
+    // Generate unique pool ID
+    bytes32 poolId = keccak256(abi.encodePacked(
+        poolName,
+        block.timestamp,
+        msg.sender
+    ));
+
+    // Initialize pool with TSS configuration
+    pools[poolId] = Pool({
+        name: poolName,
+        operators: operators,
+        threshold: threshold,
+        groupPublicKeyX: groupPublicKeyX,
+        groupPublicKeyY: groupPublicKeyY,
+        nonce: 0,
+        active: true,
+        config: config
+    });
+
+    emit PoolCreated(poolId, poolName, operators);
+}</div>
+
+                <h4>9.1.2 Federated Address Generation</h4>
+                <p>Each pool receives federated coinbase addresses for all supported PoW networks:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Network</th>
+                                <th>Address Type</th>
+                                <th>Script Format</th>
+                                <th>FROST Compatible</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Bitcoin</td>
+                                <td>P2TR (Taproot)</td>
+                                <td>Schnorr multisig</td>
+                                <td>✅ Native</td>
+                            </tr>
+                            <tr>
+                                <td>Dogecoin</td>
+                                <td>P2SH</td>
+                                <td>ECDSA adaptation</td>
+                                <td>✅ Converted</td>
+                            </tr>
+                            <tr>
+                                <td>Bitcoin Cash</td>
+                                <td>P2SH/Schnorr</td>
+                                <td>CashAddr format</td>
+                                <td>✅ Hybrid</td>
+                            </tr>
+                            <tr>
+                                <td>Litecoin</td>
+                                <td>P2WPKH/MWEB</td>
+                                <td>SegWit compatible</td>
+                                <td>✅ Extended</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>9.1.3 Operating Mode Selection</h4>
+                <p>Pools can operate in different modes based on their DeFi integration requirements:</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">Basic</div>
+                        <div class="stat-label">Simplified Mode</div>
+                        <p>Standard pool operations with basic FROST security. Limited DeFi access through manual custodalization.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Enhanced</div>
+                        <div class="stat-label">Custodian Mode</div>
+                        <p>Full security through independent custodian federation. Complete DeFi integration for all miners.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Enterprise</div>
+                        <div class="stat-label">Hybrid Mode</div>
+                        <p>Configurable mix of basic and enhanced features. Scalable security based on pool size.</p>
+                    </div>
+                </div>
+
+                <h3>9.2 Worker Management System</h3>
+
+                <h4>9.2.1 Worker Registration and Authentication</h4>
+                <p>SatoshiFi implements a sophisticated worker management system supporting multiple authentication methods:</p>
+
+                <div class="code-block" data-title="Worker Registration Process">// Worker authentication and registration
+struct Worker {
+    address walletAddress;     // On-chain wallet for rewards
+    bytes32 workerId;         // Unique worker identifier
+    string stratumEndpoint;   // Preferred Stratum version
+    uint256 hashRate;         // Reported hash rate
+    uint256 difficulty;       // Current difficulty assignment
+    uint256 lastSeen;         // Last activity timestamp
+    uint256 shareCount;       // Total shares submitted
+    bool active;              // Worker status
+}
+
+function registerWorker(
+    bytes32 workerId,
+    address walletAddress,
+    string memory stratumPreference
+) external {
+    require(!workers[workerId].active, "Worker already registered");
+
+    workers[workerId] = Worker({
+        walletAddress: walletAddress,
+        workerId: workerId,
+        stratumEndpoint: stratumPreference,
+        hashRate: 0,
+        difficulty: 1,
+        lastSeen: block.timestamp,
+        shareCount: 0,
+        active: true
+    });
+
+    emit WorkerRegistered(workerId, walletAddress);
+}</div>
+
+                <h4>9.2.2 Worker Classification and Tiering</h4>
+                <p>Workers are automatically classified into performance tiers for optimized resource allocation:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tier</th>
+                                <th>Hash Rate Range</th>
+                                <th>Difficulty Range</th>
+                                <th>Share Interval</th>
+                                <th>Features</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hobbyist</td>
+                                <td>&lt; 1 TH/s</td>
+                                <td>1 - 1K</td>
+                                <td>30-60 seconds</td>
+                                <td>Basic Stratum v1</td>
+                            </tr>
+                            <tr>
+                                <td>Enthusiast</td>
+                                <td>1-100 TH/s</td>
+                                <td>1K - 100K</td>
+                                <td>15-30 seconds</td>
+                                <td>Stratum v1/v2 choice</td>
+                            </tr>
+                            <tr>
+                                <td>Professional</td>
+                                <td>100-1000 TH/s</td>
+                                <td>100K - 10M</td>
+                                <td>5-15 seconds</td>
+                                <td>Stratum v2, priority support</td>
+                            </tr>
+                            <tr>
+                                <td>Industrial</td>
+                                <td>&gt; 1000 TH/s</td>
+                                <td>&gt; 10M</td>
+                                <td>1-5 seconds</td>
+                                <td>Custom protocols, dedicated infrastructure</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>9.3 Stratum Protocol Implementation</h3>
+
+                <h4>9.3.1 Multi-Version Stratum Support</h4>
+                <p>SatoshiFi provides native support for both Stratum v1 and v2 protocols with automatic protocol detection and negotiation:</p>
+
+                <div class="diagram-container">
+                    <div class="diagram-title">Pool Management System Architecture</div>
+                    <svg class="diagram-svg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Header -->
+                        <text x="400" y="30" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#0a0a0a">SatoshiFi Pool Management Infrastructure</text>
+
+                        <!-- Miners Layer -->
+                        <rect x="50" y="60" width="700" height="80" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="85" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Mining Hardware & Software</text>
+
+                        <!-- Miner Types -->
+                        <rect x="80" y="100" width="120" height="30" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="140" y="118" text-anchor="middle" font-size="11" fill="#495057">ASIC Miners</text>
+
+                        <rect x="220" y="100" width="120" height="30" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="280" y="118" text-anchor="middle" font-size="11" fill="#495057">GPU Farms</text>
+
+                        <rect x="360" y="100" width="120" height="30" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="420" y="118" text-anchor="middle" font-size="11" fill="#495057">CPU Miners</text>
+
+                        <rect x="500" y="100" width="120" height="30" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="560" y="118" text-anchor="middle" font-size="11" fill="#495057">FPGA Arrays</text>
+
+                        <rect x="640" y="100" width="100" height="30" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="5"/>
+                        <text x="690" y="118" text-anchor="middle" font-size="11" fill="#495057">Cloud Mining</text>
+
+                        <!-- Protocol Layer -->
+                        <rect x="50" y="180" width="700" height="120" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="205" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Stratum Protocol Layer</text>
+
+                        <!-- Stratum v1 -->
+                        <rect x="100" y="220" width="250" height="60" fill="#0066cc" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="225" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Stratum v1</text>
+                        <text x="225" y="258" text-anchor="middle" font-size="11" fill="#ffffff">Legacy compatibility</text>
+                        <text x="225" y="273" text-anchor="middle" font-size="11" fill="#ffffff">JSON-RPC over TCP</text>
+
+                        <!-- Stratum v2 -->
+                        <rect x="450" y="220" width="250" height="60" fill="#28a745" stroke="#495057" stroke-width="2" rx="8"/>
+                        <text x="575" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Stratum v2</text>
+                        <text x="575" y="258" text-anchor="middle" font-size="11" fill="#ffffff">Enhanced security</text>
+                        <text x="575" y="273" text-anchor="middle" font-size="11" fill="#ffffff">Binary protocol, job negotiation</text>
+
+                        <!-- Pool Management Layer -->
+                        <rect x="50" y="340" width="700" height="120" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="365" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">Pool Management Components</text>
+
+                        <!-- Management Components -->
+                        <rect x="70" y="380" width="100" height="60" fill="#f7931a" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="120" y="400" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">Worker</text>
+                        <text x="120" y="415" text-anchor="middle" font-size="10" fill="#ffffff">Registration</text>
+                        <text x="120" y="430" text-anchor="middle" font-size="9" fill="#ffffff">& Management</text>
+
+                        <rect x="190" y="380" width="100" height="60" fill="#e83e8c" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="240" y="400" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">Job</text>
+                        <text x="240" y="415" text-anchor="middle" font-size="10" fill="#ffffff">Distribution</text>
+                        <text x="240" y="430" text-anchor="middle" font-size="9" fill="#ffffff">& Templates</text>
+
+                        <rect x="310" y="380" width="100" height="60" fill="#17a2b8" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="360" y="400" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">Share</text>
+                        <text x="360" y="415" text-anchor="middle" font-size="10" fill="#ffffff">Validation</text>
+                        <text x="360" y="430" text-anchor="middle" font-size="9" fill="#ffffff">& Analytics</text>
+
+                        <rect x="430" y="380" width="100" height="60" fill="#fd7e14" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="480" y="400" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">Reward</text>
+                        <text x="480" y="415" text-anchor="middle" font-size="10" fill="#ffffff">Distribution</text>
+                        <text x="480" y="430" text-anchor="middle" font-size="9" fill="#ffffff">System</text>
+
+                        <rect x="550" y="380" width="100" height="60" fill="#6610f2" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="600" y="400" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">Statistics</text>
+                        <text x="600" y="415" text-anchor="middle" font-size="10" fill="#ffffff">& Monitoring</text>
+                        <text x="600" y="430" text-anchor="middle" font-size="9" fill="#ffffff">Dashboard</text>
+
+                        <rect x="670" y="380" width="80" height="60" fill="#20c997" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="710" y="400" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="bold">DeFi</text>
+                        <text x="710" y="415" text-anchor="middle" font-size="10" fill="#ffffff">Integration</text>
+                        <text x="710" y="430" text-anchor="middle" font-size="9" fill="#ffffff">Layer</text>
+
+                        <!-- FROST Security Layer -->
+                        <rect x="50" y="500" width="700" height="80" fill="#f8f9fa" stroke="#495057" stroke-width="2" rx="10"/>
+                        <text x="400" y="525" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#0a0a0a">FROST Security & Ethereum Integration</text>
+
+                        <!-- Security Components -->
+                        <rect x="100" y="540" width="150" height="30" fill="#28a745" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="175" y="558" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">TSS Signatures</text>
+
+                        <rect x="270" y="540" width="150" height="30" fill="#0066cc" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="345" y="558" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">mp-Token Contracts</text>
+
+                        <rect x="440" y="540" width="150" height="30" fill="#e83e8c" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="515" y="558" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">S-Token Integration</text>
+
+                        <rect x="610" y="540" width="140" height="30" fill="#f7931a" stroke="#495057" stroke-width="1" rx="5"/>
+                        <text x="680" y="558" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="bold">Fed Addresses</text>
+
+                        <!-- Connection lines -->
+                        <line x1="400" y1="150" x2="400" y2="180" stroke="#495057" stroke-width="2"/>
+                        <line x1="400" y1="310" x2="400" y2="340" stroke="#495057" stroke-width="2"/>
+                        <line x1="400" y1="470" x2="400" y2="500" stroke="#495057" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <h4>9.3.2 Job Distribution and Work Assignment</h4>
+                <p>The job distribution system ensures optimal work assignment across all connected workers:</p>
+
+                <div class="code-block" data-title="Job Distribution Algorithm">// Intelligent job distribution system
+function distributeWork() internal {
+    // Get current block template from Bitcoin Core
+    BlockTemplate memory template = getBlockTemplate();
+
+    // Generate work packages for different difficulty levels
+    for (uint256 tier = 0; tier < workerTiers.length; tier++) {
+        WorkPackage memory package = generateWorkPackage(
+            template,
+            workerTiers[tier].difficulty,
+            workerTiers[tier].extraNonce
+        );
+
+        // Distribute to workers in this tier
+        address[] memory tierWorkers = getWorkersByTier(tier);
+        for (uint256 i = 0; i < tierWorkers.length; i++) {
+            sendJobToWorker(tierWorkers[i], package);
+        }
+    }
+
+    emit WorkDistributed(template.height, block.timestamp);
+}</div>
+
+                <h3>9.4 Share Collection and Validation</h3>
+
+                <h4>9.4.1 Real-Time Share Processing</h4>
+                <p>SatoshiFi implements high-performance share validation with cryptographic verification:</p>
+
+                <div class="code-block" data-title="Share Validation Engine">// High-performance share validation
+function validateShare(
+    bytes32 workerId,
+    bytes32 jobId,
+    uint256 nonce,
+    uint256 timestamp,
+    bytes32 extraNonce2,
+    bytes32 nTime,
+    bytes32 nVersionBits
+) external returns (bool valid) {
+    // Retrieve job template
+    JobTemplate memory job = activeJobs[jobId];
+    require(job.active, "Invalid job ID");
+
+    // Reconstruct block header
+    bytes memory header = constructBlockHeader(
+        job,
+        nonce,
+        extraNonce2,
+        nTime,
+        nVersionBits
+    );
+
+    // Validate proof of work
+    bytes32 hash = sha256(sha256(header));
+    uint256 target = job.difficulty;
+
+    valid = uint256(hash) <= target;
+
+    if (valid) {
+        // Record valid share
+        recordValidShare(workerId, jobId, hash, target);
+
+        // Check if block solution
+        if (uint256(hash) <= networkTarget) {
+            handleBlockSolution(workerId, jobId, header);
+        }
+    } else {
+        // Record invalid share for analysis
+        recordInvalidShare(workerId, jobId, hash, target);
+    }
+
+    return valid;
+}</div>
+
+                <h4>9.4.2 Share Accounting and Statistics</h4>
+                <p>Comprehensive share accounting tracks individual worker performance:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Calculation Method</th>
+                                <th>Update Frequency</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Share Rate</td>
+                                <td>Valid shares / time window</td>
+                                <td>Every 60 seconds</td>
+                                <td>Performance monitoring</td>
+                            </tr>
+                            <tr>
+                                <td>Hash Rate</td>
+                                <td>Shares × difficulty / time</td>
+                                <td>Every 60 seconds</td>
+                                <td>Capacity assessment</td>
+                            </tr>
+                            <tr>
+                                <td>Efficiency</td>
+                                <td>Valid / (Valid + Invalid)</td>
+                                <td>Every 300 seconds</td>
+                                <td>Quality control</td>
+                            </tr>
+                            <tr>
+                                <td>Contribution</td>
+                                <td>Weighted share value</td>
+                                <td>Every block</td>
+                                <td>Reward calculation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>9.5 Statistics and Analytics</h3>
+
+                <h4>9.5.1 Real-Time Performance Dashboard</h4>
+                <p>SatoshiFi provides comprehensive analytics for pool operators and miners:</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">Pool</div>
+                        <div class="stat-label">Statistics</div>
+                        <p>Hash rate, worker count, block finding rate, network share</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Worker</div>
+                        <div class="stat-label">Metrics</div>
+                        <p>Individual performance, efficiency, earnings, connectivity</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Network</div>
+                        <div class="stat-label">Analytics</div>
+                        <p>Difficulty trends, block times, mempool status, fee rates</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">DeFi</div>
+                        <div class="stat-label">Integration</div>
+                        <p>Token balances, yield rates, staking rewards, bridge activity</p>
+                    </div>
+                </div>
+
+                <h3>9.6 Reward Distribution System</h3>
+
+                <h4>9.6.1 Supported Payout Schemes</h4>
+                <p>SatoshiFi supports multiple reward distribution methods:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scheme</th>
+                                <th>Description</th>
+                                <th>Risk Level</th>
+                                <th>Variance</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PPLNS</td>
+                                <td>Pay Per Last N Shares</td>
+                                <td>Medium</td>
+                                <td>Medium</td>
+                                <td>Regular miners</td>
+                            </tr>
+                            <tr>
+                                <td>PPS</td>
+                                <td>Pay Per Share</td>
+                                <td>Low</td>
+                                <td>Low</td>
+                                <td>Stable income seekers</td>
+                            </tr>
+                            <tr>
+                                <td>PPS+</td>
+                                <td>PPS + Transaction fees</td>
+                                <td>Low</td>
+                                <td>Low-Medium</td>
+                                <td>Fee optimization</td>
+                            </tr>
+                            <tr>
+                                <td>PROP</td>
+                                <td>Proportional</td>
+                                <td>High</td>
+                                <td>High</td>
+                                <td>Long-term miners</td>
+                            </tr>
+                            <tr>
+                                <td>SOLO</td>
+                                <td>Solo mining</td>
+                                <td>Very High</td>
+                                <td>Very High</td>
+                                <td>Large hash rate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>9.6.2 Automated mp-Token Distribution</h4>
+                <p>When a pool finds a block, rewards are automatically distributed as mp-tokens:</p>
+
+                <div class="code-block" data-title="Reward Distribution Process">// Automated reward distribution
+function distributeBlockReward(
+    uint256 blockHeight,
+    uint256 blockReward,
+    bytes32[] memory eligibleWorkers
+) internal {
+    // Calculate total shares for reward period
+    uint256 totalShares = calculateTotalShares(blockHeight);
+
+    // Apply pool fee structure
+    uint256 poolFee = (blockReward * poolFeeRate) / 10000;
+    uint256 protocolFee = (blockReward * protocolFeeRate) / 10000;
+    uint256 tssFee = (blockReward * tssFeeRate) / 10000;
+
+    uint256 availableReward = blockReward - poolFee - protocolFee - tssFee;
+
+    // Distribute to eligible workers
+    for (uint256 i = 0; i < eligibleWorkers.length; i++) {
+        bytes32 workerId = eligibleWorkers[i];
+        uint256 workerShares = getWorkerShares(workerId, blockHeight);
+
+        uint256 workerReward = (availableReward * workerShares) / totalShares;
+
+        // Mint mp-tokens to worker's wallet
+        mintMpTokens(workers[workerId].walletAddress, workerReward);
+
+        emit RewardDistributed(workerId, workerReward, blockHeight);
+    }
+}</div>
+
+                <h4>9.6.3 DeFi Integration for Rewards</h4>
+                <div class="callout success">
+                    <div class="callout-title">Automatic DeFi Integration</div>
+                    <strong>Auto-Custody:</strong> Seamless mp-token to S-token conversion<br>
+                    <strong>Yield Optimization:</strong> Automatic staking for maximum returns<br>
+                    <strong>Fiat Payouts:</strong> Direct conversion to USD/EUR via banking partners<br>
+                    <strong>Portfolio Management:</strong> Automated diversification across assets
+                </div>
+
+                <h3>9.7 Pool Governance and Administration</h3>
+
+                <h4>9.7.1 Multi-Signature Pool Control</h4>
+                <p>Pool operators benefit from FROST-secured administrative functions:</p>
+
+                <ul>
+                    <li><strong>Fee Adjustment:</strong> Modify pool fees through TSS consensus</li>
+                    <li><strong>Worker Management:</strong> Add/remove workers with cryptographic authorization</li>
+                    <li><strong>Payout Scheme Changes:</strong> Switch reward methods via governance vote</li>
+                    <li><strong>Emergency Procedures:</strong> Halt operations in case of detected issues</li>
+                </ul>
+
+                <h4>9.7.2 Transparent Operations</h4>
+                <p>All pool operations are recorded on-chain for complete transparency:</p>
+
+                <ol>
+                    <li><strong>Block Finding:</strong> Cryptographic proof of all found blocks</li>
+                    <li><strong>Reward Distribution:</strong> Verifiable allocation to all participants</li>
+                    <li><strong>Fee Collection:</strong> Public record of all fee deductions</li>
+                    <li><strong>Performance Metrics:</strong> Open access to pool statistics</li>
+                </ol>
+
+                <div class="callout info">
+                    <div class="callout-title">Operational Advantages</div>
+                    The SatoshiFi mining pool management system provides enterprise-grade functionality with cryptographic security guarantees. Pool operators benefit from reduced infrastructure complexity, automatic compliance with industry standards, and seamless DeFi integration for their miners. The system's modular architecture allows for customization while maintaining security and transparency.
+                </div>
+            </section>
+
+            <!-- Deployment -->
+            <section id="deployment" class="section">
+                <h2>10. Deployment and Implementation</h2>
+
+                <h3>10.1 Multi-Chain Deployment Readiness</h3>
+                <p>SatoshiFi is production-ready for deployment across all major PoW networks:</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">✅</div>
+                        <div class="stat-label">Bitcoin Mainnet</div>
+                        <p>Taproot, FROST, SPV integration completed</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">✅</div>
+                        <div class="stat-label">Ethereum Mainnet</div>
+                        <p>frost-secp256k1-evm contracts deployed and tested</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">✅</div>
+                        <div class="stat-label">Dogecoin/BCH/LTC</div>
+                        <div class="stat-label">Integration Ready</div>
+                        <p>All networks verified and FROST-compatible</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">✅</div>
+                        <div class="stat-label">DeFi Protocols</div>
+                        <p>S-tokens fully supported across ecosystem</p>
+                    </div>
+                </div>
+
+                <h3>10.2 Smart Contract Architecture</h3>
+                <p>The complete smart contract suite includes:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Contract</th>
+                                <th>Purpose</th>
+                                <th>FROST Integration</th>
+                                <th>Gas Optimization</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pool Coordinator</td>
+                                <td>Multi-chain pool coordination</td>
+                                <td>Full verification</td>
+                                <td>~4200 gas per operation</td>
+                            </tr>
+                            <tr>
+                                <td>TSS Manager</td>
+                                <td>Threshold signature groups</td>
+                                <td>Heartbeat mechanism</td>
+                                <td>Optimized for frequent calls</td>
+                            </tr>
+                            <tr>
+                                <td>mp-Token Contracts</td>
+                                <td>Pool-specific vouchers</td>
+                                <td>Mint/burn verification</td>
+                                <td>Standard ERC-20 gas costs</td>
+                            </tr>
+                            <tr>
+                                <td>S-Token Contracts</td>
+                                <td>Custodalized wrapped tokens</td>
+                                <td>Cross-chain verification</td>
+                                <td>DeFi-optimized interface</td>
+                            </tr>
+                            <tr>
+                                <td>SPV Verification</td>
+                                <td>Multi-chain transaction proof</td>
+                                <td>FROST signature validation</td>
+                                <td>Network-specific optimization</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>10.3 Integration Process for Mining Pools</h3>
+                <p>Existing mining pools can integrate SatoshiFi through a structured migration process:</p>
+
+                <ol>
+                    <li><strong>Assessment Phase:</strong> Technical evaluation and compatibility analysis</li>
+                    <li><strong>TSS Setup:</strong> Custodian selection and FROST group configuration</li>
+                    <li><strong>Address Migration:</strong> Transition to federated coinbase addresses</li>
+                    <li><strong>Worker Migration:</strong> Gradual transition of miners to new infrastructure</li>
+                    <li><strong>DeFi Activation:</strong> Enable S-token functionality for miners</li>
+                </ol>
+
+                <h3>10.4 Custodian Onboarding</h3>
+                <p>Independent custodians can join the federation through:</p>
+
+                <div class="code-block" data-title="Custodian Registration Process">// Custodian onboarding with collateral verification
+function becomeCustodian(
+    uint256 networkId,
+    bytes32 collateralTxHash,
+    bytes memory spvProof,
+    uint256 serviceRate,
+    string memory endpoint
+) external {
+    // Verify collateral transaction in target network
+    require(
+        SPV.verifyTransaction(networkId, collateralTxHash, spvProof),
+        "Invalid collateral proof"
+    );
+
+    // Validate minimum stake requirements
+    uint256 collateralAmount = getCollateralAmount(networkId, collateralTxHash);
+    require(
+        collateralAmount >= minimumStake[networkId],
+        "Insufficient collateral"
+    );
+
+    // Register custodian
+    custodians[msg.sender] = Custodian({
+        operator: msg.sender,
+        networkId: networkId,
+        collateralAmount: collateralAmount,
+        serviceRate: serviceRate,
+        endpoint: endpoint,
+        active: true,
+        reputation: 1000,
+        joinedAt: block.timestamp
+    });
+
+    emit CustodianRegistered(msg.sender, networkId, collateralAmount);
+}</div>
+
+                <h3>10.5 Monitoring and Maintenance</h3>
+                <p>Operational monitoring includes:</p>
+
+                <ul>
+                    <li><strong>TSS Health Monitoring:</strong> Continuous verification of threshold signature groups</li>
+                    <li><strong>Network Synchronization:</strong> Real-time tracking of all PoW networks</li>
+                    <li><strong>Performance Analytics:</strong> Comprehensive metrics and alerting</li>
+                    <li><strong>Security Auditing:</strong> Ongoing security assessment and improvement</li>
+                </ul>
+            </section>
+
+            <!-- Conclusion -->
+            <section id="conclusion" class="section">
+                <h2>11. Conclusion</h2>
+
+                <h3>11.1 Innovation Summary</h3>
+                <p>SatoshiFi introduces fundamental innovations to the mining pool landscape:</p>
+                <ol>
+                    <li><strong>Federated Coinbase Addresses:</strong> First use of coinbase addresses as TSS-controlled federation points</li>
+                    <li><strong>Two-Level Token Architecture:</strong> Provides flexibility for different levels of DeFi integration</li>
+                    <li><strong>Independent Custodian System:</strong> Competitive marketplace for security services</li>
+                    <li><strong>FROST Integration:</strong> Gas-efficient threshold signatures with on-chain verification</li>
+                    <li><strong>Multi-Network Support:</strong> Unified solution across all major PoW chains</li>
+                    <li><strong>Enterprise Pool Management:</strong> Complete lifecycle management from creation to rewards</li>
+                </ol>
+
+                <h3>11.2 Key Benefits</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">85-95%</div>
+                        <div class="stat-label">Fee Reduction</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Transparency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Networks Unified</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">DeFi Access</div>
+                    </div>
+                </div>
+
+                <h3>11.3 Market Impact</h3>
+                <p>SatoshiFi addresses critical pain points in current mining operations:</p>
+                <ul>
+                    <li><strong>Cost reduction:</strong> Dramatically lower withdrawal fees through privileged transactions</li>
+                    <li><strong>Capital efficiency:</strong> 100% collateralization without over-collateralization</li>
+                    <li><strong>Access expansion:</strong> Full DeFi integration for mining rewards</li>
+                    <li><strong>Risk distribution:</strong> Decentralized security model eliminates single points of failure</li>
+                    <li><strong>Innovation incentives:</strong> Open platform for developers and service providers</li>
+                    <li><strong>Operational excellence:</strong> Enterprise-grade pool management with crypto guarantees</li>
+                </ul>
+
+                <h3>11.4 Implementation Readiness</h3>
+                <div class="callout info">
+                    <div class="callout-title">Deployment Status</div>
+                    <strong>FROST Integration:</strong> Production-ready with frost-secp256k1-evm library<br>
+                    <strong>Multi-Chain Support:</strong> All target networks fully supported<br>
+                    <strong>Smart Contracts:</strong> Checked and battle-tested<br>
+                    <strong>Custodian Network:</strong> Independent operators ready for deployment<br>
+                    <strong>Pool Management:</strong> Complete enterprise-grade infrastructure<br>
+                    <strong>DeFi Integration:</strong> Seamless connection to existing protocols
+                </div>
+
+                <h3>11.5 Future Development</h3>
+                <p>The platform provides foundation for continued innovation:</p>
+                <ul>
+                    <li><strong>Additional networks:</strong> Easy integration of new PoW chains as they emerge</li>
+                    <li><strong>L2 scaling:</strong> Optimistic rollups and state channels for enhanced throughput</li>
+                    <li><strong>AI optimization:</strong> Machine learning for pool efficiency and predictive analytics</li>
+                    <li><strong>Governance evolution:</strong> Decentralized protocol governance with stakeholder participation</li>
+                    <li><strong>Cross-chain expansion:</strong> Integration with other blockchain ecosystems</li>
+                    <li><strong>Advanced DeFi:</strong> Custom financial products for mining industry</li>
+                </ul>
+
+                <h3>11.6 Ecosystem Benefits</h3>
+                <p>SatoshiFi creates value for all ecosystem participants:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Stakeholder</th>
+                                <th>Primary Benefits</th>
+                                <th>Economic Incentives</th>
+                                <th>Risk Mitigation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Miners</td>
+                                <td>90% fee reduction, DeFi access, transparency</td>
+                                <td>Higher net returns, yield opportunities</td>
+                                <td>Cryptographic guarantees</td>
+                            </tr>
+                            <tr>
+                                <td>Pool Operators</td>
+                                <td>Reduced infrastructure, enhanced security</td>
+                                <td>New revenue streams, competitive advantage</td>
+                                <td>Distributed security model</td>
+                            </tr>
+                            <tr>
+                                <td>Custodians</td>
+                                <td>Independent business opportunity</td>
+                                <td>Service fees, competitive markets</td>
+                                <td>Reputation-based selection</td>
+                            </tr>
+                            <tr>
+                                <td>DeFi Protocols</td>
+                                <td>Access to PoW asset liquidity</td>
+                                <td>New user base, increased TVL</td>
+                                <td>Proven collateralization</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>11.7 Technical Achievements</h3>
+                <p>Key technical milestones accomplished:</p>
+                <ul>
+                    <li><strong>FROST-Ethereum Integration:</strong> First production implementation of threshold signatures in DeFi</li>
+                    <li><strong>Multi-Chain SPV:</strong> Unified verification system across four major PoW networks</li>
+                    <li><strong>Federated Coinbase:</strong> Novel approach to mining pool reward distribution</li>
+                    <li><strong>Two-Tier Tokens:</strong> Flexible architecture accommodating different integration levels</li>
+                    <li><strong>Enterprise Pool Management:</strong> Complete solution from worker registration to reward distribution</li>
+                </ul>
+
+                <div class="callout success">
+                    <div class="callout-title">Call to Action</div>
+                    SatoshiFi represents a paradigm shift toward more efficient, secure, and innovative mining pool operations. The protocol is ready for implementation by mining pools, custodians, and DeFi protocols seeking to integrate cutting-edge PoW infrastructure with modern financial systems. The combination of proven cryptographic techniques, economic incentives, competitive markets, and comprehensive pool management creates a robust foundation for the future of mining pool management.
+                    <br><br>
+                    <strong>For Mining Pools:</strong> Reduce operational costs while providing superior service to miners<br>
+                    <strong>For Custodians:</strong> Build independent businesses in the growing crypto infrastructure space<br>
+                    <strong>For DeFi Protocols:</strong> Access new liquidity sources from the largest crypto asset classes<br>
+                    <strong>For Miners:</strong> Maximize returns while accessing modern financial services
+                </div>
+
+                <h3>11.8 Technical Specifications Summary</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">4200</div>
+                        <div class="stat-label">Gas per FROST verification</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5/7</div>
+                        <div class="stat-label">TSS threshold configuration</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Collateralization ratio</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Supported PoW networks</div>
+                    </div>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Security Notice</div>
+                    While SatoshiFi implements reliable cryptographic security measures, users should understand that all DeFi protocols carry inherent risks. The system has been designed with multiple layers of security and economic incentives to minimize risks, but users should only participate with funds they can afford to lose. Regular security audits and community review are essential components of maintaining system security.
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="#introduction" class="nav-btn prev">Back to Top</a>
+                <a href="https://github.com/SergeyBelets/SatoshiFiPublic" class="nav-btn next" target="_blank">GitHub Repository</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/SatoshFi" target="_blank">GitHub Repository</a>
+                <a href="mailto:sb@unilayer.solutions">Contact Team</a>
+                <a href="https://discord.gg/satoshifi" target="_blank">Developer Discord</a>
+                <a href="https://unilayer.solutions" target="_blank">UniLayer Solutions</a>
+            </div>
+            <div>
+                <strong>SatoshiFi Technical Whitepaper v2.0</strong><br>
+                © 2025 SatoshiFi Development Team • MIT License
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight current section in TOC
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Remove active class from all TOC links
+                    document.querySelectorAll('.toc-section a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+
+                    // Add active class to corresponding TOC link
+                    const activeLink = document.querySelector(`.toc-section a[href="#${entry.target.id}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                    }
+                }
+            });
+        }, {
+            rootMargin: '-20% 0px -20% 0px'
+        });
+
+        // Observe all sections
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Print functionality
+        function printWhitepaper() {
+            window.print();
+        }
+
+        // Add print button
+        const printBtn = document.createElement('button');
+        printBtn.textContent = 'Print/PDF';
+        printBtn.className = 'nav-btn';
+        printBtn.onclick = printWhitepaper;
+        printBtn.style.marginLeft = '10px';
+        document.querySelector('.nav-buttons').appendChild(printBtn);
+
+        // Add active styles for TOC
+        const style = document.createElement('style');
+        style.textContent = `
+            .toc-section a.active {
+                color: var(--accent-color);
+                border-left-color: var(--accent-color);
+                font-weight: 600;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

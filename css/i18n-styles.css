@@ -1,0 +1,367 @@
+/* i18n-styles.css - Стили для интернационализации SatoshiFi */
+
+/* Language Selector Styles */
+.language-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.current-language {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--white);
+    border: 1px solid var(--medium-gray);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.current-language:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lang-flag {
+    font-size: 16px;
+}
+
+.lang-name {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.lang-arrow {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.current-language.active .lang-arrow {
+    transform: rotate(180deg);
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 180px;
+    background: var(--white);
+    border: 1px solid var(--medium-gray);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    margin-top: 4px;
+}
+
+.language-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.language-option:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.language-option:first-child {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.language-option:hover {
+    background-color: var(--light-gray);
+}
+
+.language-option.active {
+    background-color: var(--accent-color);
+    color: var(--white);
+}
+
+.language-option.active:hover {
+    background-color: #e07f00;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+    text-align: right;
+}
+
+[dir="rtl"] .hero {
+    text-align: center; /* Центрируем hero для всех языков */
+}
+
+[dir="rtl"] .features-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .feature-card {
+    text-align: right;
+}
+
+[dir="rtl"] .header-container {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .nav-menu {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .auth-buttons {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .footer-container {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .social-links {
+    flex-direction: row-reverse;
+}
+
+/* RTL form elements */
+[dir="rtl"] .form-group input,
+[dir="rtl"] .form-group select {
+    text-align: right;
+}
+
+[dir="rtl"] .balance-item {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .wallet-status {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .status-icon {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+/* Mobile RTL adjustments */
+@media (max-width: 768px) {
+    [dir="rtl"] .bottom-nav-container {
+        flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .mobile-wallet-actions {
+        text-align: right;
+    }
+
+    [dir="rtl"] .language-dropdown {
+        right: auto;
+        left: 0;
+    }
+}
+
+/* Font loading optimizations */
+@font-face {
+    font-family: 'NotoSansArabic';
+    src: url('/fonts/NotoSansArabic-Regular.woff2') format('woff2');
+    font-display: swap;
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+    font-family: 'NotoSansCJK';
+    src: url('/fonts/NotoSansCJK-Regular.woff2') format('woff2');
+    font-display: swap;
+    unicode-range: U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+2A700-2B73F, U+2B740-2B81F, U+2B820-2CEAF;
+}
+
+/* Language-specific fonts */
+html[lang="ar"], html[lang="ar"] * {
+    font-family: 'NotoSansArabic', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html[lang="zh"], html[lang="zh"] *,
+html[lang="ja"], html[lang="ja"] *,
+html[lang="ko"], html[lang="ko"] * {
+    font-family: 'NotoSansCJK', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navigation adjustments for languages */
+.header-language-selector {
+    margin-left: 15px;
+}
+
+[dir="rtl"] .header-language-selector {
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+/* Responsive language selector */
+@media (max-width: 768px) {
+    .language-selector {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .current-language {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .language-dropdown {
+        width: 100%;
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 15px 15px 0 0;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .language-option {
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+}
+
+/* Loading states */
+.i18n-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.i18n-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--light-gray);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Text direction transition */
+[data-i18n] {
+    transition: opacity 0.2s ease;
+}
+
+.i18n-transitioning [data-i18n] {
+    opacity: 0.7;
+}
+
+/* Currency and number formatting adjustments */
+.rtl-number {
+    direction: ltr;
+    text-align: left;
+}
+
+[dir="rtl"] .rtl-number {
+    text-align: right;
+}
+
+/* Specific adjustments for Arabic numerals */
+html[lang="ar"] .balance-item span:last-child,
+html[lang="ar"] .crypto-amount,
+html[lang="ar"] .fiat-amount {
+    direction: ltr;
+    text-align: left;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .language-dropdown {
+        border-width: 2px;
+    }
+
+    .language-option:hover {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .language-dropdown,
+    .lang-arrow,
+    [data-i18n] {
+        transition: none;
+    }
+
+    .i18n-loading::after {
+        animation: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .language-selector {
+        display: none;
+    }
+
+    [dir="rtl"] {
+        direction: rtl;
+    }
+}
+
+/* Performance optimizations */
+.language-dropdown {
+    contain: layout style paint;
+}
+
+.language-option {
+    contain: layout paint;
+}
+
+/* Accessibility improvements */
+.language-selector [role="button"] {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+.language-selector [role="button"]:focus {
+    outline-color: var(--accent-color);
+}
+
+.language-option:focus {
+    background-color: var(--accent-color);
+    color: var(--white);
+    outline: none;
+}
+
+/* Screen reader support */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "title": "SatoshiFi - Mining Pool Management on Ethereum",
+    "description": "Federated mining pools with automatic mp-token collateralization. Multi-chain support for Bitcoin, Dogecoin, Bitcoin Cash, and Litecoin."
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "Pool Management",
+      "platform": "Platform",
+      "sandbox": "Developer Sandbox",
+      "docs": "Documentation"
+    },
+    "connect": "Connect Wallet"
+  },
+  "hero": {
+    "title": "Mining Pool Management on Ethereum",
+    "subtitle": "Federated mining pools with automatic mp-token collateralization through coinbase addresses. Multi-chain support for Bitcoin, Dogecoin, Bitcoin Cash, and Litecoin.",
+    "cta_primary": "Launch Platform",
+    "cta_secondary": "View Documentation"
+  },
+  "features": {
+    "title": "Core Features",
+    "multichain": {
+      "title": "Multi-chain Mining Pools",
+      "description": "Bitcoin, Dogecoin, Bitcoin Cash, Litecoin pools with federated coinbase addresses and TSS-controlled fund management."
+    },
+    "withdrawals": {
+      "title": "Minimal-fee Withdrawals",
+      "description": "Privileged withdrawal processing through pool infrastructure reduces transaction costs to network minimums plus minimal operational overhead."
+    },
+    "staking": {
+      "title": "Flexible Payouts",
+      "description": "Stake BTC and receive yields in your preferred currency, including direct fiat payouts to bank cards in your local currency."
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "Pool Management",
+      "management": "Pool Management Interface",
+      "dashboard": "Mining Dashboard & Analytics"
+    },
+    "platform": {
+      "title": "SatoshiFi Platform",
+      "main": "Main Platform Interface",
+      "lending": "Trustless Lending Services",
+      "exchange": "mp-Token Exchange"
+    },
+    "sandbox": {
+      "title": "Bitcoin Testnet",
+      "description": "Bitcoin testnet environment for development and testing",
+      "manager": "Node Management Interface",
+      "wallet": "Bitcoin Wallet Integration",
+      "scanner": "Network Monitor & Analytics"
+    }
+  },
+  "stats": {
+    "networks": "Supported Networks",
+    "pools": "Active Pools",
+    "miners": "Connected Miners",
+    "volume": "Daily Volume"
+  },
+  "technical": {
+    "title": "Technical Implementation",
+    "tss": {
+      "title": "TSS Federation",
+      "description": "5-of-7 threshold signature scheme with FROST protocol for secure multi-party custody"
+    },
+    "collateral": {
+      "title": "Automatic Collateralization",
+      "description": "Mining rewards automatically secure mp-token issuance through federated coinbase addresses"
+    },
+    "algorithms": {
+      "title": "Parametric Algorithms",
+      "description": "PPLNS, PPS, FPPS, PPLNT with configurable parameters and developer incentives"
+    }
+  },
+  "footer": {
+    "documentation": "Documentation",
+    "github": "GitHub Repository",
+    "whitepaper": "Technical Whitepaper",
+    "community": "Community Discord"
+  }
+}

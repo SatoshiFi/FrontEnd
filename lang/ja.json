@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "SatoshiFi - Ethereumでのマイニングプール管理",
+    "description": "自動mp-トークン担保付き連合マイニングプール。Bitcoin、Dogecoin、Bitcoin Cash、Litecoinをサポート。"
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "プール管理",
+      "platform": "プラットフォーム",
+      "sandbox": "開発者サンドボックス",
+      "docs": "ドキュメント"
+    },
+    "connect": "ウォレット接続"
+  },
+  "hero": {
+    "title": "Ethereumでのマイニングプール管理",
+    "subtitle": "coinbaseアドレスを通じた自動mp-トークン担保付き連合マイニングプール。Bitcoin、Dogecoin、Bitcoin Cash、Litecoinをサポート。",
+    "cta_primary": "プラットフォーム開始",
+    "cta_secondary": "ドキュメント表示"
+  },
+  "features": {
+    "title": "主要機能",
+    "multichain": {
+      "title": "マルチチェーンマイニングプール",
+      "description": "Bitcoin、Dogecoin、Bitcoin Cash、Litecoinプールと連合coinbaseアドレス、TSS制御資金管理。"
+    },
+    "withdrawals": {
+      "title": "最小手数料出金",
+      "description": "プールインフラストラクチャを通じた特権出金処理により、取引コストをネットワーク最小値プラス最小運営費に削減。"
+    },
+    "staking": {
+      "title": "柔軟な支払いでのBitcoinステーキング",
+      "description": "BTCをステークし、現地通貨での銀行カードへの直接フィアット支払いを含む、お好みの通貨でリターンを受け取り。"
+    },
+    "algorithms": {
+      "title": "オープンアルゴリズムシステム",
+      "description": "開発者への経済的インセンティブと透明な手数料構造を持つパラメトリック報酬配布アルゴリズム。"
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "プール管理",
+      "management": "プール管理インターフェース",
+      "dashboard": "マイニングダッシュボード＆分析"
+    },
+    "platform": {
+      "title": "SatoshiFiプラットフォーム",
+      "main": "メインプラットフォームインターフェース",
+      "lending": "トラストレス貸出サービス",
+      "exchange": "mp-トークン取引所"
+    },
+    "sandbox": {
+      "title": "開発者サンドボックス",
+      "description": "開発とテスト用のBitcoin testnet環境",
+      "manager": "ノード管理インターフェース",
+      "wallet": "Bitcoinウォレット統合",
+      "scanner": "ネットワークモニター＆分析"
+    }
+  },
+  "stats": {
+    "networks": "サポート対象ネットワーク",
+    "pools": "アクティブプール",
+    "miners": "接続マイナー",
+    "volume": "日次ボリューム"
+  },
+  "technical": {
+    "title": "技術実装",
+    "tss": {
+      "title": "TSS連合",
+      "description": "安全なマルチパーティ管理のためのFROSTプロトコルを用いた5-of-7閾値署名スキーム"
+    },
+    "collateral": {
+      "title": "自動担保",
+      "description": "マイニング報酬が連合coinbaseアドレスを通じてmp-トークン発行を自動的に担保"
+    },
+    "algorithms": {
+      "title": "パラメトリックアルゴリズム",
+      "description": "設定可能パラメータと開発者インセンティブを持つPPLNS、PPS、FPPS、PPLNT"
+    }
+  },
+  "footer": {
+    "documentation": "ドキュメント",
+    "github": "GitHubリポジトリ",
+    "whitepaper": "技術ホワイトペーパー",
+    "community": "コミュニティDiscord"
+  }
+}

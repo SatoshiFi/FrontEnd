@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "SatoshiFi - Gestão de Pools de Mineração no Ethereum",
+    "description": "Pools de mineração federados com garantia automática de tokens mp. Suporte para Bitcoin, Dogecoin, Bitcoin Cash e Litecoin."
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "Gestão de Pools",
+      "platform": "Plataforma",
+      "sandbox": "Sandbox do Desenvolvedor",
+      "docs": "Documentação"
+    },
+    "connect": "Conectar Carteira"
+  },
+  "hero": {
+    "title": "Gestão de Pools de Mineração no Ethereum",
+    "subtitle": "Pools de mineração federados com garantia automática de tokens mp através de endereços coinbase. Suporte para Bitcoin, Dogecoin, Bitcoin Cash e Litecoin.",
+    "cta_primary": "Iniciar Plataforma",
+    "cta_secondary": "Ver Documentação"
+  },
+  "features": {
+    "title": "Funcionalidades Principais",
+    "multichain": {
+      "title": "Pools de Mineração Multi-chain",
+      "description": "Pools de Bitcoin, Dogecoin, Bitcoin Cash, Litecoin com endereços coinbase federados e gestão de fundos controlada por TSS."
+    },
+    "withdrawals": {
+      "title": "Saques com Taxas Mínimas",
+      "description": "Processamento privilegiado de saques através da infraestrutura do pool reduz custos de transação aos mínimos da rede mais despesas operacionais mínimas."
+    },
+    "staking": {
+      "title": "Staking de Bitcoin com Pagamentos Flexíveis",
+      "description": "Faça staking de BTC e receba rendimentos na sua moeda preferida, incluindo pagamentos fiat diretos em cartões bancários na sua moeda local."
+    },
+    "algorithms": {
+      "title": "Sistema de Algoritmos Aberto",
+      "description": "Algoritmos paramétricos de distribuição de recompensas com incentivos econômicos para desenvolvedores e estruturas de taxas transparentes."
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "Gestão de Pools",
+      "management": "Interface de Gestão de Pools",
+      "dashboard": "Dashboard de Mineração & Análise"
+    },
+    "platform": {
+      "title": "Plataforma SatoshiFi",
+      "main": "Interface Principal da Plataforma",
+      "lending": "Serviços de Empréstimo Sem Confiança",
+      "exchange": "Exchange de Tokens mp"
+    },
+    "sandbox": {
+      "title": "Sandbox do Desenvolvedor",
+      "description": "Ambiente Bitcoin testnet para desenvolvimento e testes",
+      "manager": "Interface de Gestão de Nós",
+      "wallet": "Integração de Carteira Bitcoin",
+      "scanner": "Monitor de Rede & Análise"
+    }
+  },
+  "stats": {
+    "networks": "Redes Suportadas",
+    "pools": "Pools Ativos",
+    "miners": "Mineradores Conectados",
+    "volume": "Volume Diário"
+  },
+  "technical": {
+    "title": "Implementação Técnica",
+    "tss": {
+      "title": "Federação TSS",
+      "description": "Esquema de assinatura de limiar 5-de-7 com protocolo FROST para custódia segura multi-partes"
+    },
+    "collateral": {
+      "title": "Garantia Automática",
+      "description": "Recompensas de mineração garantem automaticamente a emissão de tokens mp através de endereços coinbase federados"
+    },
+    "algorithms": {
+      "title": "Algoritmos Paramétricos",
+      "description": "PPLNS, PPS, FPPS, PPLNT com parâmetros configuráveis e incentivos para desenvolvedores"
+    }
+  },
+  "footer": {
+    "documentation": "Documentação",
+    "github": "Repositório GitHub",
+    "whitepaper": "Whitepaper Técnico",
+    "community": "Discord da Comunidade"
+  }
+}

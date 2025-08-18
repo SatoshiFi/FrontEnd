@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "SatoshiFi - 基于以太坊的矿池管理",
+    "description": "具有自动mp代币抵押的联邦矿池。支持比特币、狗狗币、比特币现金和莱特币。"
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "矿池管理",
+      "platform": "平台",
+      "sandbox": "开发者沙盒",
+      "docs": "文档"
+    },
+    "connect": "连接钱包"
+  },
+  "hero": {
+    "title": "基于以太坊的矿池管理",
+    "subtitle": "通过coinbase地址实现自动mp代币抵押的联邦矿池。支持比特币、狗狗币、比特币现金和莱特币。",
+    "cta_primary": "启动平台",
+    "cta_secondary": "查看文档"
+  },
+  "features": {
+    "title": "核心功能",
+    "multichain": {
+      "title": "多链矿池",
+      "description": "比特币、狗狗币、比特币现金、莱特币矿池，具有联邦coinbase地址和TSS控制的资金管理。"
+    },
+    "withdrawals": {
+      "title": "最低费用提取",
+      "description": "通过矿池基础设施的特权提取处理将交易成本降至网络最低值加最小运营开支。"
+    },
+    "staking": {
+      "title": "比特币质押与灵活支付",
+      "description": "质押BTC并以您偏好的货币获得收益，包括直接法币支付到您当地货币的银行卡。"
+    },
+    "algorithms": {
+      "title": "开放算法系统",
+      "description": "参数化奖励分配算法，为开发者提供经济激励和透明的费用结构。"
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "矿池管理",
+      "management": "矿池管理界面",
+      "dashboard": "挖矿仪表板和分析"
+    },
+    "platform": {
+      "title": "SatoshiFi平台",
+      "main": "主平台界面",
+      "lending": "去信任借贷服务",
+      "exchange": "mp代币交易所"
+    },
+    "sandbox": {
+      "title": "开发者沙盒",
+      "description": "比特币测试网环境用于开发和测试",
+      "manager": "节点管理界面",
+      "wallet": "比特币钱包集成",
+      "scanner": "网络监控和分析"
+    }
+  },
+  "stats": {
+    "networks": "支持的网络",
+    "pools": "活跃矿池",
+    "miners": "连接的矿工",
+    "volume": "日交易量"
+  },
+  "technical": {
+    "title": "技术实现",
+    "tss": {
+      "title": "TSS联邦",
+      "description": "5-of-7门限签名方案，采用FROST协议实现安全的多方托管"
+    },
+    "collateral": {
+      "title": "自动抵押",
+      "description": "挖矿奖励通过联邦coinbase地址自动保障mp代币发行"
+    },
+    "algorithms": {
+      "title": "参数化算法",
+      "description": "PPLNS、PPS、FPPS、PPLNT，具有可配置参数和开发者激励"
+    }
+  },
+  "footer": {
+    "documentation": "文档",
+    "github": "GitHub仓库",
+    "whitepaper": "技术白皮书",
+    "community": "社区Discord"
+  }
+}

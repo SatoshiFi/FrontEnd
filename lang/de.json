@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "SatoshiFi - Mining-Pool-Management auf Ethereum",
+    "description": "Föderierte Mining-Pools mit automatischer mp-Token-Besicherung. Unterstützung für Bitcoin, Dogecoin, Bitcoin Cash und Litecoin."
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "Pool-Management",
+      "platform": "Plattform",
+      "sandbox": "Entwickler-Sandbox",
+      "docs": "Dokumentation"
+    },
+    "connect": "Wallet verbinden"
+  },
+  "hero": {
+    "title": "Mining-Pool-Management auf Ethereum",
+    "subtitle": "Föderierte Mining-Pools mit automatischer mp-Token-Besicherung durch Coinbase-Adressen. Unterstützung für Bitcoin, Dogecoin, Bitcoin Cash und Litecoin.",
+    "cta_primary": "Plattform starten",
+    "cta_secondary": "Dokumentation ansehen"
+  },
+  "features": {
+    "title": "Kernfunktionen",
+    "multichain": {
+      "title": "Multi-Chain Mining-Pools",
+      "description": "Bitcoin-, Dogecoin-, Bitcoin Cash-, Litecoin-Pools mit föderierten Coinbase-Adressen und TSS-gesteuerter Mittelverwaltung."
+    },
+    "withdrawals": {
+      "title": "Auszahlungen mit minimalen Gebühren",
+      "description": "Privilegierte Auszahlungsverarbeitung durch Pool-Infrastruktur reduziert Transaktionskosten auf Netzwerk-Minima plus minimale Betriebskosten."
+    },
+    "staking": {
+      "title": "Bitcoin-Staking mit flexiblen Auszahlungen",
+      "description": "Staken Sie BTC und erhalten Sie Erträge in Ihrer bevorzugten Währung, einschließlich direkter Fiat-Auszahlungen auf Bankkarten in Ihrer Landeswährung."
+    },
+    "algorithms": {
+      "title": "Offenes Algorithmus-System",
+      "description": "Parametrische Belohnungsverteilungsalgorithmen mit wirtschaftlichen Anreizen für Entwickler und transparenten Gebührenstrukturen."
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "Pool-Management",
+      "management": "Pool-Management-Interface",
+      "dashboard": "Mining-Dashboard & Analytik"
+    },
+    "platform": {
+      "title": "SatoshiFi-Plattform",
+      "main": "Haupt-Plattform-Interface",
+      "lending": "Vertrauenslose Kreditdienstleistungen",
+      "exchange": "mp-Token-Börse"
+    },
+    "sandbox": {
+      "title": "Entwickler-Sandbox",
+      "description": "Bitcoin-Testnet-Umgebung für Entwicklung und Tests",
+      "manager": "Node-Management-Interface",
+      "wallet": "Bitcoin-Wallet-Integration",
+      "scanner": "Netzwerk-Monitor & Analytik"
+    }
+  },
+  "stats": {
+    "networks": "Unterstützte Netzwerke",
+    "pools": "Aktive Pools",
+    "miners": "Verbundene Miner",
+    "volume": "Tägliches Volumen"
+  },
+  "technical": {
+    "title": "Technische Umsetzung",
+    "tss": {
+      "title": "TSS-Föderation",
+      "description": "5-von-7-Schwellwert-Signaturschema mit FROST-Protokoll für sichere Multi-Party-Verwahrung"
+    },
+    "collateral": {
+      "title": "Automatische Besicherung",
+      "description": "Mining-Belohnungen sichern automatisch die mp-Token-Ausgabe durch föderierte Coinbase-Adressen"
+    },
+    "algorithms": {
+      "title": "Parametrische Algorithmen",
+      "description": "PPLNS, PPS, FPPS, PPLNT mit konfigurierbaren Parametern und Entwickler-Anreizen"
+    }
+  },
+  "footer": {
+    "documentation": "Dokumentation",
+    "github": "GitHub-Repository",
+    "whitepaper": "Technisches Whitepaper",
+    "community": "Community-Discord"
+  }
+}

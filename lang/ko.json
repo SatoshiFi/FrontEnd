@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "SatoshiFi - 이더리움 기반 마이닝 풀 관리",
+    "description": "자동 mp-토큰 담보가 있는 연합 마이닝 풀. 비트코인, 도지코인, 비트코인 캐시, 라이트코인 지원."
+  },
+  "header": {
+    "logo": "SatoshiFi",
+    "nav": {
+      "pools": "풀 관리",
+      "platform": "플랫폼",
+      "sandbox": "개발자 샌드박스",
+      "docs": "문서"
+    },
+    "connect": "지갑 연결"
+  },
+  "hero": {
+    "title": "이더리움 기반 마이닝 풀 관리",
+    "subtitle": "코인베이스 주소를 통한 자동 mp-토큰 담보가 있는 연합 마이닝 풀. 비트코인, 도지코인, 비트코인 캐시, 라이트코인 지원.",
+    "cta_primary": "플랫폼 시작",
+    "cta_secondary": "문서 보기"
+  },
+  "features": {
+    "title": "핵심 기능",
+    "multichain": {
+      "title": "멀티체인 마이닝 풀",
+      "description": "연합 코인베이스 주소와 TSS 제어 자금 관리를 갖춘 비트코인, 도지코인, 비트코인 캐시, 라이트코인 풀."
+    },
+    "withdrawals": {
+      "title": "최소 수수료 출금",
+      "description": "풀 인프라를 통한 특권 출금 처리로 거래 비용을 네트워크 최소값 플러스 최소 운영 비용으로 절감."
+    },
+    "staking": {
+      "title": "유연한 지급이 있는 비트코인 스테이킹",
+      "description": "BTC를 스테이킹하고 현지 통화로 은행 카드에 직접 법정화폐 지급을 포함하여 선호하는 통화로 수익을 받으세요."
+    },
+    "algorithms": {
+      "title": "오픈 알고리즘 시스템",
+      "description": "개발자를 위한 경제적 인센티브와 투명한 수수료 구조를 갖춘 매개변수 보상 분배 알고리즘."
+    }
+  },
+  "sections": {
+    "pools": {
+      "title": "풀 관리",
+      "management": "풀 관리 인터페이스",
+      "dashboard": "마이닝 대시보드 및 분석"
+    },
+    "platform": {
+      "title": "SatoshiFi 플랫폼",
+      "main": "메인 플랫폼 인터페이스",
+      "lending": "무신뢰 대출 서비스",
+      "exchange": "mp-토큰 거래소"
+    },
+    "sandbox": {
+      "title": "개발자 샌드박스",
+      "description": "개발 및 테스트를 위한 비트코인 테스트넷 환경",
+      "manager": "노드 관리 인터페이스",
+      "wallet": "비트코인 지갑 통합",
+      "scanner": "네트워크 모니터 및 분석"
+    }
+  },
+  "stats": {
+    "networks": "지원 네트워크",
+    "pools": "활성 풀",
+    "miners": "연결된 마이너",
+    "volume": "일일 거래량"
+  },
+  "technical": {
+    "title": "기술 구현",
+    "tss": {
+      "title": "TSS 연합",
+      "description": "안전한 다자간 보관을 위한 FROST 프로토콜이 있는 5-of-7 임계값 서명 체계"
+    },
+    "collateral": {
+      "title": "자동 담보",
+      "description": "마이닝 보상이 연합 코인베이스 주소를 통해 mp-토큰 발행을 자동으로 담보"
+    },
+    "algorithms": {
+      "title": "매개변수 알고리즘",
+      "description": "구성 가능한 매개변수와 개발자 인센티브가 있는 PPLNS, PPS, FPPS, PPLNT"
+    }
+  },
+  "footer": {
+    "documentation": "문서",
+    "github": "GitHub 저장소",
+    "whitepaper": "기술 백서",
+    "community": "커뮤니티 Discord"
+  }
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SatoshiFi Wallet - Bitcoin + Ethereum</title>
+    <link rel="stylesheet" href="/css/unilayer.css">
+</head>
+<body>
+    <div class="unilayer-container">
+        <div class="unilayer-logo">₿⟷Ξ</div>
+        <h1 class="unilayer-title">SatoshiFi Wallet</h1>
+        <p class="unilayer-subtitle">Unified Bitcoin + Ethereum wallet for mining pools</p>
+        
+        <!-- Library Status -->
+        <div id="libraryStatus" class="unilayer-card info">
+            <span id="libraryStatusText">🔄 Loading Bitcoin.js library...</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="unilayer-tab-container">
+            <button class="unilayer-tab active" onclick="showTab('generate')">Generate</button>
+            <button class="unilayer-tab" onclick="showTab('import')">Import</button>
+            <button class="unilayer-tab" onclick="showTab('wallet')">Wallet</button>
+        </div>
+
+        <!-- Generate Tab -->
+        <div id="generateTab" class="unilayer-tab-content active">
+            <p class="unilayer-mb-3">Generate a new unified key pair for Bitcoin and Ethereum</p>
+            <button class="unilayer-btn" id="generateBtn" onclick="generateWallet()">🎲 Generate New Keys</button>
+            
+            <div id="keyDisplay" class="unilayer-card warning unilayer-hidden">
+                <div class="unilayer-mb-3">
+                    <strong>⚠️ IMPORTANT:</strong> Save these keys securely! They cannot be recovered if lost.
+                </div>
+                
+                <div class="unilayer-form-group">
+                    <label class="unilayer-label">Private Key (Hex):</label>
+                    <div class="unilayer-address" id="generatedPrivateKey"></div>
+                    <button class="unilayer-copy-btn" onclick="copyToClipboard(document.getElementById('generatedPrivateKey').textContent)">Copy</button>
+                </div>
+                
+                <div class="unilayer-grid cols-2">
+                    <div class="unilayer-card">
+                        <div class="unilayer-card-header">₿ Bitcoin Address (Regtest)</div>
+                        <div class="unilayer-address bitcoin" id="generatedBitcoinAddress"></div>
+                        <button class="unilayer-copy-btn" onclick="copyToClipboard(document.getElementById('generatedBitcoinAddress').textContent)">Copy</button>
+                    </div>
+                    
+                    <div class="unilayer-card">
+                        <div class="unilayer-card-header">Ξ Ethereum Address (Future)</div>
+                        <div class="unilayer-address ethereum" id="generatedEthereumAddress"></div>
+                        <button class="unilayer-copy-btn" onclick="copyToClipboard(document.getElementById('generatedEthereumAddress').textContent)">Copy</button>
+                    </div>
+                </div>
+                
+                <button class="unilayer-btn" onclick="useGeneratedKeys()">🔑 Use These Keys</button>
+            </div>
+        </div>
+
+        <!-- Import Tab -->
+        <div id="importTab" class="unilayer-tab-content">
+            <div class="unilayer-form-group">
+                <label class="unilayer-label" for="importPrivateKey">Private Key (Hex format)</label>
+                <input type="text" class="unilayer-input" id="importPrivateKey" placeholder="0x1234567890abcdef..." />
+            </div>
+            <button class="unilayer-btn" onclick="importWallet()">📥 Import Keys</button>
+            
+            <div id="importedKeyDisplay" class="unilayer-hidden">
+                <div class="unilayer-grid cols-2">
+                    <div class="unilayer-card">
+                        <div class="unilayer-card-header">₿ Bitcoin Address</div>
+                        <div class="unilayer-address bitcoin" id="importedBitcoinAddress"></div>
+                        <button class="unilayer-copy-btn" onclick="copyToClipboard(document.getElementById('importedBitcoinAddress').textContent)">Copy</button>
+                    </div>
+                    
+                    <div class="unilayer-card">
+                        <div class="unilayer-card-header">Ξ Ethereum Address</div>
+                        <div class="unilayer-address ethereum" id="importedEthereumAddress"></div>
+                        <button class="unilayer-copy-btn" onclick="copyToClipboard(document.getElementById('importedEthereumAddress').textContent)">Copy</button>
+                    </div>
+                </div>
+                
+                <button class="unilayer-btn" onclick="useImportedKeys()">🔑 Use These Keys</button>
+            </div>
+        </div>
+
+        <!-- Wallet Tab -->
+        <div id="walletTab" class="unilayer-tab-content">
+            <div id="walletInterface" class="unilayer-hidden">
+                <div class="unilayer-card">
+                    <div class="unilayer-balance btc" id="walletBalance">0.00000000 BTC</div>
+                    <div class="unilayer-mb-2">
+                        <strong>Bitcoin Address:</strong>
+                        <div class="unilayer-address bitcoin" id="walletBitcoinAddress"></div>
+                    </div>
+                    <div>
+                        <strong>Ethereum Address:</strong>
+                        <div class="unilayer-address ethereum" id="walletEthereumAddress"></div>
+                    </div>
+                </div>
+
+                <div class="unilayer-form-group">
+                    <label class="unilayer-label" for="recipientAddress">Recipient Bitcoin Address</label>
+                    <input type="text" class="unilayer-input bitcoin-address" id="recipientAddress" placeholder="bcrt1q..." />
+                </div>
+                
+                <div class="unilayer-form-group">
+                    <label class="unilayer-label" for="sendAmount">Amount (BTC)</label>
+                    <input type="number" class="unilayer-input" id="sendAmount" step="0.00000001" min="0" placeholder="0.00000000" />
+                </div>
+
+                <div class="unilayer-flex-center">
+                    <button class="unilayer-btn" id="sendBtn" onclick="sendTransaction()">💸 Send Bitcoin</button>
+                    <button class="unilayer-btn secondary" onclick="refreshBalance()">🔄 Refresh Balance</button>
+                    <button class="unilayer-btn outline" onclick="logout()">🚪 Logout</button>
+                </div>
+                
+                <div id="transactionStatus" class="unilayer-card unilayer-hidden">
+                    <div id="txStatusText"></div>
+                    <div id="txIdDisplay" class="unilayer-address unilayer-mt-2"></div>
+                </div>
+            </div>
+            
+            <div id="noWalletMessage" class="unilayer-text-center unilayer-p-4">
+                <p>No wallet loaded. Please generate or import a wallet first.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Production Bitcoin.js and Ethers.js Libraries -->
+    <script src="/js/lib/bitcoin-simple.min.js"></script>
+    <script src="/js/lib/ethers-5.7.2.umd.min.js"></script>
+    <script src="/js/btc/btc-core.js"></script>
+    <script src="/js/btc/btcwallet-module.js"></script>
+</body>
+</html>
