@@ -1,6 +1,6 @@
 // satoshifi-landing.js - Main landing page logic for SatoshiFi
 
-class SatoshiFiLanding {
+class SatoshiFiMain {
     constructor() {
         this.init();
     }
@@ -17,6 +17,9 @@ class SatoshiFiLanding {
 
         // Initialize animations
         this.initAnimations();
+
+        // Setup wallet connection
+        this.setupWalletConnection();
     }
 
     setupSmoothScroll() {
@@ -175,12 +178,117 @@ class SatoshiFiLanding {
             statsObserver.observe(card);
         });
     }
-}
+
+    setupWalletConnection() {
+        const connectButton = document.getElementById('connectWallet');
+        const walletStatus = document.querySelector('.wallet-status');
+
+        if (!connectButton) return;
+
+        // Check initial wallet connection
+        this.checkWalletConnection(walletStatus);
+
+        connectButton.addEventListener('click', async () => {
+            try {
+                // Проверка мобильного устройства
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                // Если мобильное устройство и нет ethereum провайдера
+                if (isMobile && !window.ethereum) {
+                    // Перенаправляем в MetaMask браузер
+                    const currentUrl = window.location.href;
+                    const metamaskAppDeepLink = `https://metamask.app.link/dapp/${currentUrl.replace(/^https?:\/\//, '')}`;
+
+                    // Показываем сообщение пользователю
+                    if (confirm('To connect your wallet on mobile, you need to open this site in MetaMask browser. Click OK to continue.')) {
+                        window.location.href = metamaskAppDeepLink;
+                    }
+                    return;
+                }
+
+                // Проверка для десктопа
+                if (!isMobile && !window.ethereum) {
+                    alert('Please install MetaMask to connect your wallet');
+                    window.open('https://metamask.io/download/', '_blank');
+                    return;
+                }
+
+                // Show loading state
+                walletStatus.textContent = 'Connecting...';
+                connectButton.disabled = true;
+
+                // Initialize and connect through web3Integrator
+                await window.web3Integrator.init();
+                const account = await window.web3Integrator.connect();
+
+                // Update UI on success
+                if (account) {
+                    walletStatus.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
+                    connectButton.classList.add('connected');
+
+                    // Сохраняем состояние подключения в localStorage
+                    localStorage.setItem('walletConnected', 'true');
+                }
+
+            } catch (error) {
+                console.error('Wallet connection failed:', error);
+                walletStatus.textContent = 'Connect Wallet';
+
+                if (error.message.includes('Sepolia')) {
+                    alert('Please switch to Sepolia testnet in MetaMask');
+                } else if (error.message.includes('User rejected')) {
+                    // Пользователь отменил подключение
+                    console.log('User cancelled wallet connection');
+                } else {
+                    alert('Failed to connect wallet. Please try again.');
+                }
+            } finally {
+                connectButton.disabled = false;
+            }
+        });
+
+        // Listen for state changes
+        window.web3Integrator.onStateChange((event, data) => {
+            if (event === 'connected' && data.account) {
+                walletStatus.textContent = `${data.account.slice(0, 6)}...${data.account.slice(-4)}`;
+                connectButton.classList.add('connected');
+                localStorage.setItem('walletConnected', 'true');
+            } else if (event === 'disconnected') {
+                walletStatus.textContent = 'Connect Wallet';
+                connectButton.classList.remove('connected');
+                localStorage.removeItem('walletConnected');
+            }
+        });
+    }
+
+    async checkWalletConnection(walletStatus) {
+        if (window.ethereum) {
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                if (accounts.length > 0) {
+                    walletStatus.textContent = `${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
+                    document.getElementById('connectWallet').classList.add('connected');
+                }
+            } catch (error) {
+                console.error('Error checking wallet connection:', error);
+            }
+        } else {
+            // Проверяем, было ли ранее подключение
+            const wasConnected = localStorage.getItem('walletConnected');
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            if (wasConnected && isMobile) {
+                // Показываем подсказку для мобильных пользователей
+                walletStatus.textContent = 'Open in MetaMask';
+            }
+        }
+    }
+} // <- Добавлена закрывающая скобка класса
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.satoshiFi = new SatoshiFiLanding();
+    window.satoshiFiMain = new SatoshiFiMain();
 });
 
 // Export for use in other scripts
-window.SatoshiFiLanding = SatoshiFiLanding;
+window.SatoshiFiMain = SatoshiFiMain;

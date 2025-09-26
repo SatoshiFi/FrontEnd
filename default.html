@@ -29,12 +29,14 @@
                 </a>
 
                 <div class="header-actions">
-                    <button class="btn btn-connect" data-i18n="header.connect">Connect Wallet</button>
+                    <button id="connectWallet" class="btn btn-primary btn-connect">
+                        <span class="wallet-status" data-i18n="header.connect">Connect Wallet</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Новая навигация -->
+        <!-- Навигация -->
         <nav class="nav-menu">
             <div class="container">
                 <div class="nav-container">
@@ -63,9 +65,9 @@
                     <!-- Колонка 4: Bitcoin Testnet -->
                     <div class="nav-column">
                         <span class="nav-column-title" data-i18n="sections.sandbox.title">Bitcoin Testnet</span>
-                        <a href="/btcmanager.html" data-i18n="sections.sandbox.manager">Node Management Interface</a>
-                        <a href="/btcwallet.html" data-i18n="sections.sandbox.wallet">Bitcoin Wallet Integration</a>
-                        <a href="/btcscanner.html" data-i18n="sections.sandbox.scanner">Network Monitor & Analytics</a>
+                        <a href="/mining-simulator.html" data-i18n="sections.sandbox.manager">Node Manager</a>
+                        <a href="/wallet.html" data-i18n="sections.sandbox.wallet">BTC Wallet</a>
+                        <a href="/mining-pool-manager.html" data-i18n="sections.sandbox.scanner">Pool Manager</a>
                     </div>
 
                     <!-- Колонка 5: Выбор языка -->
@@ -86,7 +88,7 @@
 
                 <div class="hero-buttons">
                     <a href="/index.html" class="btn btn-primary" data-i18n="hero.cta_primary">Launch Platform</a>
-                    <a href="https://github.com/SergeyBelets/SatoshiFiPublic" target="_blank" class="btn btn-outline" data-i18n="hero.cta_secondary">View Documentation</a>
+                    <a href="https://github.com/SatoshiFi/BackEnd" target="_blank" class="btn btn-outline" data-i18n="hero.cta_secondary">View Documentation</a>
                 </div>
             </div>
         </div>
@@ -262,21 +264,21 @@
                 <div class="footer-column">
                     <h4>Platform</h4>
                     <a href="/index.html" data-i18n="sections.platform.main">Main Interface</a>
-                    <a href="/lending.html" data-i18n="sections.platform.lending">Lending</a>
-                    <a href="/exchange.html" data-i18n="sections.platform.exchange">Exchange</a>
+                    <a href="/index.html" data-i18n="sections.platform.lending">Lending</a>
+                    <a href="/index.html" data-i18n="sections.platform.exchange">Exchange</a>
                 </div>
 
                 <div class="footer-column">
                     <h4>Pools</h4>
-                    <a href="/pool-management.html" data-i18n="sections.pools.management">Management</a>
-                    <a href="/mining-dashboard.html" data-i18n="sections.pools.dashboard">Dashboard</a>
+                    <a href="/index.html" data-i18n="sections.pools.management">Management</a>
+                    <a href="/index.html" data-i18n="sections.pools.dashboard">Dashboard</a>
                 </div>
 
                 <div class="footer-column">
                     <h4>Developer</h4>
-                    <a href="/btcmanager.html" data-i18n="sections.sandbox.manager">Node Manager</a>
-                    <a href="/btcwallet.html" data-i18n="sections.sandbox.wallet">BTC Wallet</a>
-                    <a href="/btcscanner.html" data-i18n="sections.sandbox.scanner">Network Scanner</a>
+                    <a href="/mining-simulator.html" data-i18n="sections.sandbox.manager">Node Manager</a>
+                    <a href="/wallet.html" data-i18n="sections.sandbox.wallet">BTC Wallet</a>
+                    <a href="/mining-pool-manager.html" data-i18n="sections.sandbox.scanner">Pool Manager</a>
                 </div>
 
                 <div class="footer-column">
@@ -284,7 +286,7 @@
                     <a href="https://github.com/SatoshiFi" target="_blank" data-i18n="footer.github">GitHub Repository</a>
                     <a href="/op.html" data-i18n="footer.documentation">One Pager</a>
                     <a href="/wp.html" data-i18n="footer.whitepaper">Technical Whitepaper (English only)</a>
-                    <a href="https://discord.gg/satoshifi" target="_blank" data-i18n="footer.community">Community Discord</a>
+                    <a href="https://github.com/SatoshiFi/BackEnd" target="_blank" data-i18n="footer.community">Community Discord</a>
                 </div>
             </div>
         </div>
@@ -293,7 +295,7 @@
             <div class="container">
                 <div class="footer-bottom-content">
                     <div class="footer-social">
-                        <a href="https://github.com/SergeyBelets/SatoshiFiPublic" target="_blank" aria-label="GitHub">
+                        <a href="https://github.com/SatoshiFi/BackEnd" target="_blank" aria-label="GitHub">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                             </svg>
@@ -314,7 +316,13 @@
     </div>
 
     <!-- Scripts -->
+    <script src="/js/lib/ethers-5.7.2.umd.min.js"></script>
+    <script src="/js/lib/bitcoin-simple.min.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/web3-integrator.js"></script>
+    <script src="/js/ui-controller.js"></script>
     <script src="/js/i18n.js"></script>
     <script src="/js/landing.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

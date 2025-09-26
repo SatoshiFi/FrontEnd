@@ -1,0 +1,869 @@
+/* Role-based UI Adaptations - SatoshiFi Classic Style */
+
+/* Role-specific navigation highlighting */
+.role-cryptan .sidebar-nav .nav-link[data-section="poolCreation"] {
+    background: var(--satoshi-orange);
+    color: var(--satoshi-white);
+    font-weight: 600;
+    border-color: var(--satoshi-orange);
+}
+
+.role-cryptan .dashboard-grid .widget-pool-creation {
+    order: -1;
+    grid-column: 1 / -1;
+    background: var(--satoshi-white);
+    border: 2px solid var(--satoshi-orange);
+    box-shadow: var(--shadow-md);
+}
+
+.role-pool-owner .dashboard-grid .widget-pool-management {
+    order: -1;
+    grid-column: 1 / -1;
+    background: var(--satoshi-white);
+    border: 2px solid #28a745;
+    box-shadow: var(--shadow-md);
+}
+
+.role-miner .dashboard-grid .widget-mining {
+    order: -1;
+    grid-column: 1 / -1;
+    background: var(--satoshi-white);
+    border: 2px solid #ffc107;
+    box-shadow: var(--shadow-md);
+}
+
+.role-custodial .dashboard-grid .widget-custody {
+    order: -1;
+    grid-column: 1 / -1;
+    background: var(--satoshi-white);
+    border: 2px solid #9333ea;
+    box-shadow: var(--shadow-md);
+}
+
+/* Role Badges */
+.user-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+}
+
+.role-badge-cryptan {
+    background: var(--satoshi-orange);
+    color: var(--satoshi-white);
+    border-color: var(--satoshi-orange);
+}
+
+.role-badge-pool-owner {
+    background: #28a745;
+    color: var(--satoshi-white);
+    border-color: #28a745;
+}
+
+.role-badge-miner {
+    background: #ffc107;
+    color: var(--satoshi-black);
+    border-color: #ffc107;
+}
+
+.role-badge-custodial {
+    background: #9333ea;
+    color: var(--satoshi-white);
+    border-color: #9333ea;
+}
+
+.role-badge-initiator {
+    background: #17a2b8;
+    color: var(--satoshi-white);
+    border-color: #17a2b8;
+}
+
+/* Role-specific sections visibility */
+.content-section[data-roles]:not([data-roles*="cryptan"]) {
+    display: none;
+}
+
+.role-cryptan .content-section[data-roles*="cryptan"] {
+    display: block;
+}
+
+.role-pool-owner .content-section[data-roles*="pool-owner"] {
+    display: block;
+}
+
+.role-miner .content-section[data-roles*="miner"] {
+    display: block;
+}
+
+.role-custodial .content-section[data-roles*="custodial"] {
+    display: block;
+}
+
+/* Multi-role support */
+.role-cryptan.role-pool-owner .content-section[data-roles*="cryptan"],
+.role-cryptan.role-pool-owner .content-section[data-roles*="pool-owner"] {
+    display: block;
+}
+
+/* Role-specific widgets */
+.widget {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    transition: all 0.2s ease;
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.widget-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--satoshi-black);
+}
+
+.widget-action {
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-orange);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.widget-action:hover {
+    text-decoration: underline;
+    color: #e07f00;
+}
+
+.widget-content {
+    color: var(--satoshi-text);
+}
+
+/* NFT/SBT specific styles */
+.nft-card {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.nft-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--satoshi-orange);
+}
+
+.nft-image {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--satoshi-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--satoshi-orange);
+}
+
+.nft-info {
+    padding: var(--spacing-md);
+}
+
+.nft-title {
+    font-weight: 600;
+    color: var(--satoshi-black);
+    margin-bottom: var(--spacing-xs);
+}
+
+.nft-description {
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-dark-gray);
+}
+
+/* NFT specific types */
+.nft-card.membership-card .nft-image {
+    background: linear-gradient(135deg, var(--satoshi-orange), #e07f00);
+    color: var(--satoshi-white);
+}
+
+.nft-card.role-badge-card .nft-image {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: var(--satoshi-white);
+}
+
+.nft-badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: var(--satoshi-black);
+    color: var(--satoshi-white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.nft-badge.active {
+    background: #28a745;
+}
+
+.nft-badge.inactive {
+    background: #dc3545;
+}
+
+.nft-details {
+    margin: var(--spacing-md) 0;
+}
+
+.nft-details p {
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.nft-actions {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--satoshi-border);
+}
+
+/* Pool cards */
+.pool-card {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.pool-card:hover {
+    border-color: var(--satoshi-orange);
+    box-shadow: var(--shadow-md);
+}
+
+.pool-card-header {
+    padding: var(--spacing-lg);
+    background: var(--satoshi-light-gray);
+    border-bottom: 1px solid var(--satoshi-border);
+}
+
+.pool-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--satoshi-black);
+}
+
+.pool-asset {
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-dark-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--satoshi-orange);
+    color: var(--satoshi-white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    display: inline-block;
+}
+
+.pool-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+}
+
+.pool-stat {
+    text-align: center;
+}
+
+.pool-stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--satoshi-black);
+    display: block;
+}
+
+.pool-stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--satoshi-dark-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Role-specific color schemes */
+.role-cryptan {
+    --user-primary-color: var(--satoshi-orange);
+}
+
+.role-pool-owner {
+    --user-primary-color: #28a745;
+}
+
+.role-miner {
+    --user-primary-color: #ffc107;
+}
+
+.role-custodial {
+    --user-primary-color: #9333ea;
+}
+
+.role-initiator {
+    --user-primary-color: #17a2b8;
+}
+
+/* Apply user primary color to specific elements */
+.role-cryptan .widget-pool-creation .widget-title::before,
+.role-pool-owner .widget-pool-management .widget-title::before,
+.role-miner .widget-mining .widget-title::before,
+.role-custodial .widget-custody .widget-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: var(--user-primary-color);
+    margin-right: var(--spacing-sm);
+    vertical-align: middle;
+}
+
+/* Special highlighting for primary widgets */
+.widget-pool-creation,
+.widget-pool-management,
+.widget-mining,
+.widget-custody {
+    position: relative;
+}
+
+.widget-pool-creation::before,
+.widget-pool-management::before,
+.widget-mining::before,
+.widget-custody::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--satoshi-orange);
+}
+
+.widget-pool-management::before {
+    background: #28a745;
+}
+
+.widget-mining::before {
+    background: #ffc107;
+}
+
+.widget-custody::before {
+    background: #9333ea;
+}
+
+/* SatoshiFi - ИСПРАВЛЕННЫЕ СТИЛИ ДЛЯ NFT COLLECTION */
+
+/* NFT Collection Tabs */
+.nft-tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: #6b7280;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.tab-button.active {
+    background: white;
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    font-weight: 600;
+}
+
+.tab-button.admin-tab {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+}
+
+.tab-button.admin-tab:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+}
+
+.tab-button.admin-tab.active {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border-bottom-color: #dc2626;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* NFT Cards Grid */
+.nfts-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.nft-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nft-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.nft-card.active {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4, #ffffff);
+}
+
+.nft-card.inactive {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2, #ffffff);
+    opacity: 0.8;
+}
+
+.nft-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.nft-type {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+}
+
+.nft-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.nft-status.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.nft-status.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.nft-details {
+    margin: 15px 0;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 6px 0;
+}
+
+.detail-item .label {
+    font-weight: 500;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.detail-item .value {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+}
+
+.nft-footer {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Request Cards */
+.request-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-request {
+    border-left: 4px solid #dc2626;
+}
+
+.user-request {
+    border-left: 4px solid #3b82f6;
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.request-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.request-info p {
+    margin: 2px 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.request-details {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 6px;
+}
+
+.request-details p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.admin-notes-section {
+    margin-top: 15px;
+}
+
+.admin-notes-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Admin Panel Specific */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    border-radius: 8px;
+}
+
+.admin-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.admin-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 18px;
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.empty-state h3 {
+    margin: 15px 0;
+    color: #374151;
+    font-size: 20px;
+}
+
+.empty-state p {
+    margin: 10px 0 20px 0;
+    font-size: 16px;
+}
+
+.error-state {
+    text-align: center;
+    padding: 40px 20px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #991b1b;
+}
+
+.access-denied {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    color: #c2410c;
+}
+
+/* Debug Section */
+details {
+    margin-top: 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 10px;
+    background: #f9fafb;
+    border-radius: 4px;
+}
+
+.debug-requests {
+    background: #f3f4f6;
+    border-radius: 4px;
+    padding: 15px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.debug-request {
+    background: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border-left: 3px solid #6b7280;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-error {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-error:hover {
+    background: #dc2626;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* Headers */
+.nft-collection-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.nft-collection-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    color: #374151;
+}
+
+.nft-collection-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.nfts-header {
+    margin-bottom: 20px;
+}
+
+.nfts-header h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #374151;
+}
+
+.requests-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.requests-header h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #374151;
+}
+
+/* Loading States */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nfts-grid-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .nft-tabs {
+        flex-direction: column;
+    }
+
+    .tab-button {
+        text-align: center;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .admin-stats {
+        justify-content: center;
+    }
+
+    .admin-actions {
+        flex-direction: column;
+    }
+
+    .requests-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}

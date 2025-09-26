@@ -19,7 +19,9 @@
                 <div class="header-actions">
                     <a href="#benefits" class="btn btn-outline">Benefits</a>
                     <a href="#how-it-works" class="btn btn-outline">How It Works</a>
-                    <a href="https://github.com/SatoshiFi" target="_blank" class="btn btn-primary">GitHub</a>
+                    <button id="connectWallet" class="btn btn-primary">
+                        <span class="wallet-status">Connect Wallet</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -282,7 +284,7 @@
 
                 <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.3);">
                     <p style="opacity: 0.9;">
-                        📧 <a href="mailto:sb@unilayer.solutions" style="color: white; text-decoration: none;">sb@unilayer.solutions</a>
+                        🔧 <a href="mailto:sb@unilayer.solutions" style="color: white; text-decoration: none;">sb@unilayer.solutions</a>
                         &nbsp;&nbsp;|&nbsp;&nbsp;
                         💻 <a href="https://github.com/SatoshiFi" target="_blank" style="color: white; text-decoration: none;">github.com/SatoshiFi</a>
                     </p>
@@ -301,6 +303,11 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="/js/lib/ethers-5.7.2.umd.min.js"></script>
+    <script src="/js/lib/bitcoin-simple.min.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/web3-integrator.js"></script>
+    <script src="/js/ui-controller.js"></script>
     <script src="/js/main.js"></script>
 </body>
 </html>

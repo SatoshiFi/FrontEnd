@@ -1,222 +1,620 @@
-/* mobile.css  SatoshiFi */
+/* Mobile CSS для SatoshiFi Dashboard */
 
+/* MetaMask Mobile Notice */
+.metamask-mobile-notice {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #f7931a;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    z-index: 9999;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metamask-mobile-notice button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Mobile device detection and adjustments */
 @media (max-width: 768px) {
-    /* Исправление отображения хедера */
-    .header-container {
-        justify-content: space-between !important;
-        padding: 10px 15px !important;
+
+    /* Show MetaMask notice on mobile */
+    .mobile-device .metamask-mobile-notice {
+        display: block;
     }
-    
-    /* Показываем верхнюю кнопку подключения кошелька */
-    .auth-buttons {
-        display: flex !important;
-        justify-content: flex-end !important;
-        width: auto !important;
+
+    /* Adjust app when notice is shown */
+    .mobile-device.with-mobile-notice #app {
+        padding-top: 44px;
     }
-    
-    /* Стилизация кнопки подключения кошелька */
-    #connect-wallet {
-        display: inline-block !important;
-        padding: 8px 15px !important;
-        min-width: auto !important;
-        white-space: nowrap !important;
-        font-size: 14px !important;
+
+    /* App structure adjustments */
+    #app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     }
-    
-    /* Скрываем дополнительные кнопки, которые не нужны на мобильных */
-    #add-rootstock {
-        display: none !important;
+
+    /* Header adjustments */
+    .app-header {
+        flex-shrink: 0;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--satoshi-border);
     }
-    
-    /* Убираем переполнение контента */
-    body {
-        overflow-x: hidden;
+
+    .app-header .container {
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        height: auto;
     }
-    
-    /* Улучшаем мобильную навигацию */
-    .bottom-nav {
-        display: flex !important;
-        padding: 5px 0 !important;
-        background-color: white !important;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1) !important;
+
+    .header-brand h1 {
+        font-size: 18px;
+        margin: 0;
     }
-    
-    /* Исправление отображения индикатора кошелька */
-    .wallet-status-indicator {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        width: 8px !important;
-        height: 8px !important;
-        border-radius: 50% !important;
+
+    .version {
+        font-size: 10px;
+        padding: 2px 6px;
     }
-    
-    /* Улучшение видимости индикатора */
-    .wallet-status-indicator.connected {
-        background-color: #4caf50 !important;
-        box-shadow: 0 0 3px #4caf50 !important;
-    }
-    
-    /* Исправление стилей для активной страницы в нижней навигации */
-    .bottom-nav-item.active {
-        color: var(--accent-color) !important;
-        font-weight: bold !important;
-    }
-    
-    /* Панель действий с кошельком */
-    .mobile-wallet-actions {
+
+    /* Hide header nav on mobile */
+    .header-nav {
         display: none;
+    }
+
+    /* Wallet section adjustments */
+    .header-wallet {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .account-info {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-end;
+    }
+
+    .account-details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+    }
+
+    .account-address {
+        font-size: 11px;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .account-balance {
+        font-size: 10px;
+    }
+
+    .account-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+        min-height: 36px;
+    }
+
+    /* Main content structure */
+    .app-main {
+        flex: 1;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .app-main .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        max-width: none;
+        padding: 0;
+        margin: 0;
+        gap: 0;
+    }
+
+    /* Sidebar - convert to bottom navigation */
+    .app-sidebar {
+        order: 2;
         position: fixed;
-        bottom: 70px;
+        bottom: 0;
         left: 0;
+        right: 0;
         width: 100%;
-        padding: 15px;
-        background-color: white;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+        height: auto;
+        background: var(--satoshi-white);
+        border-top: 1px solid var(--satoshi-border);
+        border-radius: 0;
+        padding: 8px;
         z-index: 1000;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
     }
-    
-    .mobile-wallet-actions.show {
-        display: block !important;
-    }
-    
-    /* Кнопки в панели кошелька */
-    .mobile-wallet-actions button {
-        width: 100% !important;
-        margin-bottom: 10px !important;
-    }
-    
-    /* Стилизация мобильной кнопки подключения кошелька */
-    #mobile-connect {
-        background-color: var(--accent-color) !important;
-        color: white !important;
-        font-weight: 600 !important;
-        border-radius: 5px !important;
-        padding: 12px !important;
-    }
-    
-    /* Скрываем лишние элементы меню на мобильных устройствах */
-    .menu-toggle, .nav-menu {
-        display: none !important;
-    }
-}
 
-/* Усиленные стили для вертикального расположения кнопок фаусета на мобильных */
-@media (max-width: 768px) {
-    .faucet-buttons-container {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 10px !important;
-        margin-top: 15px !important;
-        width: 100% !important;
+    /* Hide user profile on mobile */
+    .user-profile {
+        display: none;
     }
-    
-    .faucet-btn {
-        width: 100% !important;
-        text-align: center !important;
-        padding: 10px 16px !important;
-        margin-top: 5px !important;
-        display: block !important;
-    }
-    
-    /* Предотвращаем обрезание второй кнопки */
-    .wallet-card .faucet-buttons-container {
-        margin-bottom: 15px !important;
-    }
-}
 
-/* Особые правила для очень узких экранов */
-@media (max-width: 380px) {
-    .faucet-buttons-container {
-        margin-top: 10px !important;
+    /* Bottom navigation layout */
+    .sidebar-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 0;
+        margin: 0;
     }
-    
-    .faucet-btn {
-        padding: 8px 12px !important;
-        font-size: 14px !important;
+
+    .nav-item {
+        flex: 1;
+        text-align: center;
+        margin: 0;
     }
-}
 
-// Добавьте эти стили в mobile.css или аналогичный файл с мобильными стилями
+    .sidebar-nav .nav-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px 4px;
+        gap: 4px;
+        border-radius: 8px;
+        font-size: 11px;
+        text-decoration: none;
+        color: var(--satoshi-dark-gray);
+        border: none;
+        background: none;
+        transition: all 0.2s ease;
+        min-height: 50px;
+        justify-content: center;
+    }
 
-/* Улучшенные стили для модального окна каталога пулов на мобильных устройствах */
-@media (max-width: 768px) {
-    /* Увеличиваем размер модального окна на мобильных */
+    .sidebar-nav .nav-link:hover {
+        background: var(--satoshi-gray);
+        transform: none;
+    }
+
+    .sidebar-nav .nav-link.active {
+        background: var(--satoshi-orange);
+        color: var(--satoshi-white);
+        border-color: var(--satoshi-orange);
+    }
+
+    .nav-icon {
+        font-size: 18px;
+        margin-bottom: 2px;
+    }
+
+    .nav-text {
+        font-size: 9px;
+        line-height: 1.2;
+        font-weight: 500;
+    }
+
+    /* Content area */
+    .app-content {
+        flex: 1;
+        order: 1;
+        margin-bottom: 70px;
+        padding: 16px;
+        overflow-y: auto;
+        background: var(--satoshi-white);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Section headers */
+    .section-header {
+        padding: 16px 0;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .section-header h2 {
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .section-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Dashboard grid */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Widgets */
+    .widget {
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .widget-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .widget-stats {
+        gap: 12px;
+    }
+
+    /* Stats cards */
+    .overview-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px 12px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    /* Tabs */
+    .tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 16px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+        min-width: auto;
+    }
+
+    /* Forms */
+    .form-input,
+    .form-select,
+    .form-textarea {
+        padding: 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 44px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    /* Search and filters */
+    .search-controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filters {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pools-controls {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    /* Pool and NFT grids */
+    .pools-grid,
+    .nft-grid,
+    .roles-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Pool cards */
+    .pool-card {
+        padding: 16px;
+    }
+
+    .pool-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .pool-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Activity list */
+    .activity-item {
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .activity-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    /* Request cards */
+    .request-card {
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+
+    .request-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .request-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Request tabs */
+    .request-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+    }
+
+    .request-tab-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    /* Tables - convert to cards */
+    .table {
+        display: none;
+    }
+
+    .pools-table {
+        display: block;
+    }
+
+    .table-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+        border: 1px solid var(--satoshi-border);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        background: var(--satoshi-white);
+    }
+
+    .table-header {
+        display: none;
+    }
+
+    /* Empty states */
+    .empty-state {
+        padding: 32px 16px;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+    }
+
+    /* Modals */
     .modal-content {
-        width: 95% !important;
-        max-height: 80vh !important;
+        margin: 20px;
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
     }
-    
-    /* Улучшаем отображение элементов пула */
-    .pool-item {
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 15px !important;
-        margin-bottom: 10px !important;
-        background-color: #f9f9f9 !important;
-        border-radius: 8px !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+
+    .modal-header {
+        padding: 16px;
+        flex-wrap: wrap;
     }
-    
-    /* Делаем более заметным заголовок пула */
-    .pool-item h3 {
-        font-size: 18px !important;
-        margin-bottom: 10px !important;
-        color: #333 !important;
+
+    .modal-body {
+        padding: 16px;
     }
-    
-    /* Упрощаем отображение статистики */
-    .pool-stats {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        margin-bottom: 15px !important;
-        gap: 10px !important;
+
+    .modal-actions {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
     }
-    
-    .stat {
-        background-color: rgba(247, 147, 26, 0.1) !important;
-        padding: 5px 10px !important;
-        border-radius: 4px !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 5px !important;
+
+    /* Notifications */
+    .notification {
+        margin: 8px;
+        max-width: calc(100vw - 16px);
     }
-    
-    .stat .label {
-        font-size: 12px !important;
-        color: #555 !important;
+
+    /* Loading states */
+    .loading-spinner {
+        width: 32px;
+        height: 32px;
     }
-    
-    .stat .value {
-        font-weight: bold !important;
-        color: #333 !important;
+
+    /* Status badges */
+    .status-badge,
+    .role-badge {
+        padding: 4px 8px;
+        font-size: 11px;
     }
-    
-    /* Улучшаем кнопку присоединения */
-    .join-pool-btn {
-        width: 100% !important;
-        padding: 10px !important;
-        font-weight: bold !important;
-        margin-top: auto !important;
+
+    /* View controls - hide on mobile */
+    .view-controls {
+        display: none;
     }
-    
-    /* Увеличиваем поле поиска на мобильных */
-    .search-input {
-        width: 100% !important;
-        padding: 12px 15px !important;
-        font-size: 16px !important; /* Для предотвращения масштабирования на iOS */
+
+    /* Charts and complex elements */
+    .mining-chart-container {
+        padding: 16px;
+    }
+
+    #hashrateChart {
+    height: 250px;
     }
 }
 
-/* Улучшения для очень маленьких экранов */
-@media (max-width: 375px) {
-    .pool-stats {
-        flex-direction: column !important;
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+    .app-content {
+        margin-bottom: 60px;
     }
-    
-    .stat {
-        width: 100% !important;
+
+    .app-sidebar {
+        height: 60px;
+        padding: 6px;
+    }
+
+    .sidebar-nav .nav-link {
+        padding: 6px 4px;
+        min-height: 48px;
+    }
+
+    .nav-icon {
+        font-size: 16px;
+    }
+
+    .nav-text {
+        font-size: 8px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    .app-header .container {
+        padding: 0 8px;
+    }
+
+    .header-brand h1 {
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .app-content {
+        padding: 12px;
+    }
+
+    .section-header {
+        padding: 12px 0;
+    }
+
+    .section-header h2 {
+        font-size: 20px;
+    }
+
+    .widget {
+        padding: 12px;
+    }
+
+    .overview-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .nav-text {
+        font-size: 8px;
+    }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Remove hover effects on touch devices */
+    .nav-link:hover,
+    .btn:hover,
+    .card:hover,
+    .widget:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Better touch targets */
+    button,
+    .btn,
+    .nav-link,
+    .tab-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Prevent zoom on inputs */
+    input,
+    select,
+    textarea {
+        font-size: 16px;
+    }
+
+    /* Better scrolling */
+    .app-content,
+    .modal-content {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+}
+
+/* Safe area support for notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+    @media (max-width: 768px) {
+        .mobile-device.with-mobile-notice #app {
+            padding-top: calc(44px + env(safe-area-inset-top));
+        }
+
+        .app-sidebar {
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        }
+
+        .app-content {
+            margin-bottom: calc(70px + env(safe-area-inset-bottom));
+        }
     }
 }

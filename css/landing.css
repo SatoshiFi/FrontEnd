@@ -695,3 +695,47 @@ footer {
     }
 }
 
+/* Стили для кнопки подключения кошелька */
+#connectWallet {
+min-width: 140px;
+position: relative;
+transition: all 0.3s ease;
+}
+
+#connectWallet:disabled {
+opacity: 0.7;
+cursor: wait;
+}
+
+#connectWallet.connected {
+background: linear-gradient(135deg, #28a745, #20c997);
+border-color: #28a745;
+}
+
+#connectWallet.connected:hover {
+background: linear-gradient(135deg, #218838, #17a2b8);
+transform: translateY(-2px);
+}
+
+.wallet-status {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+}
+
+/* Индикатор сети */
+#connectWallet.connected::before {
+content: '';
+position: absolute;
+top: 8px;
+right: 8px;
+width: 8px;
+height: 8px;
+background: #00ff00;
+border-radius: 50%;
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}

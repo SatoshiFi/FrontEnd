@@ -1,0 +1,625 @@
+/* DKG Management Styles */
+.dkg-management-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.dkg-management-header h2 {
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.dkg-management-header p {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.dkg-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.dkg-sessions-list {
+    margin-bottom: 30px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 2px dashed var(--border-color);
+}
+
+.empty-state h3 {
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.empty-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.session-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.session-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.session-header h4 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.session-state {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.state-commitments {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+}
+
+.state-shares {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+}
+
+.state-finalization {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.state-complete {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success-color);
+}
+
+.state-unknown {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--text-secondary);
+}
+
+.session-info {
+    margin-bottom: 15px;
+}
+
+.session-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.session-detail .label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.session-detail .value {
+    color: var(--text-primary);
+}
+
+.session-id {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.session-finalized {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success-color);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.session-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Session Details */
+.session-details-header {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.session-details-header h3 {
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.session-status {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.session-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.info-item span {
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.dkg-actions-section,
+.dkg-finalized-section {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.dkg-finalized-section {
+    border-left: 4px solid var(--success-color);
+}
+
+.finalized-info {
+    margin: 20px 0;
+}
+
+.pubkey-display {
+    margin-bottom: 15px;
+}
+
+.pubkey-display label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.participants-section {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.participants-section h4 {
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.participant-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.participant-item.current-user {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--primary-color);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 0 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 0 20px 20px 20px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.participants-input {
+    display: flex;
+    gap: 8px;
+}
+
+.participants-input .form-input {
+    flex: 1;
+}
+
+.participants-list {
+    margin-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.example-sessions {
+    background: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.example-sessions h4 {
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.session-id-example {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-all;
+    cursor: pointer;
+    margin: 10px 0 5px 0;
+    transition: all 0.2s;
+}
+
+.session-id-example:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sessions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .session-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .dkg-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+}
+
+/* Session Details Container */
+.dkg-session-details {
+    display: none;
+    margin-top: 30px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.dkg-session-details.active {
+    display: block;
+}
+
+/* Progress Bar Styles */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.progress-labels .step {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.progress-labels .step.completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.progress-labels .step.pending {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--text-secondary);
+}
+
+/* DKG Action Buttons */
+.dkg-action-btn {
+    min-width: 140px;
+}
+
+.dkg-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.help-text {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.dkg-session-details {
+    display: none; /* Скрыто по умолчанию */
+}
+
+.dkg-session-details.active {
+    display: block; /* Показано когда активно */
+}
+
+/* Исправление проблемы с высотой и прокруткой */
+.app-content {
+    overflow-y: auto !important;
+    height: auto !important;
+    max-height: calc(100vh - 120px) !important;
+}
+
+.content-section {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+}
+
+.dkg-session-details {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.session-details-content {
+    min-height: auto !important;
+    height: auto !important;
+}
+
+/* Обеспечиваем видимость всего контента */
+#dkgManagement {
+height: auto !important;
+overflow-y: auto !important;
+}
+
+#dkgManagementContent {
+height: auto !important;
+overflow: visible !important;
+}
+
+/* Добавьте эти стили в ваш CSS файл */
+
+.participants-list {
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 12px;
+    background: #f8f9fa;
+    min-height: 60px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.participant-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin: 4px 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.participant-item:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.1);
+}
+
+.participant-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.participant-address {
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.participant-role {
+    font-size: 12px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.participants-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.participants-input .form-input {
+    flex: 1;
+}
+
+.participants-info {
+    margin-top: 8px;
+    padding: 4px 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #495057;
+    text-align: center;
+}
+
+.remove-participant {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.remove-participant:hover {
+    opacity: 1;
+}
+
+.btn:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.form-help {
+    color: #6c757d;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Увеличено */
+    width: 90%;
+    max-height: 80vh; /* Меньше для удобства */
+    overflow-y: auto;
+}
+
+.form-textarea {
+    min-height: 120px; /* Удобная высота для адресов */
+    resize: vertical;
+}

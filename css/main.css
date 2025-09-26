@@ -1,0 +1,591 @@
+/* SatoshiFi Dashboard - Классическая схема */
+:root {
+    /* SatoshiFi Colors */
+    --satoshi-black: #000000;
+    --satoshi-orange: #f7931a;
+    --satoshi-white: #ffffff;
+    --satoshi-gray: #f5f5f5;
+    --satoshi-text: #333333;
+    --satoshi-border: #e0e0e0;
+    --satoshi-light-gray: #f8f9fa;
+    --satoshi-dark-gray: #666666;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Typography */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+
+    /* Border Radius */
+    --border-radius-sm: 0.25rem;
+    --border-radius-md: 0.375rem;
+    --border-radius-lg: 0.5rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset and Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--satoshi-white);
+    color: var(--satoshi-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* App Layout */
+#app {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    background: var(--satoshi-white);
+    border-bottom: 1px solid var(--satoshi-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.header-brand h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--satoshi-black);
+}
+
+.header-brand h1::after {
+    content: '';
+    background: var(--satoshi-orange);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 4px;
+}
+
+.version {
+    font-size: var(--font-size-xs);
+    color: var(--satoshi-dark-gray);
+    background: var(--satoshi-gray);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--satoshi-border);
+}
+
+.header-nav {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.nav-link {
+    color: var(--satoshi-text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    background: var(--satoshi-gray);
+}
+
+.nav-link.active {
+    background: var(--satoshi-orange);
+    color: var(--satoshi-white);
+}
+
+/* Main Content */
+.app-main {
+    flex: 1;
+    padding: var(--spacing-lg) 0;
+}
+
+.app-main .container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-xl);
+    height: calc(100vh - 5rem);
+}
+
+/* Sidebar */
+.app-sidebar {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+}
+
+.user-profile {
+    padding: var(--spacing-lg);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+    background: var(--satoshi-light-gray);
+    text-align: center;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--satoshi-orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--satoshi-white);
+    margin: 0 auto var(--spacing-md);
+}
+
+.user-info {
+    text-align: center;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--satoshi-black);
+    margin-bottom: var(--spacing-xs);
+}
+
+.user-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    justify-content: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.role-badge {
+    background: var(--satoshi-orange);
+    color: var(--satoshi-white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-stats {
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-dark-gray);
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+    margin-top: var(--spacing-lg);
+}
+
+.nav-item {
+    margin-bottom: var(--spacing-sm);
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    color: var(--satoshi-text);
+    text-decoration: none;
+    border-radius: var(--border-radius-md);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.sidebar-nav .nav-link:hover {
+    background: var(--satoshi-gray);
+    border-color: var(--satoshi-border);
+}
+
+.sidebar-nav .nav-link.active {
+    background: var(--satoshi-orange);
+    color: var(--satoshi-white);
+    border-color: var(--satoshi-orange);
+}
+
+.nav-icon {
+    font-size: var(--font-size-lg);
+}
+
+/* Content Area */
+.app-content {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.content-section {
+    display: none;
+    height: 100%;
+    flex-direction: column;
+}
+
+.content-section.active {
+    display: flex;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--satoshi-border);
+    background: var(--satoshi-light-gray);
+}
+
+.section-header h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    color: var(--satoshi-black);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+}
+
+/* Widgets */
+.widget {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    transition: all 0.2s ease;
+}
+
+.widget:hover {
+    border-color: var(--satoshi-orange);
+    box-shadow: var(--shadow-md);
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.widget-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--satoshi-black);
+}
+
+.widget-action {
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-orange);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.widget-action:hover {
+    text-decoration: underline;
+}
+
+.widget-content {
+    color: var(--satoshi-text);
+}
+
+.widget-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--satoshi-black);
+    display: block;
+}
+
+.stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--satoshi-dark-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Wallet Status */
+.header-wallet {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.wallet-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.wallet-status.connected {
+    color: var(--satoshi-orange);
+}
+
+.wallet-status.disconnected {
+    color: var(--satoshi-dark-gray);
+}
+
+.account-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.account-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--satoshi-orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-white);
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.account-address {
+    font-size: var(--font-size-sm);
+    color: var(--satoshi-black);
+    font-family: monospace;
+}
+
+.account-balance {
+    font-size: var(--font-size-xs);
+    color: var(--satoshi-dark-gray);
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--satoshi-dark-gray);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--satoshi-border);
+    border-top: 4px solid var(--satoshi-orange);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: var(--spacing-md);
+    color: var(--satoshi-text);
+}
+
+/* Notifications */
+.notifications-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 1000;
+}
+
+.notification {
+    background: var(--satoshi-white);
+    border: 1px solid var(--satoshi-border);
+    border-left: 4px solid var(--satoshi-orange);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    min-width: 300px;
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s ease;
+}
+
+.notification.success {
+    border-left-color: #28a745;
+}
+
+.notification.error {
+    border-left-color: #dc3545;
+}
+
+.notification.warning {
+    border-left-color: #ffc107;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .app-main .container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .app-sidebar {
+        order: 2;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .app-header .container {
+        height: 3.5rem;
+    }
+
+    .header-brand h1 {
+        font-size: var(--font-size-xl);
+    }
+
+    .app-sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid var(--satoshi-border);
+        padding: var(--spacing-sm);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        background: var(--satoshi-white);
+    }
+
+    .user-profile {
+        display: none;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        gap: var(--spacing-sm);
+        margin: 0;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .nav-item {
+        margin: 0;
+        flex: 1;
+    }
+
+    .sidebar-nav .nav-link {
+        padding: var(--spacing-xs);
+        text-align: center;
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-xs);
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+
+    .nav-icon {
+        font-size: var(--font-size-lg);
+    }
+
+    .nav-text {
+        font-size: var(--font-size-xs);
+    }
+
+    .app-content {
+        margin-bottom: 80px;
+        border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+}
