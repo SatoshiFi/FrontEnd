@@ -3,49 +3,67 @@ class ContractsManager {
     constructor() {
         this.provider = null;
         this.signer = null;
-        this.contracts = {};
+        this.contracts = new Map();
         this.initialized = false;
     }
 
-    async initialize(provider, signer) {
-        this.provider = provider;
-        this.signer = signer;
+    async initialize() {
+        if (this.initialized) return;
 
-        try {
-            console.log('Initializing contracts with addresses:', {
-                FACTORY: CONFIG.CONTRACTS.FACTORY,
-                FROST_COORDINATOR: CONFIG.CONTRACTS.FROST_COORDINATOR,
-                MEMBERSHIP_SBT: CONFIG.CONTRACTS.MEMBERSHIP_SBT
-            });
+        console.log('Initializing contracts with addresses:', {
+            FACTORY: CONFIG.CONTRACTS.FACTORY,
+            FROST_COORDINATOR: CONFIG.CONTRACTS.FROST_COORDINATOR,
+            MEMBERSHIP_SBT: CONFIG.CONTRACTS.MEMBERSHIP_SBT
+        });
 
-            // Инициализируем только контракты с существующими ABI
-            this.contracts = {
-                factory: new ethers.Contract(
-                    CONFIG.CONTRACTS.FACTORY,
-                    CONFIG.ABI.FACTORY,
-                    signer
-                ),
-                frostCoordinator: new ethers.Contract(
-                    CONFIG.CONTRACTS.FROST_COORDINATOR,
-                    CONFIG.ABI.FROST_COORDINATOR,
-                    signer
-                ),
-                membershipSBT: new ethers.Contract(
-                    CONFIG.CONTRACTS.MEMBERSHIP_SBT,
-                    CONFIG.ABI.MEMBERSHIP_SBT,
-                    signer
-                )
-            };
+        this.provider = wallet.provider;
 
-            this.initialized = true;
-            console.log('Contracts initialized successfully');
+        this.contracts.set('factory', new ethers.Contract(
+            CONFIG.CONTRACTS.FACTORY,
+            CONFIG.ABI.FACTORY,
+            this.provider
+        ));
 
-            // Настраиваем слушатели событий
-            this.setupEventListeners();
-        } catch (error) {
-            console.error('Failed to initialize contracts:', error);
-            throw error;
+        this.contracts.set('frostCoordinator', new ethers.Contract(
+            CONFIG.CONTRACTS.FROST_COORDINATOR,
+            CONFIG.ABI.FROST_COORDINATOR,
+            this.provider
+        ));
+
+        this.contracts.set('membershipSBT', new ethers.Contract(
+            CONFIG.CONTRACTS.MEMBERSHIP_SBT,
+            CONFIG.ABI.MEMBERSHIP_SBT,
+            this.provider
+        ));
+
+        // ДОБАВИТЬ:
+        if (CONFIG.CONTRACTS.CALCULATOR_REGISTRY) {
+            this.contracts.set('calculatorRegistry', new ethers.Contract(
+                CONFIG.CONTRACTS.CALCULATOR_REGISTRY,
+                CONFIG.ABI.CALCULATOR_REGISTRY || [
+                    'function getRegisteredCalculators() external view returns (address[])',
+                                                                         'function calculatorInfo(address) external view returns (string memory name, bool isActive)'
+                ],
+                this.provider
+            ));
         }
+
+        if (CONFIG.CONTRACTS.REWARD_HANDLER) {
+            this.contracts.set('rewardHandler', new ethers.Contract(
+                CONFIG.CONTRACTS.REWARD_HANDLER,
+                CONFIG.ABI.REWARD_HANDLER || [
+                    'function getRewardInfo(address pool, bytes32 utxoKey) external view returns (tuple(bytes32 txid, uint32 vout, uint64 amountSat, bytes32 blockHash, bool isRegistered, bool isDistributed))',
+                                                                    'function getPendingDistributionsCount(address pool) external view returns (uint256)',
+                                                                    'function getPendingDistribution(address pool, uint256 index) external view returns (tuple(bytes32 utxoKey, uint256 totalAmount, uint256 recipientsCount, uint256 createdAt, bool isApproved, bool isExecuted))',
+                                                                    'function getDistributionRecipients(address pool, uint256 distributionId) external view returns (tuple(address recipient, uint256 amount, uint256 percentage)[])',
+                                                                    'event RewardRegistered(address indexed pool, bytes32 indexed utxoKey)'
+                ],
+                this.provider
+            ));
+        }
+
+        this.initialized = true;
+        console.log('Contracts initialized successfully');
     }
 
     // =============== ИСПРАВЛЕННЫЕ МЕТОДЫ ДЛЯ ПРОВЕРКИ АДМИНСКИХ ПРАВ ===============
@@ -611,14 +629,14 @@ class ContractsManager {
         }
     }
 
-    // =============== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===============
+    // ===============  ===============
 
     getContract(name) {
         if (!this.initialized) {
             throw new Error('Contracts not initialized');
         }
 
-        // ИСПРАВЛЕНО: добавляем алиасы для совместимости
+        // Алиасы для совместимости
         const aliases = {
             'FROST_COORDINATOR': 'frostCoordinator',
             'frost': 'frostCoordinator',
@@ -628,20 +646,18 @@ class ContractsManager {
 
         const contractName = aliases[name] || name;
 
-        if (!this.contracts[contractName]) {
-            console.log('Available contracts:', Object.keys(this.contracts));
+        if (!this.contracts.has(contractName)) {
+            console.log('Available contracts:', Array.from(this.contracts.keys()));
             throw new Error(`Contract ${name} (${contractName}) not found`);
         }
 
-        return this.contracts[contractName];
+        return this.contracts.get(contractName);
     }
 
-    // Добавить в contracts.js
     async initializeWithSigner(signer) {
         this.signer = signer;
         this.provider = signer.provider;
 
-        // Переинициализируем контракты с правильным signer
         await this.initialize();
 
         console.log('Contracts reinitialized with signer for events');

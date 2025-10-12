@@ -111,14 +111,23 @@ class RequestManager {
                 userAddress: wallet.account
             });
 
-            // FIXED: proper data structure for API
+            // ИСПРАВЛЕНО: определяем requestType ПЕРЕД использованием metadata
+            let requestType;
+            if (poolId.startsWith('0x') && poolId.length === 66) {
+                requestType = 'worker_claim';
+            } else if (poolId === 'platform_access' || poolId === '0x0000000000000000000000000000000000000000') {
+                requestType = 'platform_registration';
+            } else {
+                requestType = 'pool_role';
+            }
+
             const requestData = {
-                requestType: poolId === 'platform_access' ? 'platform_registration' : 'pool_role',
+                requestType: requestType,
                 userAddress: wallet.account,
                 targetPoolId: poolId,
                 requestedRole: requestedRole,
                 message: message,
-                metadata: {
+                metadata: {  // ИСПРАВЛЕНО: создаём metadata прямо здесь
                     poolOwner: poolOwner,
                     submittedAt: new Date().toISOString(),
                     userAgent: navigator.userAgent,
@@ -128,13 +137,106 @@ class RequestManager {
 
             console.log('Sending request data:', requestData);
 
-            // FIXED: proper headers and URL
             const response = await fetch(`${this.apiBaseUrl}/requests`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Origin': window.location.origin
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const contentType = response.headers.get('content-type');
+                let errorData;
+
+                if (contentType && contentType.includes('application/json')) {
+                    errorData = await response.json();
+                } else {
+                    errorData = { error: await response.text() };
+                }
+
+                console.error('API Error Response:', errorData);
+                throw new Error(errorData.error || errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('Request submitted successfully:', result);
+
+            app.showNotification('success', 'Request submitted successfully!');
+
+            await this.loadUserRequests();
+
+            if (userRoles) {
+                userRoles.authorizationStatus = 'pending';
+                userRoles.applyRoleBasedUI();
+                app.updateAuthorizationUI();
+            }
+
+            return result;
+
+        } catch (error) {
+            console.error('Failed to submit membership request:', error);
+
+            let userMessage = 'Failed to submit request. ';
+
+            if (error.message.includes('fetch')) {
+                userMessage += 'Network error - please check your connection.';
+            } else if (error.message.includes('400')) {
+                userMessage += 'Invalid request data.';
+            } else if (error.message.includes('500')) {
+                userMessage += 'Server error - please try again later.';
+            } else {
+                userMessage += error.message;
+            }
+
+            app.showNotification('error', userMessage);
+            return false;
+        }
+    }
+
+    /**
+     * Submit role request - user can request miner, pool_manager, or custodial role
+     */
+    async submitRoleRequest(requestedRole, message) {
+        try {
+            if (!['miner', 'pool_manager', 'custodial'].includes(requestedRole)) {
+                throw new Error('Invalid role type. Must be: miner, pool_manager, or custodial');
+            }
+
+            console.log('Submitting role request:', {
+                requestedRole,
+                message,
+                userAddress: wallet.account
+            });
+
+            // ИСПРАВЛЕНО: копируем структуру из submitMembershipRequest
+            const requestData = {
+                requestType: 'platform_registration',  // ИЛИ 'pool_role'
+                userAddress: wallet.account,
+                targetPoolId: 'platform_access',
+                requestedRole: requestedRole,
+                message: message || `Request for ${requestedRole} role`,
+                metadata: {
+                    poolOwner: null,  // не привязано к пулу
+                    submittedAt: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    timestamp: Date.now(),
+                    isAdditionalRoleRequest: true
+                }
+            };
+
+            console.log('Sending request data:', requestData);
+
+            const response = await fetch(`${this.apiBaseUrl}/requests`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Origin': window.location.origin  // ДОБАВЛЕНО из submitMembershipRequest
                 },
                 body: JSON.stringify(requestData)
             });
@@ -157,37 +259,18 @@ class RequestManager {
             }
 
             const result = await response.json();
-            console.log('Request submitted successfully:', result);
+            console.log('Role request submitted successfully:', result);
 
-            app.showNotification('success', 'Request submitted successfully! Admin will review it shortly.');
+            app.showNotification('success', `${requestedRole.toUpperCase()} role request submitted!`);
 
-            // Update local data
             await this.loadUserRequests();
-
-            // Update user authorization status
-            if (userRoles) {
-                userRoles.authorizationStatus = 'pending';
-                userRoles.applyRoleBasedUI();
-                app.updateAuthorizationUI();
-            }
 
             return result;
 
         } catch (error) {
-            console.error('Failed to submit membership request:', error);
+            console.error('Failed to submit role request:', error);
 
-            // Detailed error logging for diagnostics
-            console.error('Error details:', {
-                message: error.message,
-                stack: error.stack,
-                apiBaseUrl: this.apiBaseUrl,
-                walletConnected: wallet.connected,
-                walletAccount: wallet.account
-            });
-
-            // Show user-friendly error message
             let userMessage = 'Failed to submit request. ';
-
             if (error.message.includes('fetch')) {
                 userMessage += 'Network error - please check your connection.';
             } else if (error.message.includes('400')) {
@@ -200,6 +283,532 @@ class RequestManager {
 
             app.showNotification('error', userMessage);
             return false;
+        }
+    }
+
+    /**
+     * Show role request modal
+     */
+    showRoleRequestModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+        <div class="modal-content role-request-modal">
+        <div class="modal-header">
+        <h3>Request Platform Role</h3>
+        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+        </div>
+        <div class="modal-body">
+        <p class="modal-description">Select the role you want to request and explain why you need it.</p>
+
+        <div class="form-group">
+        <label class="form-label required">Select Role</label>
+        <div class="role-options">
+        <label class="role-option">
+        <input type="radio" name="roleType" value="miner" checked>
+        <div class="role-content">
+        <h4>Miner</h4>
+        <p>Access to mining operations, claim rewards, participate in DKG sessions</p>
+        </div>
+        </label>
+
+        <label class="role-option">
+        <input type="radio" name="roleType" value="pool_manager">
+        <div class="role-content">
+        <h4>Pool Manager</h4>
+        <p>Create and manage mining pools, configure pool settings, manage FROST governance</p>
+        </div>
+        </label>
+
+        <label class="role-option">
+        <input type="radio" name="roleType" value="custodial">
+        <div class="role-content">
+        <h4>Custodial</h4>
+        <p>Sign transactions, manage custody operations, participate in threshold signatures</p>
+        </div>
+        </label>
+        </div>
+        </div>
+
+        <div class="form-group">
+        <label class="form-label required">Why do you need this role?</label>
+        <textarea id="roleRequestMessage" class="form-input" rows="4"
+        placeholder="Explain your use case and why you need this role..." required></textarea>
+        <small class="form-help">Provide details about your intended use to help admin review your request</small>
+        </div>
+        </div>
+
+        <div class="modal-actions">
+        <button onclick="requests.submitRoleRequestFromModal(this.parentElement.parentElement)"
+        class="btn btn-primary">
+        Submit Request
+        </button>
+        <button onclick="this.parentElement.parentElement.parentElement.remove()"
+        class="btn btn-secondary">
+        Cancel
+        </button>
+        </div>
+        </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    /**
+     * Submit role request from modal
+     */
+    async submitRoleRequestFromModal(modalContent) {
+        const selectedRole = modalContent.querySelector('input[name="roleType"]:checked')?.value;
+        const message = modalContent.querySelector('#roleRequestMessage')?.value;
+
+        if (!selectedRole) {
+            app.showNotification('warning', 'Please select a role');
+            return;
+        }
+
+        if (!message || message.trim().length < 10) {
+            app.showNotification('warning', 'Please provide a detailed explanation (at least 10 characters)');
+            return;
+        }
+
+        const success = await this.submitRoleRequest(selectedRole, message.trim());
+
+        if (success) {
+            modalContent.parentElement.remove();
+
+            // Refresh outgoing requests if on that tab
+            if (window.nftCollection) {
+                nftCollection.loadTabContent('outgoing');
+            }
+        }
+    }
+
+    /**
+     * Submit Worker Claim Request
+     * Специальный метод для worker claim requests
+     */
+    async submitWorkerClaimRequest(workerId, workerAddress, workerData, bitcoinAddress) {
+        try {
+            console.log('Submitting worker claim request:', {
+                workerId,
+                workerAddress,
+                workerData,
+                bitcoinAddress,
+                userAddress: wallet.account
+            });
+
+            const requestData = {
+                requestType: 'worker_claim',
+                userAddress: wallet.account,
+                targetPoolId: workerAddress,  // Используем workerAddress как targetPoolId
+                requestedRole: 'worker_owner',
+                message: `
+                Worker Claim Request
+
+                Worker ID: ${workerId}
+                Worker Name: ${workerData.name}
+                Worker Address (Contract): ${workerAddress}
+                Bitcoin Payout Address: ${bitcoinAddress}
+                Miner Ethereum Address: ${wallet.account}
+
+                Performance Data:
+                - Hashrate: ${workerData.hashrate} TH/s
+                - Valid Shares: ${workerData.valid_shares.toLocaleString()}
+                - Total Shares: ${workerData.total_shares.toLocaleString()}
+                - Validity Rate: ${((workerData.valid_shares / workerData.total_shares) * 100).toFixed(2)}%
+                - Status: ${workerData.status}
+
+                Verification: Worker name verified successfully.
+                `.trim(),
+                metadata: {
+                    workerId: workerId,
+                    workerName: workerData.name,
+                    workerAddress: workerAddress,
+                    bitcoinPayoutAddress: bitcoinAddress,
+                    hashrate: workerData.hashrate,
+                    validShares: workerData.valid_shares,
+                    totalShares: workerData.total_shares,
+                    submittedAt: new Date().toISOString(),
+                    timestamp: Date.now()
+                }
+            };
+
+            console.log('Sending worker claim request:', requestData);
+
+            const response = await fetch(`${this.apiBaseUrl}/requests`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Origin': window.location.origin
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const contentType = response.headers.get('content-type');
+                let errorData;
+
+                if (contentType && contentType.includes('application/json')) {
+                    errorData = await response.json();
+                } else {
+                    errorData = { error: await response.text() };
+                }
+
+                console.error('API Error Response:', errorData);
+                throw new Error(errorData.error || errorData.message || `HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Worker claim request submitted successfully:', result);
+
+            app.showNotification('success', 'Worker claim request submitted!');
+
+            await this.loadUserRequests();
+
+            return result;
+
+        } catch (error) {
+            console.error('Failed to submit worker claim request:', error);
+
+            let userMessage = 'Failed to submit request. ';
+            if (error.message.includes('fetch')) {
+                userMessage += 'Network error - please check your connection.';
+            } else if (error.message.includes('400')) {
+                userMessage += 'Invalid request data.';
+            } else if (error.message.includes('500')) {
+                userMessage += 'Server error - please try again later.';
+            } else {
+                userMessage += error.message;
+            }
+
+            app.showNotification('error', userMessage);
+            return false;
+        }
+    }
+
+    /**
+     * Render Worker Claim Request Card
+     */
+    renderWorkerClaimRequest(request) {
+        // Парсим metadata если строка
+        let metadata = request.metadata || {};
+        if (typeof metadata === 'string') {
+            try {
+                metadata = JSON.parse(metadata);
+            } catch (e) {
+                console.warn('Failed to parse metadata:', e);
+                metadata = {};
+            }
+        }
+
+        console.log('Rendering worker claim with metadata:', metadata);
+
+        return `
+        <div class="request-card worker-claim-request">
+        <div class="request-header">
+        <div class="request-info">
+        <h4>⛏️ Worker Claim Request</h4>
+        <p><strong>From:</strong> ${wallet.formatAddress(request.user_address)}</p>
+        <p><strong>Worker:</strong> ${metadata.workerName || 'N/A'} (${metadata.hashrate || 'N/A'} TH/s)</p>
+        </div>
+        <div class="request-status">
+        <span class="status-badge ${request.status}">${request.status}</span>
+        </div>
+        </div>
+
+        <div class="request-details">
+        <div class="worker-claim-details">
+        <div class="detail-row">
+        <span class="label">Worker ID:</span>
+        <span class="value"><code>${metadata.workerId || 'N/A'}</code></span>
+        </div>
+        <div class="detail-row">
+        <span class="label">Worker Name:</span>
+        <span class="value"><strong>${metadata.workerName || 'N/A'}</strong></span>
+        </div>
+        <div class="detail-row">
+        <span class="label">Worker Address:</span>
+        <span class="value monospace">${metadata.workerAddress ?
+            wallet.formatAddress(metadata.workerAddress) :
+            'N/A'}</span>
+            </div>
+            <div class="detail-row">
+            <span class="label">Bitcoin Payout:</span>
+            <span class="value monospace">${metadata.bitcoinPayoutAddress || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+            <span class="label">Hashrate:</span>
+            <span class="value">${metadata.hashrate || 'N/A'} TH/s</span>
+            </div>
+            <div class="detail-row">
+            <span class="label">Valid Shares:</span>
+            <span class="value">${metadata.validShares ? metadata.validShares.toLocaleString() : 'N/A'} / ${metadata.totalShares ? metadata.totalShares.toLocaleString() : 'N/A'}</span>
+            </div>
+            </div>
+
+            <p><strong>Message:</strong></p>
+            <pre class="request-message">${request.message}</pre>
+
+            <p><strong>Submitted:</strong> ${new Date(request.created_at).toLocaleString()}</p>
+            </div>
+
+            <div class="admin-actions">
+            <button onclick="requests.approveWorkerClaimWithModal('${request.request_id}')"
+            class="btn btn-success btn-sm">
+            ✅ Approve & Register Worker
+            </button>
+            <button onclick="requests.rejectRequestWithModal('${request.request_id}')"
+            class="btn btn-error btn-sm">
+            ❌ Reject
+            </button>
+            </div>
+
+            <div class="admin-notes-section">
+            <textarea id="admin-notes-${request.request_id}"
+            placeholder="Optional admin notes..."
+            class="admin-notes-input"></textarea>
+            </div>
+            </div>
+            `;
+    }
+
+    /**
+     * Approve Worker Claim with Modal
+     */
+    approveWorkerClaimWithModal(requestId) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+        <div class="modal-content approve-worker-modal">
+        <div class="modal-header">
+        <h3>Approve Worker Claim</h3>
+        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+        </div>
+        <div class="modal-body">
+        <p>This will register the worker in StratumDataAggregator contract and link it to the miner's Ethereum address.</p>
+
+        <div class="info-box warning">
+        <strong>Action:</strong>
+        <ul>
+        <li>Call <code>setWorkerOwner(workerAddress, minerAddress)</code></li>
+        <li>Transaction will be sent from your wallet</li>
+        <li>Gas cost: ~0.003-0.005 ETH</li>
+        </ul>
+        </div>
+
+        <div class="form-group">
+        <label class="form-label">Admin Notes (Optional)</label>
+        <textarea id="workerApprovalNotes" class="form-input" rows="3"
+        placeholder="Add notes about this approval..."></textarea>
+        </div>
+        </div>
+        <div class="modal-actions">
+        <button onclick="requests.confirmWorkerClaimApproval('${requestId}', this.parentElement.parentElement.parentElement)"
+        class="btn btn-success">
+        Approve & Register
+        </button>
+        <button onclick="this.parentElement.parentElement.parentElement.remove()"
+        class="btn btn-secondary">
+        Cancel
+        </button>
+        </div>
+        </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    /**
+     * Confirm Worker Claim Approval
+     */
+    async confirmWorkerClaimApproval(requestId, modal) {
+        try {
+            const notes = modal.querySelector('#workerApprovalNotes')?.value || '';
+
+            app.showLoading('Approving worker claim and registering on-chain...');
+
+            const request = this.requests.find(r => r.request_id === requestId);
+            if (!request) throw new Error('Request not found');
+
+            // Parse metadata
+            let metadata = request.metadata || {};
+            if (typeof metadata === 'string') {
+                try {
+                    metadata = JSON.parse(metadata);
+                } catch (e) {
+                    console.warn('Failed to parse metadata:', e);
+                    metadata = {};
+                }
+            }
+
+            console.log('Parsed metadata:', metadata);
+
+            // Get data from metadata
+            let workerAddress = metadata.workerAddress || request.target_pool_id;
+            const minerAddress = request.user_address;
+            const bitcoinAddress = metadata.bitcoinPayoutAddress;
+            const workerId = metadata.workerId;
+
+            console.log('Before conversion:', {
+                workerAddress,
+                length: workerAddress?.length,
+                type: typeof workerAddress
+            });
+
+            // CRITICAL: Convert bytes32 (66 chars) → address (42 chars) if needed
+            if (workerAddress && workerAddress.length === 66) {
+                console.log('⚠️ Detected bytes32, converting to address...');
+                workerAddress = '0x' + workerAddress.slice(-40);
+                console.log('✅ Converted to address:', workerAddress);
+            }
+
+            console.log('After conversion:', {
+                workerAddress,
+                length: workerAddress?.length,
+                minerAddress
+            });
+
+            // Validation
+            if (!workerAddress || !minerAddress || !bitcoinAddress || !workerId) {
+                throw new Error('Missing required data in request metadata');
+            }
+
+            if (workerAddress.length !== 42) {
+                throw new Error(`Invalid workerAddress length: ${workerAddress.length} (expected 42)`);
+            }
+
+            if (!ethers.utils.isAddress(workerAddress)) {
+                throw new Error('workerAddress is not a valid Ethereum address');
+            }
+
+            if (!ethers.utils.isAddress(minerAddress)) {
+                throw new Error('minerAddress is not a valid Ethereum address');
+            }
+
+            console.log('Approving worker claim:', {
+                requestId,
+                workerAddress,
+                minerAddress,
+                bitcoinAddress,
+                workerId,
+                metadata
+            });
+
+            // Initialize stratumWorkerManager
+            if (!stratumWorkerManager.initialized) {
+                await stratumWorkerManager.initialize();
+            }
+
+            // Get contract with correct ABI
+            const aggregator = new ethers.Contract(
+                CONFIG.CONTRACTS.STRATUM_AGGREGATOR,
+                [
+                    "function registerWorkerFull(address workerAddress, address minerAddress, string bitcoinAddress, string workerId)",
+                                                   "function workerOwner(address worker) external view returns (address)",
+                                                   "function workerIdToAddress(string workerId) external view returns (address)"
+                ],
+                wallet.signer
+            );
+
+            console.log('Calling registerWorkerFull with:', {
+                workerAddress: workerAddress,
+                minerAddress: minerAddress,
+                bitcoinAddress: bitcoinAddress,
+                workerId: workerId
+            });
+
+            // Test estimateGas before sending
+            try {
+                const gasEstimate = await aggregator.estimateGas.registerWorkerFull(
+                    workerAddress,
+                    minerAddress,
+                    bitcoinAddress,
+                    workerId
+                );
+                console.log('Gas estimate successful:', gasEstimate.toString());
+            } catch (gasError) {
+                console.error('Gas estimation failed:', gasError);
+                throw new Error(`Transaction will fail: ${gasError.reason || gasError.message}`);
+            }
+
+            // Send transaction
+            const tx = await aggregator.registerWorkerFull(
+                workerAddress,
+                minerAddress,
+                bitcoinAddress,
+                workerId
+            );
+            console.log('Transaction sent:', tx.hash);
+
+            const receipt = await tx.wait();
+            console.log('Transaction confirmed:', receipt.blockNumber);
+
+            // Update request status
+            const updateResponse = await fetch(`${this.apiBaseUrl}/requests/${requestId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: 'approved',
+                    adminNotes: notes || `Worker claim approved. Transaction: ${tx.hash}`,
+                    updatedBy: wallet.account,
+                    metadata: {
+                        ...metadata,
+                        approvalTxHash: tx.hash,
+                        approvalBlockNumber: receipt.blockNumber,
+                        approvedAt: new Date().toISOString(),
+                                     workerAddressUsed: workerAddress,
+                                     registrationMethod: 'registerWorkerFull'
+                    }
+                })
+            });
+
+            if (!updateResponse.ok) {
+                throw new Error('Failed to update request status');
+            }
+
+            // Update local cache
+            const requestIndex = this.requests.findIndex(r => r.request_id === requestId);
+            if (requestIndex !== -1) {
+                this.requests[requestIndex].status = 'approved';
+                this.requests[requestIndex].admin_notes = notes;
+            }
+
+            app.hideLoading();
+            modal.remove();
+
+            app.showNotification('success', 'Worker registered on-chain successfully!');
+
+            // Refresh admin panel
+            if (window.nftCollection) {
+                await nftCollection.loadRequests();
+            }
+
+        } catch (error) {
+            app.hideLoading();
+            console.error('Failed to approve worker claim:', error);
+
+            let errorMessage = 'Failed to approve worker claim. ';
+            if (error.message.includes('user rejected')) {
+                errorMessage += 'Transaction was rejected.';
+            } else if (error.message.includes('insufficient funds')) {
+                errorMessage += 'Insufficient ETH for gas.';
+            } else if (error.message.includes('Invalid workerAddress')) {
+                errorMessage += 'Invalid worker address format.';
+            } else if (error.message.includes('Worker already registered')) {
+                errorMessage += 'This worker is already registered.';
+            } else if (error.message.includes('Worker ID already exists')) {
+                errorMessage += 'This worker ID is already in use.';
+            } else {
+                errorMessage += error.message;
+            }
+
+            app.showNotification('error', errorMessage);
         }
     }
 
@@ -307,13 +916,10 @@ class RequestManager {
 
     // =============== NEW METHODS FOR REQUEST HANDLING ===============
 
-    // Add these methods to requests.js after loadAllRequests():
-
     async approveRequest(requestId, adminNotes = '') {
         try {
             console.log('Approving request:', requestId, 'with notes:', adminNotes);
 
-            // First get request data
             const request = this.requests.find(r => r.request_id === requestId);
             if (!request) {
                 throw new Error('Request not found');
@@ -321,35 +927,94 @@ class RequestManager {
 
             console.log('Request to approve:', request);
 
-            // Step 1: Mint NFT for user
-            console.log('Step 1: Minting NFT for user:', request.user_address);
-
             if (!window.contracts || !contracts.initialized) {
                 throw new Error('Contracts not initialized');
             }
 
-            // Determine NFT parameters based on request
             const poolId = request.target_pool_id || 'platform_access';
-            const role = request.requested_role || 'user';
+            const requestedRole = request.requested_role || 'miner';
 
-            console.log('Minting NFT with params:', {
-                userAddress: request.user_address,
-                poolId: poolId,
-                role: role
-            });
+            // ИСПРАВЛЕНО: Проверяем есть ли у пользователя NFT
+            const userNFTs = await contracts.getUserNFTs(request.user_address);
+            const hasNFT = userNFTs.length > 0;
 
-            // Mint NFT
-            const mintResult = await contracts.mintMembershipNFTForUser(
-                request.user_address,
-                poolId,
-                role,
-                `Admin approved: ${adminNotes}`
-            );
+            console.log('User has NFT:', hasNFT);
 
-            console.log('NFT mint result:', mintResult);
+            let mintResult = null;
+
+            if (hasNFT) {
+                // У пользователя уже есть NFT - просто выдаём роль в Factory
+                console.log('User already has NFT, granting role directly in Factory...');
+
+                const factory = contracts.getContract('factory');
+                if (!factory) {
+                    throw new Error('Factory contract not available');
+                }
+
+                // Определяем какую роль выдать
+                let roleToGrant;
+                switch (requestedRole.toLowerCase()) {
+                    case 'pool_manager':
+                        roleToGrant = await factory.POOL_MANAGER_ROLE();
+                        break;
+                    case 'custodial':
+                        // Если есть отдельная роль для custodial
+                        roleToGrant = await factory.CUSTODIAL_ROLE?.() || await factory.POOL_MANAGER_ROLE();
+                        break;
+                    case 'miner':
+                    default:
+                        // Для miner роль не нужна в Factory
+                        console.log('Miner role does not require Factory role');
+                        roleToGrant = null;
+                }
+
+                if (roleToGrant) {
+                    // Проверяем есть ли уже роль
+                    const hasRole = await factory.hasRole(roleToGrant, request.user_address);
+
+                    if (!hasRole) {
+                        console.log(`Granting ${requestedRole} role to ${request.user_address}`);
+                        const tx = await factory.grantRole(roleToGrant, request.user_address);
+                        const receipt = await tx.wait();
+
+                        mintResult = {
+                            transactionHash: receipt.transactionHash,
+                            blockNumber: receipt.blockNumber,
+                            roleGranted: requestedRole,
+                            method: 'factory_role_grant'
+                        };
+                    } else {
+                        console.log(`User already has ${requestedRole} role`);
+                        mintResult = {
+                            roleGranted: requestedRole,
+                            method: 'already_has_role',
+                            message: 'User already has this role'
+                        };
+                    }
+                } else {
+                    mintResult = {
+                        roleGranted: requestedRole,
+                        method: 'no_factory_role_needed',
+                        message: 'Miner role does not require Factory permissions'
+                    };
+                }
+
+            } else {
+                // У пользователя нет NFT - минтим новый
+                console.log('User does not have NFT, minting new one...');
+
+                mintResult = await contracts.mintMembershipNFTForUser(
+                    request.user_address,
+                    poolId,
+                    requestedRole,
+                    `Admin approved: ${adminNotes}`
+                );
+            }
+
+            console.log('NFT/Role operation result:', mintResult);
 
             // Step 2: Update request status via API
-            console.log('Step 2: Updating request status via API');
+            console.log('Updating request status via API');
 
             const updateResponse = await fetch(`${CONFIG.API.REQUESTS}${CONFIG.API.ENDPOINTS.REQUESTS}/${requestId}`, {
                 method: 'PUT',
@@ -358,15 +1023,11 @@ class RequestManager {
                 },
                 body: JSON.stringify({
                     status: 'approved',
-                    adminNotes: adminNotes || 'Request approved and NFT minted',
+                    adminNotes: adminNotes || `Request approved - ${hasNFT ? 'role granted' : 'NFT minted'}`,
                     updatedBy: wallet.account,
-                    nftMinted: true,
-                    nftDetails: {
-                        txHash: mintResult?.transactionHash,
-                        blockNumber: mintResult?.blockNumber,
-                        poolId: poolId,
-                        role: role
-                    }
+                    nftMinted: !hasNFT,
+                    roleGranted: hasNFT,
+                    operationDetails: mintResult
                 })
             });
 
@@ -385,15 +1046,23 @@ class RequestManager {
                 this.requests[requestIndex].updated_at = new Date().toISOString();
             }
 
+            if (window.app && app.showNotification) {
+                app.showNotification('success', hasNFT ?
+                `Role ${requestedRole} granted successfully!` :
+                `NFT minted and role ${requestedRole} granted!`
+                );
+            }
+
             return true;
 
         } catch (error) {
             console.error('Failed to approve request:', error);
 
-            // Show detailed error to user
             if (window.app && app.showNotification) {
                 if (error.message.includes('mint')) {
                     app.showNotification('error', `NFT minting failed: ${error.message}`);
+                } else if (error.message.includes('role')) {
+                    app.showNotification('error', `Role granting failed: ${error.message}`);
                 } else if (error.message.includes('API')) {
                     app.showNotification('error', `API update failed: ${error.message}`);
                 } else {
@@ -599,6 +1268,11 @@ class RequestManager {
             return this.renderDKGRequest(request);
         }
 
+        // Check if this is a worker claim request
+        if (request.request_type === 'worker_claim') {
+            return this.renderWorkerClaimRequest(request);
+        }
+
         // Regular request rendering
         return `
         <div class="request-card admin-request">
@@ -645,17 +1319,32 @@ class RequestManager {
             <div class="empty-icon">📤</div>
             <h3>No Outgoing Requests</h3>
             <p>Your access requests will appear here</p>
+            <div class="empty-actions">
             ${!userRoles.isUserAuthorized() ? `
                 <button class="btn btn-primary" onclick="app.showAccessRequestModal()">
                 Request Platform Access
                 </button>
-                ` : ''}
+                ` : `
+                <button class="btn btn-primary" onclick="requests.showRoleRequestModal()">
+                Request Additional Role
+                </button>
+                `}
+                </div>
                 </div>
                 `;
                 return;
         }
 
-        container.innerHTML = outgoingRequests.map(request => `
+        // Показываем кнопку запроса роли даже если есть запросы
+        const headerActions = userRoles.isUserAuthorized() ? `
+        <div class="tab-header-actions">
+        <button class="btn btn-primary btn-sm" onclick="requests.showRoleRequestModal()">
+        Request Additional Role
+        </button>
+        </div>
+        ` : '';
+
+        container.innerHTML = headerActions + outgoingRequests.map(request => `
         <div class="request-card user-request">
         <div class="request-header">
         <div class="request-info">
@@ -1140,6 +1829,7 @@ class RequestManager {
             'platform_registration': 'Platform Access',
             'pool_role': 'Pool Access',
             'custodial_access': 'Custodial Access',
+            'role_request': 'Role Request',
             'dkg_pool_manager_group': 'DKG Group Authorization',
             'dkg_group_pool_manager': 'DKG Group Authorization'
         };

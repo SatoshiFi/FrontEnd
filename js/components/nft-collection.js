@@ -492,6 +492,11 @@ class NFTCollectionManager {
             return this.renderDKGRequestCard(request);
         }
 
+        // Check if this is a worker claim request
+        if (request.request_type === 'worker_claim') {
+            return this.renderWorkerClaimRequestCard(request);
+        }
+
         // Regular request rendering
         return `
         <div class="request-card admin-request" data-request-id="${request.request_id}">
@@ -624,7 +629,108 @@ class NFTCollectionManager {
         }
     }
 
-    // Добавить эти методы в nft-collection.js после rejectDKGRequest()
+    /**
+     * Render Worker Claim Request Card in Admin Panel
+     */
+    renderWorkerClaimRequestCard(request) {
+        const metadata = request.metadata || {};
+
+        return `
+        <div class="request-card worker-claim-request" data-request-id="${request.request_id}">
+        <div class="request-header">
+        <div class="request-info">
+        <h4>⛏️ Worker Claim Request</h4>
+        <p><strong>From:</strong> ${wallet.formatAddress(request.user_address)}</p>
+        <p><strong>Worker:</strong> ${metadata.workerName || 'N/A'} (${metadata.hashrate || 'N/A'} TH/s)</p>
+        </div>
+        <div class="request-status">
+        <span class="status-badge ${request.status}">${request.status}</span>
+        </div>
+        </div>
+
+        <div class="request-details">
+        <div class="worker-info-grid">
+        <div class="info-item">
+        <span class="label">Worker ID:</span>
+        <span class="value"><code>${metadata.workerId || 'N/A'}</code></span>
+        </div>
+        <div class="info-item">
+        <span class="label">Bitcoin Payout:</span>
+        <span class="value monospace">${metadata.bitcoinPayoutAddress || 'N/A'}</span>
+        </div>
+        <div class="info-item">
+        <span class="label">Valid Shares:</span>
+        <span class="value">${metadata.validShares ? metadata.validShares.toLocaleString() : 'N/A'}</span>
+        </div>
+        <div class="info-item">
+        <span class="label">Submitted:</span>
+        <span class="value">${new Date(request.created_at).toLocaleDateString()}</span>
+        </div>
+        </div>
+        </div>
+
+        <div class="admin-actions">
+        <button onclick="nftCollection.approveWorkerClaim('${request.request_id}')"
+        class="btn btn-success btn-sm">
+        ✅ Approve & Register
+        </button>
+        <button onclick="nftCollection.rejectWorkerClaim('${request.request_id}')"
+        class="btn btn-error btn-sm">
+        ❌ Reject
+        </button>
+        </div>
+
+        <div class="admin-notes-section">
+        <textarea id="admin-notes-${request.request_id}"
+        placeholder="Optional admin notes..."
+        class="admin-notes-input"></textarea>
+        </div>
+        </div>
+        `;
+    }
+
+    /**
+     * Approve Worker Claim
+     */
+    async approveWorkerClaim(requestId) {
+        try {
+            const adminNotes = document.getElementById(`admin-notes-${requestId}`)?.value || '';
+
+            if (window.requests && requests.approveWorkerClaimWithModal) {
+                requests.approveWorkerClaimWithModal(requestId);
+            } else {
+                throw new Error('Request system not available');
+            }
+
+        } catch (error) {
+            console.error('Failed to approve worker claim:', error);
+            app.showNotification('error', `Failed to approve: ${error.message}`);
+        }
+    }
+
+    /**
+     * Reject Worker Claim
+     */
+    async rejectWorkerClaim(requestId) {
+        try {
+            const adminNotes = document.getElementById(`admin-notes-${requestId}`)?.value || 'Worker claim rejected by admin';
+
+            if (window.requests && requests.rejectRequest) {
+                const success = await requests.rejectRequest(requestId, adminNotes);
+
+                if (success) {
+                    app.showNotification('info', 'Worker claim rejected');
+                    await this.loadRequests();
+                }
+            } else {
+                throw new Error('Request system not available');
+            }
+
+        } catch (error) {
+            console.error('Failed to reject worker claim:', error);
+            app.showNotification('error', `Failed to reject: ${error.message}`);
+        }
+    }
 
     async approveRequest(requestId) {
         try {

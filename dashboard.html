@@ -8,19 +8,16 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/roles.css">
     <link rel="stylesheet" href="css/dkg-manager.css">
+    <link rel="stylesheet" href="css/pool-creator.css">
     <link rel="stylesheet" href="css/mobile.css">
 
-    <!-- PWA Meta tags -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="SatoshiFi">
-
-    <!-- Prevent zoom on iOS -->
     <meta name="format-detection" content="telephone=no">
 </head>
 <body>
-    <!-- Mobile MetaMask Notice -->
     <div id="metamaskMobileNotice" class="metamask-mobile-notice">
         <div>For best experience, open in MetaMask mobile browser</div>
         <button onclick="hideMobileNotice()" style="background: none; border: none; color: white; font-size: 18px; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);">×</button>
@@ -36,7 +33,6 @@
     <div id="notifications" class="notifications-container"></div>
 
     <div id="app">
-        <!-- Header -->
         <header class="app-header">
             <div class="container">
                 <div class="header-brand">
@@ -48,11 +44,9 @@
                     <a href="#" class="nav-link active">Dashboard</a>
                 </nav>
                 <div class="header-wallet">
-                    <!-- Wallet Status -->
                     <div id="walletStatus" class="wallet-status disconnected">
                         <button id="connectWallet" class="btn btn-primary">Connect Wallet</button>
                     </div>
-                    <!-- Account Info -->
                     <div id="accountInfo" class="account-info hidden">
                         <div class="account-avatar" id="accountAvatar">??</div>
                         <div class="account-details">
@@ -65,10 +59,8 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="app-main">
             <div class="container">
-                <!-- Sidebar -->
                 <aside class="app-sidebar" id="sidebar">
                     <div class="user-profile" id="userProfile">
                         <div class="connect-prompt">
@@ -80,370 +72,217 @@
                     </nav>
                 </aside>
 
-                <!-- Content Area -->
                 <div class="app-content" id="mainContent">
-            <!-- Authorization Message -->
-            <div id="authorizationMessage" class="authorization-message"></div>
+                    <div id="authorizationMessage" class="authorization-message"></div>
 
-            <!-- Dashboard Section -->
-            <section id="dashboard" class="content-section active">
-                <div class="section-header">
-                    <h2>Dashboard</h2>
-                    <div class="section-actions">
-                        <button id="refreshDashboard" class="btn btn-sm btn-outline">
-                            <span class="btn-icon">🔄</span>
-                            Refresh
-                        </button>
-                    </div>
-                </div>
-
-                <div id="dashboardContent" class="dashboard-content">
-                    <div id="dashboardGrid" class="dashboard-grid">
-                        <!-- Dashboard widgets будут генерироваться JS -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- DKG Management Section -->
-            <section id="dkgManagement" class="content-section">
-                <div class="section-header">
-                    <h2>DKG Management</h2>
-                </div>
-                <div id="dkgManagementContent">
-                    <!-- DKG content -->
-                </div>
-            </section>
-
-            <!-- Pool Creation Section -->
-            <section id="poolCreation" class="content-section">
-                <div class="section-header">
-                    <h2>Create Pool</h2>
-                </div>
-                <div id="poolCreationContent">
-                    <div id="poolWizard" class="pool-wizard">
-                        <!-- Pool creation wizard будет генерироваться JS -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- Pool Management Section -->
-            <section id="poolManagement" class="content-section">
-                <div class="section-header">
-                    <h2>Pool Management</h2>
-                </div>
-                <div id="poolManagementContent">
-                    <div id="poolsList" class="pools-list">
-                        <!-- Pool management content будет генерироваться JS -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- Mining Dashboard Section -->
-            <section id="miningDashboard" class="content-section">
-                <div class="section-header">
-                    <h2>Mining Dashboard</h2>
-                </div>
-                <div id="miningDashboardContent">
-                    <div id="miningControls" class="mining-controls">
-                        <!-- Mining controls будут генерироваться JS -->
-                    </div>
-                    <div id="miningStats" class="mining-stats">
-                        <!-- Mining stats будут генерироваться JS -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- NFT Collection Section -->
-            <section id="nftCollection" class="content-section">
-                <div class="section-header">
-                    <h2>My NFT Collection</h2>
-                    <div class="view-controls">
-                        <div class="view-buttons">
-                            <button class="view-btn active" data-view="cards">Cards</button>
-                            <button class="view-btn" data-view="list">List</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tabs -->
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="overview">Overview</button>
-                    <button class="tab-btn" data-tab="my-pools">My Pools</button>
-                    <button class="tab-btn" data-tab="roles-nft">Roles & NFT</button>
-                    <button class="tab-btn" data-tab="requests">Requests
-                        <span id="incomingCount" class="tab-badge" data-admin-only>0</span>
-                    </button>
-                </div>
-
-                <!-- Tab Contents -->
-                <div id="overview-tab" class="tab-content active">
-                    <div class="overview-stats">
-                        <div class="stat-card">
-                            <div class="stat-icon">🏊‍♂️</div>
-                            <div class="stat-info">
-                                <div id="activePools" class="stat-value">0</div>
-                                <div class="stat-label">Active Pools</div>
+                    <!-- Dashboard Section -->
+                    <section id="dashboard" class="content-section active">
+                        <div class="section-header">
+                            <h2>Dashboard</h2>
+                            <div class="section-actions">
+                                <button id="refreshDashboard" class="btn btn-sm btn-outline">
+                                    <span class="btn-icon">🔄</span>
+                                    Refresh
+                                </button>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">🎫</div>
-                            <div class="stat-info">
-                                <div id="nftMemberships" class="stat-value">0</div>
-                                <div class="stat-label">NFT Memberships</div>
+                        <div id="dashboardContent" class="dashboard-content">
+                            <div id="dashboardGrid" class="dashboard-grid">
+                                <!-- Dashboard widgets -->
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📋</div>
-                            <div class="stat-info">
-                                <div id="pendingRequests" class="stat-value">0</div>
-                                <div class="stat-label">Pending Requests</div>
+                    </section>
+
+                    <!-- DKG Management Section -->
+                    <section id="dkgManagement" class="content-section">
+                        <div class="section-header">
+                            <h2>DKG Management</h2>
+                        </div>
+                        <div id="dkgManagementContent"></div>
+                    </section>
+
+                    <!-- Pool Creation Section -->
+                    <section id="poolCreation" class="content-section">
+                        <div class="section-header">
+                            <h2>Create Pool</h2>
+                        </div>
+                        <div id="poolCreationContent">
+                            <div id="poolWizard" class="pool-wizard"></div>
+                        </div>
+                    </section>
+
+                    <!-- Pool Management Section -->
+                    <section id="poolManagement" class="content-section">
+                        <!-- Content генерируется в pool-manager.js -->
+                    </section>
+
+                    <!-- My Workers Section -->
+                    <section id="myWorkers" class="content-section">
+                        <div id="myWorkersContainer">
+                            <!-- Content генерируется в poolManager.initializeMyWorkersSection() -->
+                        </div>
+                    </section>
+
+                    <!-- Mining Dashboard Section -->
+                    <section id="miningDashboard" class="content-section">
+                        <div class="section-header">
+                            <h2>Mining Dashboard</h2>
+                        </div>
+                        <div id="miningDashboardContent">
+                            <div id="miningControls" class="mining-controls"></div>
+                            <div id="miningStats" class="mining-stats"></div>
+                        </div>
+                    </section>
+
+                    <!-- NFT Collection Section -->
+                    <section id="nftCollection" class="content-section">
+                        <div class="section-header">
+                            <h2>My NFT Collection</h2>
+                            <div class="view-controls">
+                                <div class="view-buttons">
+                                    <button class="view-btn active" data-view="cards">Cards</button>
+                                    <button class="view-btn" data-view="list">List</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">🎭</div>
-                            <div class="stat-info">
-                                <div id="activeRoles" class="stat-value">0</div>
-                                <div class="stat-label">Active Roles</div>
+
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="overview">Overview</button>
+                            <button class="tab-btn" data-tab="my-pools">My Pools</button>
+                            <button class="tab-btn" data-tab="roles-nft">Roles & NFT</button>
+                            <button class="tab-btn" data-tab="requests">Requests
+                                <span id="incomingCount" class="tab-badge" data-admin-only>0</span>
+                            </button>
+                        </div>
+
+                        <div id="overview-tab" class="tab-content active">
+                            <div class="overview-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon">🏊‍♂️</div>
+                                    <div class="stat-info">
+                                        <div id="activePools" class="stat-value">0</div>
+                                        <div class="stat-label">Active Pools</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🎫</div>
+                                    <div class="stat-info">
+                                        <div id="nftMemberships" class="stat-value">0</div>
+                                        <div class="stat-label">NFT Memberships</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📋</div>
+                                    <div class="stat-info">
+                                        <div id="pendingRequests" class="stat-value">0</div>
+                                        <div class="stat-label">Pending Requests</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🎭</div>
+                                    <div class="stat-info">
+                                        <div id="activeRoles" class="stat-value">0</div>
+                                        <div class="stat-label">Active Roles</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recent-activity">
+                                <h3>Recent Activity</h3>
+                                <div id="recentActivity" class="activity-list"></div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="recent-activity">
-                        <h3>Recent Activity</h3>
-                        <div id="recentActivity" class="activity-list">
-                            <!-- Activity items -->
+                        <div id="my-pools-tab" class="tab-content">
+                            <div class="pools-controls">
+                                <div class="search-controls">
+                                    <input type="text" id="poolSearch" placeholder="Search pools..." class="form-input">
+                                    <div class="filters">
+                                        <select id="poolStatusFilter" class="form-select">
+                                            <option value="all">All Status</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                        <select id="poolRoleFilter" class="form-select">
+                                            <option value="all">All Roles</option>
+                                            <option value="owner">Owner</option>
+                                            <option value="member">Member</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="poolsGrid" class="pools-grid"></div>
                         </div>
-                    </div>
-                </div>
 
-                <div id="my-pools-tab" class="tab-content">
-                    <div class="pools-controls">
-                        <div class="search-controls">
-                            <input type="text" id="poolSearch" placeholder="Search pools..." class="form-input">
-                            <div class="filters">
-                                <select id="poolStatusFilter" class="form-select">
-                                    <option value="all">All Status</option>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                                <select id="poolRoleFilter" class="form-select">
-                                    <option value="all">All Roles</option>
-                                    <option value="owner">Owner</option>
-                                    <option value="member">Member</option>
-                                </select>
+                        <div id="roles-nft-tab" class="tab-content">
+                            <div id="authorizationStatus" class="authorization-status"></div>
+                            <div class="roles-section">
+                                <h3>Your Roles</h3>
+                                <div id="rolesGrid" class="roles-grid"></div>
+                            </div>
+                            <div class="nft-section">
+                                <h3>Your NFT Tokens</h3>
+                                <div id="nftGrid" class="nft-grid"></div>
+                            </div>
+                            <div class="templates-section" data-admin-only>
+                                <h3>Badge Templates</h3>
+                                <div id="badgeTemplates" class="templates-grid"></div>
                             </div>
                         </div>
-                    </div>
-                    <div id="poolsGrid" class="pools-grid">
-                        <!-- Pool cards -->
-                    </div>
+
+                        <div id="requests-tab" class="tab-content">
+                            <div class="request-tabs">
+                                <button class="request-tab-btn active" data-tab="incoming">
+                                    Incoming <span id="incomingCount" class="tab-badge">0</span>
+                                </button>
+                                <button class="request-tab-btn" data-tab="outgoing">
+                                    Outgoing <span id="outgoingCount" class="tab-badge">0</span>
+                                </button>
+                                <button class="request-tab-btn" data-tab="history">
+                                    History <span id="historyCount" class="tab-badge">0</span>
+                                </button>
+                            </div>
+                            <div id="incomingRequests" class="request-content active">
+                                <div id="incomingRequestsList" class="requests-list"></div>
+                            </div>
+                            <div id="outgoingRequests" class="request-content">
+                                <div id="outgoingRequestsList" class="requests-list"></div>
+                            </div>
+                            <div id="requestHistory" class="request-content">
+                                <div id="requestHistoryList" class="requests-list"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Settings Section -->
+                    <section id="settings" class="content-section">
+                        <div class="section-header">
+                            <h2>Settings</h2>
+                        </div>
+                        <div id="settingsTabs"></div>
+                    </section>
                 </div>
-
-                <div id="roles-nft-tab" class="tab-content">
-                    <div id="authorizationStatus" class="authorization-status">
-                        <!-- Authorization status -->
-                    </div>
-
-                    <div class="roles-section">
-                        <h3>Your Roles</h3>
-                        <div id="rolesGrid" class="roles-grid">
-                            <!-- Role cards -->
-                        </div>
-                    </div>
-
-                    <div class="nft-section">
-                        <h3>Your NFT Tokens</h3>
-                        <div id="nftGrid" class="nft-grid">
-                            <!-- NFT cards -->
-                        </div>
-                    </div>
-
-                    <div class="templates-section" data-admin-only>
-                        <h3>Badge Templates</h3>
-                        <div id="badgeTemplates" class="templates-grid">
-                            <!-- Template cards -->
-                        </div>
-                    </div>
-                </div>
-
-                <div id="requests-tab" class="tab-content">
-                    <div class="request-tabs">
-                        <button class="request-tab-btn active" data-tab="incoming">
-                            Incoming <span id="incomingCount" class="tab-badge">0</span>
-                        </button>
-                        <button class="request-tab-btn" data-tab="outgoing">
-                            Outgoing <span id="outgoingCount" class="tab-badge">0</span>
-                        </button>
-                        <button class="request-tab-btn" data-tab="history">
-                            History <span id="historyCount" class="tab-badge">0</span>
-                        </button>
-                    </div>
-
-                    <div id="incomingRequests" class="request-content active">
-                        <div id="incomingRequestsList" class="requests-list">
-                            <!-- Incoming requests -->
-                        </div>
-                    </div>
-
-                    <div id="outgoingRequests" class="request-content">
-                        <div id="outgoingRequestsList" class="requests-list">
-                            <!-- Outgoing requests -->
-                        </div>
-                    </div>
-
-                    <div id="requestHistory" class="request-content">
-                        <div id="requestHistoryList" class="requests-list">
-                            <!-- Request history -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Settings Section -->
-            <section id="settings" class="content-section">
-                <div class="section-header">
-                    <h2>Settings</h2>
-                </div>
-                <div id="settingsTabs">
-                    <!-- Settings content -->
-                </div>
-            </section>
+            </div>
         </main>
     </div>
 
-    <!-- Scripts - ПРАВИЛЬНЫЙ ПОРЯДОК ЗАГРУЗКИ -->
+    <!-- Scripts -->
     <script src="/js/lib/ethers-5.7.2.umd.min.js"></script>
     <script src="/js/lib/bitcoin-simple.min.js"></script>
-
-    <!-- Core configuration and utilities -->
     <script src="js/config.js"></script>
-
-    <!-- Wallet and blockchain integration -->
-    <script src="js/wallet.js"></script>
-    <script src="js/contracts.js"></script>
-
-    <!-- Authorization system -->
-    <script src="js/user-roles.js"></script>
-
-    <!-- Core components -->
+    <script src="js/services/wallet.js"></script>
+    <script src="js/services/contracts.js"></script>
+    <script src="js/services/user-roles.js"></script>
+    <script src="js/services/bitcoin-address-codec.js"></script>
+    <script src="js/components/stratum-worker-manager.js"></script>
+    <script src="js/components/reward-manager.js"></script>
     <script src="js/components/dashboard.js"></script>
     <script src="js/components/dkg-manager.js"></script>
     <script src="js/components/pool-creator.js"></script>
-    <script src="js/pool-manager.js"></script>
+    <script src="js/components/pool-manager.js"></script>
     <script src="js/components/mining-dashboard.js"></script>
-
-    <!-- Request system and NFT collection -->
     <script src="js/components/requests.js"></script>
     <script src="js/components/nft-collection.js"></script>
     <script src="js/components/settings.js"></script>
-
-    <!-- Main application - ЗАГРУЖАЕТСЯ ПОСЛЕДНИМ -->
     <script src="js/app.js"></script>
-
-    <!-- Mobile menu toggle function -->
-    <script>
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('mobile-open');
-        }
-
-        function hideMobileNotice() {
-            const notice = document.getElementById('metamaskMobileNotice');
-            if (notice) {
-                notice.style.display = 'none';
-            }
-        }
-
-        // Hide mobile notice automatically on desktop
-        if (!/Mobi|Android/i.test(navigator.userAgent)) {
-            document.addEventListener('DOMContentLoaded', () => {
-                hideMobileNotice();
-            });
-        }
-    </script>
-
-    <!-- Initialization script для системы авторизации -->
-    <script>
-        // Дополнительная инициализация после загрузки всех скриптов
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('=== SATOSHIFI AUTHORIZATION SYSTEM INITIALIZING ===');
-
-            // Проверяем доступность всех критических компонентов
-            const criticalComponents = {
-                'Wallet Manager': !!window.wallet,
-                'Contracts Manager': !!window.contracts,
-                'User Roles Manager': !!window.userRoles,
-                'Request Manager': !!window.requests,
-                'NFT Collection': !!window.nftCollection,
-                'Dashboard': !!window.dashboard,
-                'App': !!window.app
-            };
-
-            console.log('Critical components status:', criticalComponents);
-
-            // Проверяем есть ли отсутствующие компоненты
-            const missingComponents = Object.entries(criticalComponents)
-                .filter(([name, available]) => !available)
-                .map(([name]) => name);
-
-            if (missingComponents.length > 0) {
-                console.error('Missing critical components:', missingComponents);
-
-                // Показываем пользователю ошибку
-                if (window.app && app.showNotification) {
-                    app.showNotification('error', `Missing components: ${missingComponents.join(', ')}`);
-                }
-            } else {
-                console.log('✅ All critical components loaded successfully');
-            }
-
-            // Проверяем автоподключение кошелька через 1 секунду
-            setTimeout(() => {
-                if (window.ethereum && window.ethereum.selectedAddress && window.wallet) {
-                    console.log('Auto-connecting wallet...');
-                    wallet.connect().catch(error => {
-                        console.log('Auto-connect failed:', error.message);
-                    });
-                }
-            }, 1000);
-        });
-
-        // Diagnostic information в консоль через 3 секунды
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                console.log('=== SYSTEM DIAGNOSTIC AFTER 3 SECONDS ===');
-
-                if (window.wallet) {
-                    console.log('Wallet Status:', wallet.getConnectionInfo());
-                }
-
-                if (window.userRoles && wallet.connected) {
-                    console.log('Authorization Status:', {
-                        isAuthorized: userRoles.isUserAuthorized(),
-                        authStatus: userRoles.authorizationStatus,
-                        roles: userRoles.currentRoles,
-                        nftCount: userRoles.nftData?.length || 0,
-                        pendingRequests: userRoles.pendingRequests?.length || 0
-                    });
-                }
-
-                if (window.contracts) {
-                    console.log('Contracts initialized:', contracts.initialized);
-                }
-
-                console.log('=== END DIAGNOSTIC ===');
-            }, 3000);
-        });
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (window.wallet) {
-                wallet.destroy();
-            }
-            if (window.app) {
-                app.destroy();
-            }
-        });
-    </script>
 </body>
 </html>

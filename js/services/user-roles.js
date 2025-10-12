@@ -262,16 +262,30 @@ class UserRoleManager {
 
     getSidebarSections() {
         if (!this.isAuthorized) {
-            return ['dashboard', 'authorization'];
+            return ['dashboard', 'nftCollection'];
         }
 
-        const sections = [];
+        const sections = ['dashboard']; // Базовые секции
+
+        // ИСПРАВЛЕНО: Mining доступен всем авторизованным пользователям
+        sections.push('miningDashboard');
+
+        // Остальные секции по ролям
         this.currentRoles.forEach(roleId => {
             const role = CONFIG.USER_ROLES[roleId];
             if (role && role.sidebarSections) {
-                sections.push(...role.sidebarSections);
+                role.sidebarSections.forEach(section => {
+                    if (section !== 'miningDashboard' && !sections.includes(section)) {
+                        sections.push(section);
+                    }
+                });
             }
         });
+
+        // NFT Collection всегда доступна
+        if (!sections.includes('nftCollection')) {
+            sections.push('nftCollection');
+        }
 
         return [...new Set(sections)];
     }

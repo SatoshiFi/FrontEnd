@@ -1,12 +1,315 @@
-// js/app.js - ИСПРАВЛЕННАЯ ВЕРСИЯ С ПРАВИЛЬНОЙ ИНИЦИАЛИЗАЦИЕЙ АДМИНСКИХ ПРАВ
+// js/app.js - ПОЛНАЯ ВЕРСИЯ С ИНТЕГРИРОВАННЫМ AppUIManager И ПРАВИЛЬНОЙ ИНИЦИАЛИЗАЦИЕЙ
+
+// ========== APP UI MANAGER MODULE ==========
+
+class AppUIManager {
+    constructor(app) {
+        this.app = app;
+        this.initialized = false;
+    }
+
+    initialize() {
+        if (this.initialized) return;
+
+        this.setupUIEventHandlers();
+        this.setupModalManagement();
+        this.setupViewControls();
+        this.setupTabSystem();
+        this.initialized = true;
+
+        console.log('AppUIManager initialized');
+    }
+
+    // ========== MOBILE MENU MANAGEMENT ==========
+
+    toggleMobileMenu() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('mobile-open');
+        }
+    }
+
+    hideMobileNotice() {
+        const notice = document.getElementById('metamaskMobileNotice');
+        if (notice) {
+            notice.style.display = 'none';
+        }
+    }
+
+    // ========== AUTO HIDE MOBILE NOTICE ==========
+
+    setupMobileNoticeAutoHide() {
+        if (!/Mobi|Android/i.test(navigator.userAgent)) {
+            this.hideMobileNotice();
+        }
+    }
+
+    // ========== TAB SYSTEM MANAGEMENT ==========
+
+    setupTabSystem() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchMainTab(e.target.dataset.tab);
+            });
+        });
+
+        document.querySelectorAll('.request-tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchRequestTab(e.target.dataset.tab);
+            });
+        });
+    }
+
+    switchMainTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        const selectedTab = document.querySelector(`[data-tab="${tabId}"]`);
+        const selectedContent = document.getElementById(`${tabId}-tab`);
+
+        if (selectedTab) selectedTab.classList.add('active');
+        if (selectedContent) selectedContent.classList.add('active');
+
+        this.onTabChanged(tabId);
+    }
+
+    switchRequestTab(tabId) {
+        document.querySelectorAll('.request-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('.request-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        const selectedTab = document.querySelector(`[data-tab="${tabId}"].request-tab-btn`);
+        const selectedContent = document.getElementById(`${tabId}Requests`);
+
+        if (selectedTab) selectedTab.classList.add('active');
+        if (selectedContent) selectedContent.classList.add('active');
+
+        this.loadRequestTabContent(tabId);
+    }
+
+    onTabChanged(tabId) {
+        switch (tabId) {
+            case 'overview':
+                if (window.nftCollection) {
+                    nftCollection.loadOverviewStats();
+                }
+                break;
+            case 'my-pools':
+                if (window.nftCollection) {
+                    nftCollection.loadUserPools();
+                }
+                break;
+            case 'roles-nft':
+                if (window.nftCollection) {
+                    nftCollection.loadRolesAndNFTs();
+                }
+                break;
+            case 'requests':
+                if (window.nftCollection) {
+                    nftCollection.loadRequests();
+                }
+                break;
+        }
+    }
+
+    loadRequestTabContent(tabId) {
+        if (!window.nftCollection) return;
+
+        switch (tabId) {
+            case 'incoming':
+                nftCollection.loadIncomingRequests();
+                break;
+            case 'outgoing':
+                nftCollection.loadOutgoingRequests();
+                break;
+            case 'history':
+                nftCollection.loadRequestHistory();
+                break;
+        }
+    }
+
+    // ========== VIEW CONTROLS ==========
+
+    setupViewControls() {
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchView(e.target.dataset.view);
+            });
+        });
+    }
+
+    switchView(viewType) {
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        const selectedBtn = document.querySelector(`[data-view="${viewType}"]`);
+        if (selectedBtn) {
+            selectedBtn.classList.add('active');
+        }
+
+        const grids = document.querySelectorAll('.pools-grid, .nft-grid, .roles-grid');
+        grids.forEach(grid => {
+            grid.className = grid.className.replace(/view-\w+/, '');
+            grid.classList.add(`view-${viewType}`);
+        });
+    }
+
+    // ========== MODAL MANAGEMENT ==========
+
+    setupModalManagement() {
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                this.closeModal(e.target);
+            }
+            if (e.target.classList.contains('modal-close')) {
+                this.closeModal(e.target.closest('.modal-overlay'));
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.querySelector('.modal-overlay');
+                if (modal) {
+                    this.closeModal(modal);
+                }
+            }
+        });
+    }
+
+    closeModal(modal) {
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    // ========== DASHBOARD REFRESH ==========
+
+    setupDashboardRefresh() {
+        document.getElementById('refreshDashboard')?.addEventListener('click', () => {
+            this.refreshDashboard();
+        });
+    }
+
+    async refreshDashboard() {
+        if (window.dashboard && dashboard.refreshDashboard) {
+            await dashboard.refreshDashboard();
+            this.app.showNotification('success', 'Dashboard refreshed');
+        }
+    }
+
+    // ========== UI EVENT HANDLERS ==========
+
+    setupUIEventHandlers() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.setupMobileNoticeAutoHide();
+            this.setupDashboardRefresh();
+        });
+    }
+
+    // ========== INITIALIZATION AND DIAGNOSTICS ==========
+
+    setupInitializationDiagnostics() {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                this.runSystemDiagnostic();
+            }, 3000);
+        });
+    }
+
+    runSystemDiagnostic() {
+        console.log('=== SYSTEM DIAGNOSTIC AFTER 3 SECONDS ===');
+
+        if (window.wallet) {
+            console.log('Wallet Status:', wallet.getConnectionInfo());
+        }
+
+        if (window.userRoles && wallet.connected) {
+            console.log('Authorization Status:', {
+                isAuthorized: userRoles.isUserAuthorized(),
+                        authStatus: userRoles.authorizationStatus,
+                        roles: userRoles.currentRoles,
+                        nftCount: userRoles.nftData?.length || 0,
+                        pendingRequests: userRoles.pendingRequests?.length || 0
+            });
+        }
+
+        if (window.contracts) {
+            console.log('Contracts initialized:', contracts.initialized);
+        }
+
+        console.log('=== END DIAGNOSTIC ===');
+    }
+
+    checkCriticalComponents() {
+        const criticalComponents = {
+            'Wallet Manager': !!window.wallet,
+            'Contracts Manager': !!window.contracts,
+            'User Roles Manager': !!window.userRoles,
+            'Request Manager': !!window.requests,
+            'NFT Collection': !!window.nftCollection,
+            'Dashboard': !!window.dashboard,
+            'App': !!window.app
+        };
+
+        console.log('Critical components status:', criticalComponents);
+
+        const missingComponents = Object.entries(criticalComponents)
+        .filter(([name, available]) => !available)
+        .map(([name]) => name);
+
+        if (missingComponents.length > 0) {
+            console.error('Missing critical components:', missingComponents);
+
+            if (this.app && this.app.showNotification) {
+                this.app.showNotification('error', `Missing components: ${missingComponents.join(', ')}`);
+            }
+        } else {
+            console.log('✅ All critical components loaded successfully');
+        }
+    }
+
+    // ========== AUTO WALLET CONNECTION ==========
+
+    setupAutoWalletConnection() {
+        setTimeout(() => {
+            if (window.ethereum && window.ethereum.selectedAddress && window.wallet) {
+                console.log('Auto-connecting wallet...');
+                wallet.connect().catch(error => {
+                    console.log('Auto-connect failed:', error.message);
+                });
+            }
+        }, 1000);
+    }
+
+    // ========== CLEANUP ==========
+
+    destroy() {
+        document.removeEventListener('DOMContentLoaded', this.setupUIEventHandlers);
+        window.removeEventListener('load', this.setupInitializationDiagnostics);
+
+        console.log('AppUIManager destroyed');
+    }
+}
+
+// ========== MAIN SATOSHIFI APPLICATION CLASS ==========
+
 class SatoshiFiApp {
     constructor() {
         this.initialized = false;
         this.currentSection = 'dashboard';
         this.sectionInitializers = {};
         this.authCheckInterval = null;
-        this.initializedSections = new Set(); // Добавлено для отслеживания
-        this.isInitializing = false; // Добавлено для предотвращения множественной инициализации
+        this.initializedSections = new Set();
+        this.isInitializing = false;
+        this.uiManager = new AppUIManager(this);
     }
 
     async initialize() {
@@ -15,11 +318,26 @@ class SatoshiFiApp {
         try {
             console.log('Initializing SatoshiFi App with NFT Authorization...');
 
+            this.uiManager.initialize();
+            window.appUI = this.uiManager;
+
+            // Initialize Bitcoin Address Codec
+            if (window.bitcoinAddressCodec) {
+                try {
+                    bitcoinAddressCodec.initialize();
+                    console.log('✅ BitcoinAddressCodec initialized for network:', CONFIG.BITCOIN.NETWORK);
+                } catch (error) {
+                    console.error('❌ BitcoinAddressCodec initialization failed:', error);
+                    this.showNotification('warning', 'Bitcoin address codec unavailable');
+                }
+            } else {
+                console.warn('⚠️ BitcoinAddressCodec module not loaded');
+            }
+
             this.setupEventListeners();
             this.setupUI();
             this.setupAuthorizationSystem();
 
-            // Check wallet connection on load
             if (window.ethereum && window.ethereum.selectedAddress) {
                 await this.autoConnect();
             } else {
@@ -264,13 +582,9 @@ class SatoshiFiApp {
 
         this.updateWalletUI();
 
-        // ИСПРАВЛЕНО: проверяем авторизацию пользователя
         await this.checkUserAuthorization(data.account);
-
-        // ИСПРАВЛЕНО: проверяем админские права ПОСЛЕ проверки авторизации
         await this.checkAndShowAdminPanel();
 
-        // ИСПРАВЛЕНО: инициализируем системы ПОСЛЕ проверки прав
         if (window.requests) {
             await requests.initialize();
         }
@@ -286,10 +600,7 @@ class SatoshiFiApp {
         try {
             console.log('Checking user authorization for:', account);
 
-            // Обнаруживаем роли пользователя (включая проверку NFT)
             await userRoles.detectUserRoles(account);
-
-            // Применяем UI на основе ролей и авторизации
             userRoles.applyRoleBasedUI();
 
             console.log('Authorization check completed:', {
@@ -303,7 +614,6 @@ class SatoshiFiApp {
         }
     }
 
-    // ИСПРАВЛЕНО: метод для проверки и включения админских функций
     async checkAndShowAdminPanel() {
         if (!wallet.connected || !window.contracts) return;
 
@@ -328,23 +638,19 @@ class SatoshiFiApp {
     enableAdminFeatures() {
         console.log('Enabling admin features...');
 
-        // Добавляем админский класс к body
         document.body.classList.add('admin-user');
 
-        // Включаем админский режим в requests системе
         if (window.requests) {
             requests.adminMode = true;
             console.log('Requests admin mode enabled');
         }
 
-        // Включаем админский режим в NFT Collection
         if (window.nftCollection) {
             nftCollection.isAdmin = true;
             nftCollection.enableAdminMode();
             console.log('NFT Collection admin mode enabled');
         }
 
-        // Показываем уведомление
         this.showNotification('info', 'Admin features enabled');
     }
 
@@ -360,7 +666,7 @@ class SatoshiFiApp {
         document.body.className = document.body.className
         .replace(/role-\w+/g, '')
         .replace(/auth-\w+/g, '')
-        .replace(/admin-user/g, '') // Убираем админский класс
+        .replace(/admin-user/g, '')
         .trim();
 
         this.sectionInitializers = {};
@@ -370,10 +676,7 @@ class SatoshiFiApp {
     async onAccountChanged(account) {
         console.log('Account changed to:', account);
 
-        // Проверяем авторизацию для нового аккаунта
         await this.checkUserAuthorization(account.newAccount);
-
-        // Проверяем админские права для нового аккаунта
         await this.checkAndShowAdminPanel();
 
         this.updateUserProfile();
@@ -484,7 +787,7 @@ class SatoshiFiApp {
             {
                 id: 'dashboard',
                 name: 'Dashboard',
-                icon: '🏠',
+                icon: '📊',
                 show: true
             },
             {
@@ -505,8 +808,15 @@ class SatoshiFiApp {
                 id: 'poolManagement',
                 name: 'Pool Management',
                 icon: '⚙️',
-                show: sections.includes('poolManagement') && isAuthorized,
-                authRequired: true
+                show: isAuthorized,
+                authRequired: false
+            },
+            {
+                id: 'myWorkers',
+                name: 'My Workers',
+                icon: '🔧',
+                show: isAuthorized,
+                authRequired: false
             },
             {
                 id: 'miningDashboard',
@@ -517,8 +827,8 @@ class SatoshiFiApp {
             },
             {
                 id: 'nftCollection',
-                name: 'My NFT/SBT',
-                icon: '🎨',
+                name: 'My Status',
+                icon: '🅰️',
                 show: sections.includes('nftCollection')
             },
             {
@@ -618,7 +928,6 @@ class SatoshiFiApp {
                 return;
             }
 
-            // ИСПРАВЛЕНО: правильная отправка запроса
             if (window.requests) {
                 await requests.initialize();
                 const success = await requests.submitMembershipRequest(
@@ -658,18 +967,15 @@ class SatoshiFiApp {
             this.isInitializing = true;
             console.log(`Switching to section: ${sectionId}`);
 
-            // Проверяем права доступа
             if (!this.canAccessSection(sectionId)) {
                 this.showAuthorizationRequired();
                 return;
             }
 
-            // Скрываем все секции
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
 
-            // Обновляем навигацию
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
@@ -679,18 +985,15 @@ class SatoshiFiApp {
                 activeNavLink.classList.add('active');
             }
 
-            // Показываем целевую секцию
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
                 targetSection.classList.add('active');
             }
 
-            // Инициализируем секцию если нужно
             await this.initializeSection(sectionId);
 
             this.currentSection = sectionId;
 
-            // Обновляем URL
             if (history.pushState) {
                 history.pushState(null, null, `#${sectionId}`);
             }
@@ -756,6 +1059,15 @@ class SatoshiFiApp {
                     }
                     break;
 
+                case 'myWorkers':
+                    if (window.poolManager && userRoles.isUserAuthorized()) {
+                        console.log('Initializing My Workers section...');
+                        await poolManager.initializeMyWorkersSection();
+                    } else if (!userRoles.isUserAuthorized()) {
+                        this.showSectionAuthRequired(sectionId);
+                    }
+                    break;
+
                 case 'miningDashboard':
                     if (window.miningDashboard && userRoles.isUserAuthorized()) {
                         await miningDashboard.initialize();
@@ -797,6 +1109,7 @@ class SatoshiFiApp {
             'poolCreation': 'Pool Creation',
             'dkgManagement': 'DKG Management',
             'poolManagement': 'Pool Management',
+            'myWorkers': 'My Workers',
             'miningDashboard': 'Mining Dashboard'
         }[sectionId] || sectionId;
 
@@ -848,7 +1161,7 @@ class SatoshiFiApp {
     showSectionError(sectionId, error) {
         const section = document.getElementById(sectionId);
         if (section) {
-            const contentArea = section.querySelector('.pools-list, .wizard-content, #dkgManagementContent, #settingsTabs, #miningStats, #nftGrid')
+            const contentArea = section.querySelector('.pools-list, .wizard-content, #dkgManagementContent, #settingsTabs, #miningStats, #nftGrid, #myWorkersContainer')
             || section.querySelector('.section-content')
             || section;
 
@@ -874,7 +1187,7 @@ class SatoshiFiApp {
         this.initializedSections.delete(sectionId);
 
         const section = document.getElementById(sectionId);
-        const contentArea = section?.querySelector('.pools-list, .wizard-content, #dkgManagementContent') || section;
+        const contentArea = section?.querySelector('.pools-list, .wizard-content, #dkgManagementContent, #myWorkersContainer') || section;
         if (contentArea) {
             contentArea.innerHTML = `
             <div class="loading-state">
@@ -895,6 +1208,7 @@ class SatoshiFiApp {
         console.log('=== CHECKING CRITICAL MODULES ===');
         console.log('wallet available:', !!window.wallet);
         console.log('contracts available:', !!window.contracts);
+        console.log('bitcoinAddressCodec available:', !!window.bitcoinAddressCodec);
         console.log('poolManager available:', !!window.poolManager);
         console.log('userRoles available:', !!window.userRoles);
         console.log('dashboard available:', !!window.dashboard);
@@ -908,6 +1222,14 @@ class SatoshiFiApp {
             this.showNotification('error', 'Critical module not loaded: poolManager');
         } else {
             console.log('✅ poolManager is available');
+        }
+
+        if (!window.bitcoinAddressCodec) {
+            console.warn('⚠️ BitcoinAddressCodec not loaded - Bitcoin address features may not work');
+        } else if (!bitcoinAddressCodec.initialized) {
+            console.warn('⚠️ BitcoinAddressCodec loaded but not initialized');
+        } else {
+            console.log('✅ BitcoinAddressCodec ready');
         }
     }
 
@@ -964,25 +1286,53 @@ class SatoshiFiApp {
             contracts.removeAllListeners();
         }
 
+        if (this.uiManager) {
+            this.uiManager.destroy();
+        }
+
         console.log('App destroyed and cleaned up');
     }
 }
 
-// Global functions for HTML usage
+// ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ОБРАТНОЙ СОВМЕСТИМОСТИ ==========
+
+function toggleMobileMenu() {
+    if (window.app && app.uiManager) {
+        app.uiManager.toggleMobileMenu();
+    }
+}
+
+function hideMobileNotice() {
+    if (window.app && app.uiManager) {
+        app.uiManager.hideMobileNotice();
+    }
+}
+
 function showSection(sectionId) {
     app.showSection(sectionId);
 }
 
+window.toggleMobileMenu = toggleMobileMenu;
+window.hideMobileNotice = hideMobileNotice;
 window.showSection = showSection;
+window.appUI = null;
 
-// App initialization
+// ========== APP INITIALIZATION ==========
+
 const app = new SatoshiFiApp();
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('=== SATOSHIFI AUTHORIZATION SYSTEM INITIALIZING ===');
+
+    setTimeout(() => {
+        app.uiManager.checkCriticalComponents();
+    }, 500);
+
     app.initialize();
+
+    app.uiManager.setupAutoWalletConnection();
 });
 
-// Дополнительная диагностика
 window.addEventListener('load', () => {
     setTimeout(() => {
         console.log('=== AUTHORIZATION DIAGNOSTIC ===');
@@ -997,14 +1347,19 @@ window.addEventListener('load', () => {
             console.log('user NFTs:', userRoles.nftData?.length || 0);
         }
 
-        // Проверяем админские права если подключен
         if (wallet?.connected) {
             app.checkAndShowAdminPanel();
         }
     }, 3000);
 });
 
-// Cleanup on page unload
 window.addEventListener('beforeunload', () => {
-    app.destroy();
+    if (window.wallet) {
+        wallet.destroy();
+    }
+    if (window.app) {
+        app.destroy();
+    }
 });
+
+window.app = app;

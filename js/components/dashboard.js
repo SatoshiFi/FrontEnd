@@ -1,4 +1,4 @@
-// js/components/dashboard.js - ПОЛНАЯ ОБНОВЛЕННАЯ ВЕРСИЯ С ИСПРАВЛЕННЫМИ API
+// js/components/dashboard.js - ИСПРАВЛЕННАЯ ВЕРСИЯ С КОРРЕКТНЫМИ API И КОНТРАКТАМИ
 class DashboardManager {
     constructor() {
         this.widgets = {};
@@ -7,7 +7,6 @@ class DashboardManager {
 
     async initialize() {
         await this.buildDashboard();
-        // Автообновления отключены
     }
 
     async buildDashboard() {
@@ -41,34 +40,12 @@ class DashboardManager {
                 return this.createMiningWidget(widget);
             case 'frost-sessions':
                 return this.createFrostSessionsWidget(widget);
-            case 'custody':
-                return this.createCustodyWidget(widget);
             case 'dkg-sessions':
                 return this.createDKGSessionsWidget(widget);
             case 'analytics':
                 return this.createAnalyticsWidget(widget);
             case 'rewards':
                 return this.createRewardsWidget(widget);
-            case 'participants':
-                return this.createParticipantsWidget(widget);
-            case 'security':
-                return this.createSecurityWidget(widget);
-            case 'mining-stats':
-                return this.createMiningStatsWidget(widget);
-            case 'payouts':
-                return this.createPayoutsWidget(widget);
-            case 'pool-stats':
-                return this.createPoolStatsWidget(widget);
-            case 'hardware':
-                return this.createHardwareWidget(widget);
-            case 'frost-signatures':
-                return this.createFrostSignaturesWidget(widget);
-            case 'keys':
-                return this.createKeysWidget(widget);
-            case 'invitations':
-                return this.createInvitationsWidget(widget);
-            case 'sessions':
-                return this.createSessionsWidget(widget);
             default:
                 return this.createGenericWidget(widget, type);
         }
@@ -78,17 +55,17 @@ class DashboardManager {
         widget.innerHTML = `
         <div class="widget-header">
         <h3 class="widget-title">Create Pool</h3>
-        <a href="#" class="widget-action" onclick="showSection('poolCreation')">Create →</a>
+        <a href="#" class="widget-action" onclick="dashboard.checkPoolManagerAndRedirect(); return false;">Create →</a>
         </div>
         <div class="widget-content">
         <p>Create a new mining pool through FROST DKG</p>
         <div class="widget-stats">
         <div class="stat">
-        <span class="stat-value" id="activeDKGSessions">0</span>
+        <span class="stat-value" id="activeDKGSessions">-</span>
         <span class="stat-label">Active DKG</span>
         </div>
         <div class="stat">
-        <span class="stat-value" id="totalPoolsCreated">0</span>
+        <span class="stat-value" id="totalPoolsCreated">-</span>
         <span class="stat-label">Pools Created</span>
         </div>
         </div>
@@ -183,6 +160,45 @@ class DashboardManager {
         return widget;
     }
 
+    createFrostSessionsWidget(widget) {
+        widget.innerHTML = `
+        <div class="widget-header">
+        <h3 class="widget-title">FROST Sessions</h3>
+        <a href="#" class="widget-action" onclick="showSection('poolCreation')">Manage →</a>
+        </div>
+        <div class="widget-content">
+        <div id="activeSessions" class="sessions-list">
+        <div class="loading">Loading sessions...</div>
+        </div>
+        </div>
+        `;
+        this.loadFrostSessions(widget);
+        return widget;
+    }
+
+    createDKGSessionsWidget(widget) {
+        widget.innerHTML = `
+        <div class="widget-header">
+        <h3 class="widget-title">DKG Sessions</h3>
+        <a href="#" class="widget-action" onclick="showSection('poolCreation')">Create →</a>
+        </div>
+        <div class="widget-content">
+        <div class="widget-stats">
+        <div class="stat">
+        <span class="stat-value" id="dkgActive">-</span>
+        <span class="stat-label">Active DKG</span>
+        </div>
+        <div class="stat">
+        <span class="stat-value" id="dkgCompleted">-</span>
+        <span class="stat-label">Completed</span>
+        </div>
+        </div>
+        </div>
+        `;
+        this.loadDKGSessions(widget);
+        return widget;
+    }
+
     createAnalyticsWidget(widget) {
         widget.innerHTML = `
         <div class="widget-header">
@@ -236,306 +252,11 @@ class DashboardManager {
         return widget;
     }
 
-    createFrostSessionsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">FROST Sessions</h3>
-        <a href="#" class="widget-action" onclick="showSection('poolCreation')">Manage →</a>
-        </div>
-        <div class="widget-content">
-        <div id="activeSessions" class="sessions-list">
-        <div class="loading">Loading sessions...</div>
-        </div>
-        </div>
-        `;
-        this.loadFrostSessions(widget);
-        return widget;
-    }
-
-    createCustodyWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Custody Management</h3>
-        <a href="#" class="widget-action">Signatures →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="pendingSignatures">0</span>
-        <span class="stat-label">Pending Signatures</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="totalKeys">0</span>
-        <span class="stat-label">Managed Keys</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createParticipantsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Participants</h3>
-        <a href="#" class="widget-action">Manage →</a>
-        </div>
-        <div class="widget-content">
-        <div id="participantsList">
-        <div class="loading">Loading participants...</div>
-        </div>
-        </div>
-        `;
-        this.loadParticipants(widget);
-        return widget;
-    }
-
-    createSecurityWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Security Status</h3>
-        <a href="#" class="widget-action">Settings →</a>
-        </div>
-        <div class="widget-content">
-        <div class="security-status">
-        <div class="status-item">
-        <span class="status-indicator status-success"></span>
-        <span>Wallet Connected</span>
-        </div>
-        <div class="status-item">
-        <span class="status-indicator status-success"></span>
-        <span>FROST Active</span>
-        </div>
-        <div class="status-item">
-        <span class="status-indicator status-warning"></span>
-        <span>2FA Recommended</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createMiningStatsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Mining Statistics</h3>
-        <a href="#" class="widget-action">Details →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="miningUptime">-</span>
-        <span class="stat-label">Uptime</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="averageHashrate">-</span>
-        <span class="stat-label">Avg Hashrate</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="validityRate">-</span>
-        <span class="stat-label">Share Validity</span>
-        </div>
-        </div>
-        </div>
-        `;
-        this.loadMiningStatsData(widget);
-        return widget;
-    }
-
-    createPayoutsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Payouts</h3>
-        <a href="#" class="widget-action">History →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="totalPaid">0.0 BTC</span>
-        <span class="stat-label">Total Paid</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="lastPayoutAmount">0.0 BTC</span>
-        <span class="stat-label">Last Payout</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="nextPayout">24h</span>
-        <span class="stat-label">Next Payout</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createPoolStatsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Pool Statistics</h3>
-        <a href="#" class="widget-action">Details →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="poolEfficiency">-</span>
-        <span class="stat-label">Pool Efficiency</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="poolLuck">-</span>
-        <span class="stat-label">Pool Luck</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="poolFee">-</span>
-        <span class="stat-label">Pool Fee</span>
-        </div>
-        </div>
-        </div>
-        `;
-        this.loadPoolStatsData(widget);
-        return widget;
-    }
-
-    createHardwareWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Hardware Status</h3>
-        <a href="#" class="widget-action">Monitor →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="deviceTemp">-</span>
-        <span class="stat-label">Temperature</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="powerDraw">-</span>
-        <span class="stat-label">Power Draw</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="fanSpeed">-</span>
-        <span class="stat-label">Fan Speed</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createFrostSignaturesWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">FROST Signatures</h3>
-        <a href="#" class="widget-action">Sign →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="pendingSigs">0</span>
-        <span class="stat-label">Pending</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="completedSigs">0</span>
-        <span class="stat-label">Completed</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createKeysWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Key Management</h3>
-        <a href="#" class="widget-action">Manage →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="activeKeys">0</span>
-        <span class="stat-label">Active Keys</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="keyShares">0</span>
-        <span class="stat-label">Key Shares</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createInvitationsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">Invitations</h3>
-        <a href="#" class="widget-action">Send →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="sentInvites">0</span>
-        <span class="stat-label">Sent</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="pendingInvites">0</span>
-        <span class="stat-label">Pending</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createSessionsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">DKG Sessions</h3>
-        <a href="#" class="widget-action">Create →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="activeSessions">0</span>
-        <span class="stat-label">Active</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="completedSessions">0</span>
-        <span class="stat-label">Completed</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
-    createDKGSessionsWidget(widget) {
-        widget.innerHTML = `
-        <div class="widget-header">
-        <h3 class="widget-title">DKG Sessions</h3>
-        <a href="#" class="widget-action" onclick="showSection('poolCreation')">Create →</a>
-        </div>
-        <div class="widget-content">
-        <div class="widget-stats">
-        <div class="stat">
-        <span class="stat-value" id="dkgActive">0</span>
-        <span class="stat-label">Active DKG</span>
-        </div>
-        <div class="stat">
-        <span class="stat-value" id="dkgCompleted">0</span>
-        <span class="stat-label">Completed</span>
-        </div>
-        </div>
-        </div>
-        `;
-        return widget;
-    }
-
     createGenericWidget(widget, type) {
         const typeConfig = {
-            'dkg-sessions': { title: 'DKG Sessions', icon: '🔐' },
-            'pool-overview': { title: 'Pool Overview', icon: '📊' }
+            'custody': { title: 'Custody Management', icon: '🔐' },
+            'participants': { title: 'Participants', icon: '👥' },
+            'security': { title: 'Security Status', icon: '🛡️' }
         };
 
         const config = typeConfig[type] || { title: type, icon: '📋' };
@@ -556,210 +277,479 @@ class DashboardManager {
 
     async loadPoolCreationStats(widget) {
         try {
-            // ИСПРАВЛЕНО: правильное формирование URL
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.POOLS}`);
-            if (response.ok) {
-                const data = await response.json();
-                const pools = data.pools || [];
+            // ИСПРАВЛЕНО: Загружаем только наши пулы из MiningPoolFactoryV6
+            if (wallet.connected && contracts.initialized) {
+                const factory = contracts.getContract('factory');
+                const poolCount = await factory.getPoolCount();
 
                 const totalPoolsElement = widget.querySelector('#totalPoolsCreated');
                 if (totalPoolsElement) {
-                    totalPoolsElement.textContent = pools.length;
+                    totalPoolsElement.textContent = poolCount.toString();
+                }
+            } else {
+                const totalPoolsElement = widget.querySelector('#totalPoolsCreated');
+                if (totalPoolsElement) {
+                    totalPoolsElement.textContent = '0';
                 }
             }
+
+            // ИСПРАВЛЕНО: Загружаем DKG сессии из корректного FROST координатора
+            await this.loadDKGStats(widget.querySelector('#activeDKGSessions'));
+
         } catch (error) {
             console.error('Failed to load pool creation stats:', error);
+            const totalPoolsElement = widget.querySelector('#totalPoolsCreated');
+            if (totalPoolsElement) {
+                totalPoolsElement.textContent = 'Error';
+            }
         }
     }
 
-    async loadPoolOverviewStats(widget) {
+    async loadDKGStats(element) {
         try {
-            // ИСПРАВЛЕНО: используем правильный endpoint
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`);
-            if (response.ok) {
-                const stats = await response.json();
-
-                const hashrateElement = widget.querySelector('#poolHashrate');
-                const blocksElement = widget.querySelector('#poolBlocks');
-                const workersElement = widget.querySelector('#poolWorkers');
-
-                if (hashrateElement) hashrateElement.textContent = `${stats.total_hashrate || 0} TH/s`;
-                if (blocksElement) blocksElement.textContent = stats.total_blocks || 0;
-                if (workersElement) workersElement.textContent = stats.active_workers || 0;
+            if (!wallet.connected || !contracts.initialized) {
+                if (element) element.textContent = '0';
+                return;
             }
+
+            // ИСПРАВЛЕНО: Используем правильный FROST_COORDINATOR из конфига
+            const frostCoordinator = contracts.getContract('frostCoordinator');
+
+            // Получаем сессии пользователя
+            const userSessions = await frostCoordinator.getUserSessions(wallet.account);
+            let activeSessions = 0;
+
+            // Проверяем статус каждой сессии
+            for (const sessionId of userSessions) {
+                try {
+                    const session = await frostCoordinator.getSession(sessionId);
+                    // Состояние 0-3 = активные, 4 = завершенная
+                    if (session.state < 4) {
+                        activeSessions++;
+                    }
+                } catch (error) {
+                    console.warn(`Error checking session ${sessionId}:`, error.message);
+                }
+            }
+
+            if (element) {
+                element.textContent = activeSessions.toString();
+            }
+
         } catch (error) {
-            console.error('Failed to load pool overview stats:', error);
+            console.error('Failed to load DKG stats:', error);
+            if (element) {
+                element.textContent = 'Error';
+            }
+        }
+    }
+
+    async loadDKGSessions(widget) {
+        const activeElement = widget.querySelector('#dkgActive');
+        const completedElement = widget.querySelector('#dkgCompleted');
+
+        try {
+            if (!wallet.connected || !contracts.initialized) {
+                if (activeElement) activeElement.textContent = '0';
+                if (completedElement) completedElement.textContent = '0';
+                return;
+            }
+
+            const frostCoordinator = contracts.getContract('frostCoordinator');
+            const userSessions = await frostCoordinator.getUserSessions(wallet.account);
+
+            let activeSessions = 0;
+            let completedSessions = 0;
+
+            for (const sessionId of userSessions) {
+                try {
+                    const session = await frostCoordinator.getSession(sessionId);
+                    if (session.state < 4) {
+                        activeSessions++;
+                    } else {
+                        completedSessions++;
+                    }
+                } catch (error) {
+                    console.warn(`Error checking session ${sessionId}:`, error.message);
+                }
+            }
+
+            if (activeElement) activeElement.textContent = activeSessions.toString();
+            if (completedElement) completedElement.textContent = completedSessions.toString();
+
+        } catch (error) {
+            console.error('Failed to load DKG sessions:', error);
+            if (activeElement) activeElement.textContent = 'Error';
+            if (completedElement) completedElement.textContent = 'Error';
         }
     }
 
     async loadPoolManagementStats(widget) {
         try {
-            // ИСПРАВЛЕНО: правильные endpoints
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.POOLS}`);
-            if (response.ok) {
-                const data = await response.json();
-                const pools = data.pools || [];
+            if (!wallet.connected || !contracts.initialized) {
+                this.setWidgetStats(widget, {
+                    myPoolsCount: '0',
+                    totalHashrate: '0 TH/s',
+                    activeMiners: '0'
+                });
+                return;
+            }
 
-                const myPoolsElement = widget.querySelector('#myPoolsCount');
-                if (myPoolsElement) {
-                    myPoolsElement.textContent = pools.length;
+            const factory = contracts.getContract('factory');
+            let myPoolsCount = 0;
+            let totalHashrate = 0;
+            let activeMiners = 0;
+
+            try {
+                const poolCount = await factory.getPoolCount();
+
+                for (let i = 0; i < poolCount; i++) {
+                    try {
+                        const poolAddress = await factory.getPoolAt(i);
+
+
+                        const poolInfoRaw = await factory.poolsInfo(poolAddress);
+
+
+                        const [
+                            poolCore,      // address
+                            mpToken,       // address
+                            poolId,        // string
+                            asset,         // string
+                            isActive,      // bool
+                            createdAt,     // uint256
+                            creator        // address
+                        ] = poolInfoRaw;
+
+
+                        if (creator.toLowerCase() === wallet.account.toLowerCase() && isActive) {
+                            myPoolsCount++;
+                        }
+
+                    } catch (poolError) {
+
+                        console.warn(`Error loading pool ${i}:`, poolError.message);
+                        continue;
+                    }
+                }
+
+            } catch (factoryError) {
+                console.error('Error accessing factory:', factoryError);
+            }
+
+
+            try {
+                const statsResponse = await fetch(
+                    `${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`
+                );
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    totalHashrate = stats.total_hashrate || 0;
+                    activeMiners = stats.active_workers || 0;
+                }
+            } catch (apiError) {
+                console.warn('Mining API not available:', apiError.message);
+            }
+
+            this.setWidgetStats(widget, {
+                myPoolsCount: myPoolsCount.toString(),
+                                totalHashrate: `${totalHashrate} TH/s`,
+                                activeMiners: activeMiners.toString()
+            });
+
+        } catch (error) {
+            console.error('Failed to load pool management stats:', error);
+            this.setWidgetStats(widget, {
+                myPoolsCount: 'Error',
+                totalHashrate: 'Error',
+                activeMiners: 'Error'
+            });
+        }
+    }
+
+    async loadPoolOverviewStats(widget) {
+        try {
+            // ИСПРАВЛЕНО: Показываем только статистику наших пулов
+            const stats = {
+                poolHashrate: '0 TH/s',
+                poolBlocks: '0',
+                poolWorkers: '0'
+            };
+
+            if (wallet.connected && contracts.initialized) {
+                try {
+                    // Пытаемся получить статистику из API, но только для наших пулов
+                    const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        stats.poolHashrate = `${data.total_hashrate || 0} TH/s`;
+                        stats.poolBlocks = (data.total_blocks || 0).toString();
+                        stats.poolWorkers = (data.active_workers || 0).toString();
+                    }
+                } catch (apiError) {
+                    console.warn('Mining API not available:', apiError.message);
                 }
             }
 
-            const statsResponse = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`);
-            if (statsResponse.ok) {
-                const stats = await statsResponse.json();
+            this.setWidgetStats(widget, stats);
 
-                const hashrateElement = widget.querySelector('#totalHashrate');
-                const minersElement = widget.querySelector('#activeMiners');
-
-                if (hashrateElement) hashrateElement.textContent = `${stats.total_hashrate || 0} TH/s`;
-                if (minersElement) minersElement.textContent = stats.active_workers || 0;
-            }
         } catch (error) {
-            console.error('Failed to load pool management stats:', error);
+            console.error('Failed to load pool overview stats:', error);
+            this.setWidgetStats(widget, { poolHashrate: 'Error', poolBlocks: 'Error', poolWorkers: 'Error' });
         }
     }
 
     async loadMiningStats(widget) {
         try {
-            const [statsResponse, sharesResponse] = await Promise.all([
-                fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`),
-                                                                      fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.SHARES}/stats?hours=24`)
-            ]);
+            const stats = {
+                currentHashrate: '0 TH/s',
+                sharesSubmitted: '0',
+                pendingRewards: '0.0 BTC'
+            };
 
-            if (statsResponse.ok) {
-                const stats = await statsResponse.json();
-                const hashrateElement = widget.querySelector('#currentHashrate');
-                if (hashrateElement) {
-                    hashrateElement.textContent = `${stats.total_hashrate || 0} TH/s`;
+            if (wallet.connected) {
+                try {
+                    const [statsResponse, sharesResponse] = await Promise.all([
+                        fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`),
+                                                                              fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.SHARES}/stats?hours=24`)
+                    ]);
+
+                    if (statsResponse.ok) {
+                        const statsData = await statsResponse.json();
+                        stats.currentHashrate = `${statsData.total_hashrate || 0} TH/s`;
+                    }
+
+                    if (sharesResponse.ok) {
+                        const sharesData = await sharesResponse.json();
+                        stats.sharesSubmitted = (sharesData.total_shares || 0).toString();
+                    }
+                } catch (apiError) {
+                    console.warn('Mining API not available:', apiError.message);
                 }
             }
 
-            if (sharesResponse.ok) {
-                const shares = await sharesResponse.json();
-                const sharesElement = widget.querySelector('#sharesSubmitted');
-                if (sharesElement) {
-                    sharesElement.textContent = shares.total_shares || 0;
-                }
-            }
+            this.setWidgetStats(widget, stats);
+
         } catch (error) {
             console.error('Failed to load mining stats:', error);
+            this.setWidgetStats(widget, { currentHashrate: 'Error', sharesSubmitted: 'Error', pendingRewards: 'Error' });
         }
     }
 
     async loadAnalyticsStats(widget) {
         try {
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`);
-            if (response.ok) {
-                const data = await response.json();
+            const stats = {
+                totalBlocks: '0',
+                networkHashrate: '0 TH/s',
+                activeWorkers: '0'
+            };
 
-                const blocksElement = widget.querySelector('#totalBlocks');
-                const hashrateElement = widget.querySelector('#networkHashrate');
-                const workersElement = widget.querySelector('#activeWorkers');
-
-                if (blocksElement) blocksElement.textContent = data.total_blocks || 0;
-                if (hashrateElement) hashrateElement.textContent = `${data.total_hashrate || 0} TH/s`;
-                if (workersElement) workersElement.textContent = data.active_workers || 0;
-            }
-        } catch (error) {
-            console.error('Failed to load analytics stats:', error);
-        }
-    }
-
-    async loadMiningStatsData(widget) {
-        try {
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.SHARES}/stats?hours=24`);
-            if (response.ok) {
-                const stats = await response.json();
-
-                const uptimeElement = widget.querySelector('#miningUptime');
-                const avgHashrateElement = widget.querySelector('#averageHashrate');
-                const validityElement = widget.querySelector('#validityRate');
-
-                if (uptimeElement) uptimeElement.textContent = '24h';
-                if (avgHashrateElement) avgHashrateElement.textContent = `${stats.shares_per_hour || 0}/h`;
-                if (validityElement) validityElement.textContent = `${stats.validity_rate || 0}%`;
-            }
-        } catch (error) {
-            console.error('Failed to load mining stats data:', error);
-        }
-    }
-
-    async loadPoolStatsData(widget) {
-        try {
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.POOLS}`);
-            if (response.ok) {
-                const data = await response.json();
-                const pools = data.pools || [];
-
-                const efficiencyElement = widget.querySelector('#poolEfficiency');
-                const luckElement = widget.querySelector('#poolLuck');
-                const feeElement = widget.querySelector('#poolFee');
-
-                if (pools.length > 0) {
-                    const pool = pools[0];
-                    if (efficiencyElement) efficiencyElement.textContent = '99.5%';
-                    if (luckElement) luckElement.textContent = '101.2%';
-                    if (feeElement) feeElement.textContent = `${(pool.fee_percentage * 100).toFixed(1)}%`;
+            if (wallet.connected) {
+                try {
+                    const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.STATS}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        stats.totalBlocks = (data.total_blocks || 0).toString();
+                        stats.networkHashrate = `${data.total_hashrate || 0} TH/s`;
+                        stats.activeWorkers = (data.active_workers || 0).toString();
+                    }
+                } catch (apiError) {
+                    console.warn('Mining API not available:', apiError.message);
                 }
             }
+
+            this.setWidgetStats(widget, stats);
+
         } catch (error) {
-            console.error('Failed to load pool stats data:', error);
+            console.error('Failed to load analytics stats:', error);
+            this.setWidgetStats(widget, { totalBlocks: 'Error', networkHashrate: 'Error', activeWorkers: 'Error' });
         }
     }
 
     async loadFrostSessions(widget) {
         const sessionsContainer = widget.querySelector('#activeSessions');
         try {
-            if (wallet.connected) {
-                sessionsContainer.innerHTML = `
-                <div class="session-item">
-                <span class="session-status active">●</span>
-                <span class="session-id">No active sessions</span>
-                </div>
-                `;
-            } else {
+            if (!wallet.connected || !contracts.initialized) {
                 sessionsContainer.innerHTML = `
                 <div class="session-item">
                 <span class="session-status inactive">●</span>
                 <span class="session-id">Connect wallet to view sessions</span>
                 </div>
                 `;
+                return;
             }
+
+            // ИСПРАВЛЕНО: Загружаем реальные FROST сессии
+            const frostCoordinator = contracts.getContract('frostCoordinator');
+            const userSessions = await frostCoordinator.getUserSessions(wallet.account);
+
+            if (userSessions.length === 0) {
+                sessionsContainer.innerHTML = `
+                <div class="session-item">
+                <span class="session-status inactive">●</span>
+                <span class="session-id">No active sessions</span>
+                </div>
+                `;
+                return;
+            }
+
+            let sessionsHTML = '';
+            let activeSessions = 0;
+
+            for (const sessionId of userSessions.slice(0, 3)) { // Показываем только первые 3
+                try {
+                    const session = await frostCoordinator.getSession(sessionId);
+                    const isActive = session.state < 4;
+                    if (isActive) activeSessions++;
+
+                    sessionsHTML += `
+                    <div class="session-item">
+                    <span class="session-status ${isActive ? 'active' : 'completed'}">●</span>
+                    <span class="session-id">Session ${sessionId.toString().slice(-6)} (${isActive ? 'Active' : 'Completed'})</span>
+                    </div>
+                    `;
+                } catch (error) {
+                    console.warn(`Error loading session ${sessionId}:`, error.message);
+                }
+            }
+
+            if (userSessions.length > 3) {
+                sessionsHTML += `
+                <div class="session-item">
+                <span class="session-status">●</span>
+                <span class="session-id">+${userSessions.length - 3} more sessions</span>
+                </div>
+                `;
+            }
+
+            sessionsContainer.innerHTML = sessionsHTML;
+
         } catch (error) {
+            console.error('Failed to load FROST sessions:', error);
             sessionsContainer.innerHTML = `
             <div class="error">Error loading sessions</div>
             `;
         }
     }
 
-    async loadParticipants(widget) {
-        const participantsContainer = widget.querySelector('#participantsList');
-        try {
-            const response = await fetch(`${CONFIG.API.MINING}${CONFIG.API.ENDPOINTS.WORKERS}`);
-            if (response.ok) {
-                const data = await response.json();
-                const workers = data.workers || [];
+    // =============== POOL MANAGER ROLE CHECK METHODS ===============
 
-                if (workers.length > 0) {
-                    participantsContainer.innerHTML = workers.slice(0, 3).map(worker => `
-                    <div class="participant-item">
-                    <span class="participant-name">${worker.name}</span>
-                    <span class="participant-status ${worker.status}">${worker.status}</span>
-                    </div>
-                    `).join('');
-                } else {
-                    participantsContainer.innerHTML = '<p>No participants yet</p>';
-                }
+    async checkPoolManagerAndRedirect() {
+        try {
+            if (!window.contracts || !contracts.initialized) {
+                app.showNotification('warning', 'Contracts not initialized');
+                return;
             }
+
+            const factory = contracts.getContract('factory');
+            if (!factory) {
+                app.showNotification('error', 'Factory contract not available');
+                return;
+            }
+
+            // Проверяем роль Pool Manager
+            const POOL_MANAGER_ROLE = await factory.POOL_MANAGER_ROLE();
+            const hasRole = await factory.hasRole(POOL_MANAGER_ROLE, wallet.account);
+
+            if (hasRole) {
+                // Есть роль - переходим к созданию пула
+                showSection('poolCreation');
+            } else {
+                // Нет роли - показываем модалку с предложением запросить
+                this.showPoolManagerRequestModal();
+            }
+
         } catch (error) {
-            console.error('Failed to load participants:', error);
-            participantsContainer.innerHTML = '<div class="error">Error loading participants</div>';
+            console.error('Error checking Pool Manager role:', error);
+            // На случай ошибки - всё равно переходим к Pool Creation,
+            // там тоже есть проверка
+            showSection('poolCreation');
         }
     }
 
-    // =============== MINING CONTROLS - ИСПРАВЛЕНО ===============
+    showPoolManagerRequestModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+        <div class="modal-content pool-manager-request-modal">
+        <div class="modal-header">
+        <h3>Pool Manager Role Required</h3>
+        <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+        </div>
+        <div class="modal-body">
+        <div class="info-box warning">
+        <p>To create mining pools, you need the <strong>Pool Manager</strong> role.</p>
+        </div>
+
+        <h4>What you can do:</h4>
+        <ul>
+        <li>Request Pool Manager role from administrators</li>
+        <li>Wait for admin approval (typically within 24 hours)</li>
+        <li>After approval, return here to create your pool</li>
+        </ul>
+
+        <div class="role-benefits">
+        <h4>Pool Manager Role Benefits:</h4>
+        <ul>
+        <li>Create and configure mining pools</li>
+        <li>Manage FROST multisig governance</li>
+        <li>Configure reward distribution algorithms</li>
+        <li>Monitor pool performance and statistics</li>
+        </ul>
+        </div>
+
+        <p class="note">💡 Administrators typically review requests within 24 hours.</p>
+        </div>
+
+        <div class="modal-actions">
+        <button onclick="dashboard.requestPoolManagerRole(this.parentElement.parentElement.parentElement)"
+        class="btn btn-primary">
+        Request Pool Manager Role
+        </button>
+        <button onclick="this.parentElement.parentElement.parentElement.remove()"
+        class="btn btn-secondary">
+        Cancel
+        </button>
+        </div>
+        </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    async requestPoolManagerRole(modal) {
+        if (!window.requests) {
+            app.showNotification('error', 'Request system not available');
+            return;
+        }
+
+        const message = 'I would like to create and manage mining pools on the platform. Please grant me Pool Manager role access to enable pool creation and FROST governance features.';
+        const success = await requests.submitRoleRequest('pool_manager', message);
+
+        if (success) {
+            modal.remove();
+            app.showNotification('success', 'Pool Manager role request submitted! Check "My Requests" section for status.');
+
+            // Переходим в раздел с запросами
+            showSection('nftCollection');
+            if (window.nftCollection) {
+                nftCollection.switchTab('outgoing');
+            }
+        }
+    }
+
+    // =============== UTILITY METHODS ===============
+
+    setWidgetStats(widget, stats) {
+        Object.keys(stats).forEach(key => {
+            const element = widget.querySelector(`#${key}`);
+            if (element) {
+                element.textContent = stats[key];
+            }
+        });
+    }
+
+    // =============== MINING CONTROLS ===============
 
     async startMining() {
         try {
@@ -797,12 +787,7 @@ class DashboardManager {
         }
     }
 
-    // =============== УБРАНЫ АВТООБНОВЛЕНИЯ ===============
-
-    startAutoRefresh() {
-        // ОТКЛЮЧЕНО - автообновления не используются
-        console.log('Auto-refresh is disabled per configuration');
-    }
+    // =============== REFRESH METHODS ===============
 
     async refreshDashboard() {
         const widgets = document.querySelectorAll('.widget');
@@ -831,17 +816,11 @@ class DashboardManager {
             case 'analytics':
                 this.loadAnalyticsStats(widget);
                 break;
-            case 'participants':
-                this.loadParticipants(widget);
-                break;
             case 'frost-sessions':
                 this.loadFrostSessions(widget);
                 break;
-            case 'mining-stats':
-                this.loadMiningStatsData(widget);
-                break;
-            case 'pool-stats':
-                this.loadPoolStatsData(widget);
+            case 'dkg-sessions':
+                this.loadDKGSessions(widget);
                 break;
         }
     }

@@ -12,12 +12,24 @@ class SettingsManager {
         this.loadSettings();
         this.buildSettingsInterface();
         this.bindEvents();
+
+        // Загружаем Bitcoin адреса если кошелек подключен
+        if (wallet.connected) {
+            await this.loadBitcoinAddresses();
+        }
+
         this.initialized = true;
     }
 
     loadSettings() {
-        // Загружаем настройки из localStorage
-        this.settings = JSON.parse(localStorage.getItem('satoshiFiSettings') || '{}');
+        // Загружаем настройки из localStorage (только UI настройки)
+        try {
+            const stored = localStorage.getItem('satoshiFiSettings');
+            this.settings = stored ? JSON.parse(stored) : {};
+        } catch (error) {
+            console.warn('Failed to load settings from localStorage:', error);
+            this.settings = {};
+        }
 
         // Настройки по умолчанию
         const defaults = {
@@ -25,7 +37,7 @@ class SettingsManager {
             miningNotifications: true,
             requestNotifications: true,
             dkgNotifications: true,
-            autoRefresh: CONFIG.UI_CONFIG.AUTO_REFRESH || true,
+            autoRefresh: CONFIG.UI_CONFIG.AUTO_REFRESH || false,
             animations: CONFIG.UI_CONFIG.ANIMATIONS_ENABLED || true,
             theme: CONFIG.UI_CONFIG.THEME || 'classic',
             developerMode: CONFIG.UI_CONFIG.DEVELOPER_MODE || false
@@ -39,240 +51,248 @@ class SettingsManager {
         if (!settingsContainer) return;
 
         settingsContainer.innerHTML = `
-            <div class="settings-navigation">
-                <div class="settings-nav">
-                    <button class="settings-tab active" data-tab="profile">
-                        <span class="tab-icon">👤</span>
-                        <span class="tab-text">Profile</span>
-                    </button>
-                    <button class="settings-tab" data-tab="notifications">
-                        <span class="tab-icon">🔔</span>
-                        <span class="tab-text">Notifications</span>
-                    </button>
-                    <button class="settings-tab" data-tab="security">
-                        <span class="tab-icon">🔒</span>
-                        <span class="tab-text">Security</span>
-                    </button>
-                    <button class="settings-tab" data-tab="preferences">
-                        <span class="tab-icon">⚙️</span>
-                        <span class="tab-text">Preferences</span>
-                    </button>
-                </div>
-            </div>
+        <div class="settings-navigation">
+        <div class="settings-nav">
+        <button class="settings-tab active" data-tab="profile">
+        <span class="tab-icon">👤</span>
+        <span class="tab-text">Profile</span>
+        </button>
+        <button class="settings-tab" data-tab="notifications">
+        <span class="tab-icon">🔔</span>
+        <span class="tab-text">Notifications</span>
+        </button>
+        <button class="settings-tab" data-tab="security">
+        <span class="tab-icon">🔒</span>
+        <span class="tab-text">Security</span>
+        </button>
+        <button class="settings-tab" data-tab="preferences">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-text">Preferences</span>
+        </button>
+        </div>
+        </div>
 
-            <div class="settings-content">
-                <!-- Profile Settings -->
-                <div id="profile-settings" class="settings-panel active">
-                    <div class="panel-header">
-                        <h3>Profile Settings</h3>
-                        <p>Manage your account information and preferences</p>
-                    </div>
-                    <div class="settings-form">
-                        <div class="form-group">
-                            <label class="form-label">Wallet Address</label>
-                            <div class="input-group">
-                                <input type="text" class="form-input" id="walletAddress"
-                                       value="${wallet.connected ? wallet.account : 'Not connected'}" readonly>
-                                <button class="btn btn-outline" onclick="settings.copyToClipboard('${wallet.connected ? wallet.account : ''}')">
-                                    Copy
-                                </button>
-                            </div>
-                        </div>
+        <div class="settings-content">
+        <!-- Profile Settings -->
+        <div id="profile-settings" class="settings-panel active">
+        <div class="panel-header">
+        <h3>Profile Settings</h3>
+        <p>Manage your account information and preferences</p>
+        </div>
+        <div class="settings-form">
+        <div class="form-group">
+        <label class="form-label">Wallet Address</label>
+        <div class="input-group">
+        <input type="text" class="form-input" id="walletAddress"
+        value="${wallet.connected ? wallet.account : 'Not connected'}" readonly>
+        <button class="btn btn-outline" onclick="settings.copyToClipboard('${wallet.connected ? wallet.account : ''}')">
+        Copy
+        </button>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Display Name</label>
-                            <input type="text" class="form-input" id="displayName"
-                                   value="${wallet.connected ? wallet.formatAddress(wallet.account) : 'Not connected'}" readonly>
-                            <small class="form-help">Display name is automatically generated from your wallet address</small>
-                        </div>
+        <div class="form-group">
+        <label class="form-label">Display Name</label>
+        <input type="text" class="form-input" id="displayName"
+        value="${wallet.connected ? wallet.formatAddress(wallet.account) : 'Not connected'}" readonly>
+        <small class="form-help">Display name is automatically generated from your wallet address</small>
+        </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Primary Role</label>
-                            <div class="role-display">
-                                <span class="role-badge" id="primaryRoleBadge">${userRoles.currentRoles[0] || 'User'}</span>
-                                <small class="form-help">Roles are determined by your NFT memberships</small>
-                            </div>
-                        </div>
+        <div class="form-group">
+        <label class="form-label">Primary Role</label>
+        <div class="role-display">
+        <span class="role-badge" id="primaryRoleBadge">${userRoles.currentRoles[0] || 'User'}</span>
+        <small class="form-help">Roles are determined by your NFT memberships</small>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Network</label>
-                            <div class="network-status">
-                                <span class="network-indicator success"></span>
-                                <span>Sepolia Testnet</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="form-group">
+        <label class="form-label">Network</label>
+        <div class="network-status">
+        <span class="network-indicator success"></span>
+        <span>Sepolia Testnet</span>
+        </div>
+        </div>
 
-                <!-- Notifications Settings -->
-                <div id="notifications-settings" class="settings-panel">
-                    <div class="panel-header">
-                        <h3>Notification Settings</h3>
-                        <p>Configure how you receive notifications</p>
-                    </div>
-                    <div class="settings-form">
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">Pool Notifications</label>
-                                    <small>Get notified about pool activities and status changes</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="poolNotifications" ${this.settings.poolNotifications ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
+        <div class="form-group">
+        <label class="form-label">Bitcoin Payout Addresses</label>
+        <div id="bitcoinAddressesList" class="addresses-list">
+        <div class="loading-text">Loading addresses...</div>
+        </div>
+        <small class="form-help">Bitcoin addresses linked to your workers for mining rewards</small>
+        </div>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">Mining Notifications</label>
-                                    <small>Receive updates about mining operations and rewards</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="miningNotifications" ${this.settings.miningNotifications ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
+        <!-- Notifications Settings -->
+        <div id="notifications-settings" class="settings-panel">
+        <div class="panel-header">
+        <h3>Notification Settings</h3>
+        <p>Configure how you receive notifications</p>
+        </div>
+        <div class="settings-form">
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">Pool Notifications</label>
+        <small>Get notified about pool activities and status changes</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="poolNotifications" ${this.settings.poolNotifications ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">Request Notifications</label>
-                                    <small>Get alerts for pool access requests and approvals</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="requestNotifications" ${this.settings.requestNotifications ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">Mining Notifications</label>
+        <small>Receive updates about mining operations and rewards</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="miningNotifications" ${this.settings.miningNotifications ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">DKG Notifications</label>
-                                    <small>Notifications for DKG sessions and ceremony progress</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="dkgNotifications" ${this.settings.dkgNotifications ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">Request Notifications</label>
+        <small>Get alerts for pool access requests and approvals</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="requestNotifications" ${this.settings.requestNotifications ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
 
-                <!-- Security Settings -->
-                <div id="security-settings" class="settings-panel">
-                    <div class="panel-header">
-                        <h3>Security Settings</h3>
-                        <p>Monitor your account security status</p>
-                    </div>
-                    <div class="settings-form">
-                        <div class="security-status">
-                            <div class="status-item">
-                                <div class="status-info">
-                                    <span class="status-label">Wallet Connection</span>
-                                    <span class="status-description">Your wallet is connected and verified</span>
-                                </div>
-                                <span class="status-indicator ${wallet.connected ? 'success' : 'error'}">
-                                    ${wallet.connected ? '✅' : '❌'}
-                                </span>
-                            </div>
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">DKG Notifications</label>
+        <small>Notifications for DKG sessions and ceremony progress</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="dkgNotifications" ${this.settings.dkgNotifications ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
+        </div>
+        </div>
 
-                            <div class="status-item">
-                                <div class="status-info">
-                                    <span class="status-label">Network Security</span>
-                                    <span class="status-description">Connected to Sepolia testnet</span>
-                                </div>
-                                <span class="status-indicator success">✅</span>
-                            </div>
+        <!-- Security Settings -->
+        <div id="security-settings" class="settings-panel">
+        <div class="panel-header">
+        <h3>Security Settings</h3>
+        <p>Monitor your account security status</p>
+        </div>
+        <div class="settings-form">
+        <div class="security-status">
+        <div class="status-item">
+        <div class="status-info">
+        <span class="status-label">Wallet Connection</span>
+        <span class="status-description">Your wallet is connected and verified</span>
+        </div>
+        <span class="status-indicator ${wallet.connected ? 'success' : 'error'}">
+        ${wallet.connected ? '✅' : '❌'}
+        </span>
+        </div>
 
-                            <div class="status-item">
-                                <div class="status-info">
-                                    <span class="status-label">Smart Contract Integration</span>
-                                    <span class="status-description">All contracts are verified and secure</span>
-                                </div>
-                                <span class="status-indicator success">✅</span>
-                            </div>
+        <div class="status-item">
+        <div class="status-info">
+        <span class="status-label">Network Security</span>
+        <span class="status-description">Connected to Sepolia testnet</span>
+        </div>
+        <span class="status-indicator success">✅</span>
+        </div>
 
-                            <div class="status-item">
-                                <div class="status-info">
-                                    <span class="status-label">Two-Factor Authentication</span>
-                                    <span class="status-description">Recommended for production use</span>
-                                </div>
-                                <span class="status-indicator warning">⚠️</span>
-                            </div>
-                        </div>
+        <div class="status-item">
+        <div class="status-info">
+        <span class="status-label">Smart Contract Integration</span>
+        <span class="status-description">All contracts are verified and secure</span>
+        </div>
+        <span class="status-indicator success">✅</span>
+        </div>
 
-                        <div class="security-actions">
-                            <button class="btn btn-outline" onclick="settings.runSecurityCheck()">
-                                Run Security Check
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <div class="status-item">
+        <div class="status-info">
+        <span class="status-label">Two-Factor Authentication</span>
+        <span class="status-description">Recommended for production use</span>
+        </div>
+        <span class="status-indicator warning">⚠️</span>
+        </div>
+        </div>
 
-                <!-- Preferences Settings -->
-                <div id="preferences-settings" class="settings-panel">
-                    <div class="panel-header">
-                        <h3>Application Preferences</h3>
-                        <p>Customize your SatoshiFi experience</p>
-                    </div>
-                    <div class="settings-form">
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">Auto Refresh</label>
-                                    <small>Automatically refresh data every 15 seconds</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="autoRefresh" ${this.settings.autoRefresh ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
+        <div class="security-actions">
+        <button class="btn btn-outline" onclick="settings.runSecurityCheck()">
+        Run Security Check
+        </button>
+        </div>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">Animations</label>
-                                    <small>Enable smooth animations and transitions</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="animations" ${this.settings.animations ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
+        <!-- Preferences Settings -->
+        <div id="preferences-settings" class="settings-panel">
+        <div class="panel-header">
+        <h3>Application Preferences</h3>
+        <p>Customize your SatoshiFi experience</p>
+        </div>
+        <div class="settings-form">
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">Auto Refresh</label>
+        <small>Automatically refresh data every 15 seconds</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="autoRefresh" ${this.settings.autoRefresh ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Theme</label>
-                            <select class="form-select" id="themeSelect">
-                                <option value="classic" ${this.settings.theme === 'classic' ? 'selected' : ''}>Classic</option>
-                                <option value="dark" ${this.settings.theme === 'dark' ? 'selected' : ''}>Dark (Coming Soon)</option>
-                                <option value="light" ${this.settings.theme === 'light' ? 'selected' : ''}>Light (Coming Soon)</option>
-                            </select>
-                        </div>
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">Animations</label>
+        <small>Enable smooth animations and transitions</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="animations" ${this.settings.animations ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
 
-                        <div class="form-group">
-                            <div class="toggle-setting">
-                                <div class="toggle-info">
-                                    <label class="toggle-label">Developer Mode</label>
-                                    <small>Show additional debugging information</small>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="developerMode" ${this.settings.developerMode ? 'checked' : ''}>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+        <label class="form-label">Theme</label>
+        <select class="form-select" id="themeSelect">
+        <option value="classic" ${this.settings.theme === 'classic' ? 'selected' : ''}>Classic</option>
+        <option value="dark" ${this.settings.theme === 'dark' ? 'selected' : ''}>Dark (Coming Soon)</option>
+        <option value="light" ${this.settings.theme === 'light' ? 'selected' : ''}>Light (Coming Soon)</option>
+        </select>
+        </div>
+
+        <div class="form-group">
+        <div class="toggle-setting">
+        <div class="toggle-info">
+        <label class="toggle-label">Developer Mode</label>
+        <small>Show additional debugging information</small>
+        </div>
+        <label class="toggle-switch">
+        <input type="checkbox" id="developerMode" ${this.settings.developerMode ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+        </label>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
         `;
     }
 
@@ -324,7 +344,12 @@ class SettingsManager {
 
     updateSetting(key, value) {
         this.settings[key] = value;
-        localStorage.setItem('satoshiFiSettings', JSON.stringify(this.settings));
+
+        try {
+            localStorage.setItem('satoshiFiSettings', JSON.stringify(this.settings));
+        } catch (error) {
+            console.warn('Failed to save settings to localStorage:', error);
+        }
 
         // Применяем настройки
         this.applySetting(key, value);
@@ -357,6 +382,67 @@ class SettingsManager {
         }
     }
 
+    async loadBitcoinAddresses() {
+        const container = document.getElementById('bitcoinAddressesList');
+        if (!container || !wallet.connected) return;
+
+        try {
+            container.innerHTML = '<div class="loading-text">Loading...</div>';
+
+            if (!stratumWorkerManager.initialized) {
+                await stratumWorkerManager.initialize();
+            }
+
+            // Получаем все воркеры текущего майнера
+            const workerAddresses = await stratumWorkerManager.aggregator.getWorkersByMiner(wallet.account);
+
+            if (workerAddresses.length === 0) {
+                container.innerHTML = '<div class="empty-message">No workers registered yet</div>';
+                return;
+            }
+
+            // Собираем уникальные Bitcoin адреса
+            const bitcoinAddresses = new Map();
+
+            for (const workerAddr of workerAddresses) {
+                const btcAddr = await stratumWorkerManager.aggregator.getWorkerBitcoinAddress(workerAddr);
+                if (btcAddr) {
+                    if (!bitcoinAddresses.has(btcAddr)) {
+                        bitcoinAddresses.set(btcAddr, []);
+                    }
+                    bitcoinAddresses.get(btcAddr).push(workerAddr);
+                }
+            }
+
+            if (bitcoinAddresses.size === 0) {
+                container.innerHTML = '<div class="empty-message">No Bitcoin addresses configured</div>';
+                return;
+            }
+
+            // Рендерим список
+            let html = '';
+            for (const [btcAddr, workers] of bitcoinAddresses) {
+                html += `
+                <div class="address-item">
+                <div class="address-info">
+                <code class="btc-address">${btcAddr}</code>
+                <small class="worker-count">${workers.length} worker(s)</small>
+                </div>
+                <button class="btn-icon" onclick="settings.copyToClipboard('${btcAddr}')" title="Copy">
+                📋
+                </button>
+                </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+        } catch (error) {
+            console.error('Error loading Bitcoin addresses:', error);
+            container.innerHTML = '<div class="error-message">Failed to load addresses</div>';
+        }
+    }
+
     copyToClipboard(text) {
         if (!text) {
             app.showNotification('warning', 'No text to copy');
@@ -379,7 +465,7 @@ class SettingsManager {
         }, 2000);
     }
 
-    refresh() {
+    async refresh() {
         if (wallet.connected) {
             // Обновляем информацию в профиле
             const walletAddress = document.getElementById('walletAddress');
@@ -389,6 +475,9 @@ class SettingsManager {
             if (walletAddress) walletAddress.value = wallet.account;
             if (displayName) displayName.value = wallet.formatAddress(wallet.account);
             if (primaryRoleBadge) primaryRoleBadge.textContent = userRoles.currentRoles[0] || 'User';
+
+            // Загружаем Bitcoin адреса
+            await this.loadBitcoinAddresses();
         }
     }
 }
