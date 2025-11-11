@@ -920,3 +920,115 @@ overflow: visible !important;
     font-size: 14px;
     line-height: 1.5;
 }
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.session-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.2s;
+}
+
+.session-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.session-id {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.session-state {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.state-blue { background: #e3f2fd; color: #1976d2; }
+.state-orange { background: #fff3e0; color: #f57c00; }
+.state-green { background: #e8f5e9; color: #388e3c; }
+.state-purple { background: #f3e5f5; color: #7b1fa2; }
+.state-red { background: #ffebee; color: #c62828; }
+.state-gray { background: #f5f5f5; color: #757575; }
+
+.session-info {
+    margin-bottom: 15px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row .label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.info-row .value {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.info-row .address {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.btn-view-session {
+    width: 100%;
+    padding: 10px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-view-session:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}

@@ -1,78 +1,108 @@
 {
   "meta": {
-    "title": "SatoshiFi - Mining Pool Management on Ethereum",
-    "description": "Federated mining pools with automatic mp-token collateralization. Multi-chain support for Bitcoin, Dogecoin, Bitcoin Cash, and Litecoin."
+    "title": "SatoshiFi - Trustless Bitcoin Custody Factory on EVM",
+    "description": "Universal factory for creating self-custody and federated Bitcoin solutions on EVM networks. Trustless, bridgeless system with flexible economics."
   },
   "header": {
     "logo": "SatoshiFi",
     "nav": {
-      "pools": "Pool Management",
-      "platform": "Platform",
-      "sandbox": "Developer Sandbox",
+      "custody": "Custody Factory",
+      "pools": "Mining Pools",
+      "wallet": "Bitcoin Wallet",
       "docs": "Documentation"
     },
     "connect": "Connect Wallet"
   },
   "hero": {
-    "title": "Mining Pool Management on Ethereum",
-    "subtitle": "Federated mining pools with automatic mp-token collateralization through coinbase addresses. Multi-chain support for Bitcoin, Dogecoin, Bitcoin Cash, and Litecoin.",
-    "cta_primary": "Launch Platform",
+    "title": "Trustless Bitcoin Custody Factory on EVM",
+    "subtitle": "Universal factory for creating self-custody and federated Bitcoin solutions. Configure threshold schemes, select custodians, and launch your own solution with custom rules.",
+    "cta_primary": "Launch Factory",
     "cta_secondary": "View Documentation"
   },
   "features": {
-    "title": "Core Features",
-    "multichain": {
-      "title": "Multi-chain Mining Pools",
-      "description": "Bitcoin, Dogecoin, Bitcoin Cash, Litecoin pools with federated coinbase addresses and TSS-controlled fund management."
+    "title": "Custody Models",
+    "self_custody": {
+      "title": "Self-Custody (1-of-1)",
+      "description": "Personal Bitcoin wallet with full control. Your keys, your coins. Native Bitcoin addresses controlled via FROST threshold signatures."
     },
-    "withdrawals": {
-      "title": "Minimal-fee Withdrawals",
-      "description": "Privileged withdrawal processing through pool infrastructure reduces transaction costs to network minimums plus minimal operational overhead."
+    "federated": {
+      "title": "Federated Custody (M-of-N)",
+      "description": "Group fund management with distributed responsibility. Family vaults (2-of-3), corporate treasury (5-of-7), or custom threshold schemes."
     },
-    "staking": {
-      "title": "Flexible Payouts",
-      "description": "Stake BTC and receive yields in your preferred currency, including direct fiat payouts to bank cards in your local currency."
+    "trustless_bridge": {
+      "title": "Trustless Bridge",
+      "description": "No bridges, no trusted intermediaries. SPV verification of Bitcoin transactions directly on-chain with automatic collateralization."
+    },
+    "flexible_economics": {
+      "title": "Flexible Economics",
+      "description": "Creator defines all monetization parameters. From non-profit family vaults to commercial custody services with customizable fee structures."
     }
   },
   "sections": {
+    "custody": {
+      "title": "Custody Factory",
+      "create": "Create New Solution",
+      "explore": "Browse Solutions",
+      "manage": "Manage Custody"
+    },
     "pools": {
-      "title": "Pool Management",
-      "management": "Pool Management Interface",
-      "dashboard": "Mining Dashboard & Analytics"
+      "title": "Mining Pools",
+      "management": "Pool Management",
+      "dashboard": "Mining Dashboard"
+    },
+    "wallet": {
+      "title": "Bitcoin Wallet",
+      "self": "Self-Custody Wallet",
+      "federated": "Federated Custody",
+      "group": "Group Management"
     },
     "platform": {
       "title": "SatoshiFi Platform",
-      "main": "Main Platform Interface",
-      "lending": "Trustless Lending Services",
-      "exchange": "mp-Token Exchange"
-    },
-    "sandbox": {
-      "title": "Bitcoin Testnet",
-      "description": "Bitcoin testnet environment for development and testing",
-      "manager": "Node Management Interface",
-      "wallet": "Bitcoin Wallet Integration",
-      "scanner": "Network Monitor & Analytics"
+      "main": "Main Platform",
+      "lending": "Lending Services",
+      "exchange": "Token Exchange"
     }
-  },
-  "stats": {
-    "networks": "Supported Networks",
-    "pools": "Active Pools",
-    "miners": "Connected Miners",
-    "volume": "Daily Volume"
   },
   "technical": {
     "title": "Technical Implementation",
-    "tss": {
-      "title": "TSS Federation",
-      "description": "5-of-7 threshold signature scheme with FROST protocol for secure multi-party custody"
+    "frost": {
+      "title": "FROST Protocol",
+      "description": "Threshold signature scheme for secure multi-party custody. 1-of-1 for self-custody, M-of-N for federated solutions."
     },
-    "collateral": {
-      "title": "Automatic Collateralization",
-      "description": "Mining rewards automatically secure mp-token issuance through federated coinbase addresses"
+    "spv": {
+      "title": "SPV Verification",
+      "description": "On-chain Bitcoin transaction verification without trusted bridges. Cryptographic proof of Bitcoin deposits and withdrawals."
     },
-    "algorithms": {
-      "title": "Parametric Algorithms",
-      "description": "PPLNS, PPS, FPPS, PPLNT with configurable parameters and developer incentives"
+    "factory": {
+      "title": "Factory Cloning",
+      "description": "Proven contracts cloned with unique parameters. Each solution gets its own economics, rules, and custodian configuration."
+    }
+  },
+  "custody_models": {
+    "title": "Supported Custody Models",
+    "self": {
+      "scheme": "1-of-1",
+      "name": "Self-Custody",
+      "use_case": "Personal wallet",
+      "security": "Full control"
+    },
+    "family": {
+      "scheme": "2-of-3",
+      "name": "Family Vault",
+      "use_case": "Shared family funds",
+      "security": "Social recovery"
+    },
+    "corporate": {
+      "scheme": "5-of-7",
+      "name": "Corporate Treasury",
+      "use_case": "Business funds",
+      "security": "Multi-sig governance"
+    },
+    "pool": {
+      "scheme": "Pool-based",
+      "name": "Mining Pool",
+      "use_case": "Collective mining",
+      "security": "Federated custody"
     }
   },
   "footer": {

@@ -1,82 +1,108 @@
 {
   "meta": {
-    "title": "SatoshiFi - Gestão de Pools de Mineração no Ethereum",
-    "description": "Pools de mineração federados com garantia automática de tokens mp. Suporte para Bitcoin, Dogecoin, Bitcoin Cash e Litecoin."
+    "title": "SatoshiFi - Fábrica de Custódia Bitcoin Sem Confiança na EVM",
+    "description": "Fábrica universal para criar soluções Bitcoin de auto-custódia e federadas em redes EVM. Sistema sem confiança, sem pontes com economia flexível."
   },
   "header": {
     "logo": "SatoshiFi",
     "nav": {
-      "pools": "Gestão de Pools",
-      "platform": "Plataforma",
-      "sandbox": "Sandbox do Desenvolvedor",
+      "custody": "Fábrica de Custódia",
+      "pools": "Pools de Mineração",
+      "wallet": "Carteira Bitcoin",
       "docs": "Documentação"
     },
     "connect": "Conectar Carteira"
   },
   "hero": {
-    "title": "Gestão de Pools de Mineração no Ethereum",
-    "subtitle": "Pools de mineração federados com garantia automática de tokens mp através de endereços coinbase. Suporte para Bitcoin, Dogecoin, Bitcoin Cash e Litecoin.",
-    "cta_primary": "Iniciar Plataforma",
+    "title": "Fábrica de Custódia Bitcoin Sem Confiança na EVM",
+    "subtitle": "Fábrica universal para criar soluções Bitcoin de auto-custódia e federadas. Configure esquemas de limite, selecione custodiantes e lance sua própria solução com regras personalizadas.",
+    "cta_primary": "Iniciar Fábrica",
     "cta_secondary": "Ver Documentação"
   },
   "features": {
-    "title": "Funcionalidades Principais",
-    "multichain": {
-      "title": "Pools de Mineração Multi-chain",
-      "description": "Pools de Bitcoin, Dogecoin, Bitcoin Cash, Litecoin com endereços coinbase federados e gestão de fundos controlada por TSS."
+    "title": "Modelos de Custódia",
+    "self_custody": {
+      "title": "Auto-Custódia (1-of-1)",
+      "description": "Carteira Bitcoin pessoal com controle total. Suas chaves, suas moedas. Endereços Bitcoin nativos controlados via assinaturas de limite FROST."
     },
-    "withdrawals": {
-      "title": "Saques com Taxas Mínimas",
-      "description": "Processamento privilegiado de saques através da infraestrutura do pool reduz custos de transação aos mínimos da rede mais despesas operacionais mínimas."
+    "federated": {
+      "title": "Custódia Federada (M-of-N)",
+      "description": "Gestão de fundos em grupo com responsabilidade distribuída. Cofres familiares (2-of-3), tesouraria corporativa (5-of-7) ou esquemas de limite personalizados."
     },
-    "staking": {
-      "title": "Staking de Bitcoin com Pagamentos Flexíveis",
-      "description": "Faça staking de BTC e receba rendimentos na sua moeda preferida, incluindo pagamentos fiat diretos em cartões bancários na sua moeda local."
+    "trustless_bridge": {
+      "title": "Ponte Sem Confiança",
+      "description": "Sem pontes, sem intermediários confiáveis. Verificação SPV de transações Bitcoin diretamente on-chain com colateralização automática."
     },
-    "algorithms": {
-      "title": "Sistema de Algoritmos Aberto",
-      "description": "Algoritmos paramétricos de distribuição de recompensas com incentivos econômicos para desenvolvedores e estruturas de taxas transparentes."
+    "flexible_economics": {
+      "title": "Economia Flexível",
+      "description": "O criador define todos os parâmetros de monetização. De cofres familiares sem fins lucrativos a serviços de custódia comerciais com estruturas de taxas personalizáveis."
     }
   },
   "sections": {
+    "custody": {
+      "title": "Fábrica de Custódia",
+      "create": "Criar Nova Solução",
+      "explore": "Explorar Soluções",
+      "manage": "Gerenciar Custódia"
+    },
     "pools": {
-      "title": "Gestão de Pools",
-      "management": "Interface de Gestão de Pools",
-      "dashboard": "Dashboard de Mineração & Análise"
+      "title": "Pools de Mineração",
+      "management": "Gestão de Pools",
+      "dashboard": "Painel de Mineração"
+    },
+    "wallet": {
+      "title": "Carteira Bitcoin",
+      "self": "Carteira Auto-Custódia",
+      "federated": "Custódia Federada",
+      "group": "Gestão de Grupo"
     },
     "platform": {
       "title": "Plataforma SatoshiFi",
-      "main": "Interface Principal da Plataforma",
-      "lending": "Serviços de Empréstimo Sem Confiança",
-      "exchange": "Exchange de Tokens mp"
-    },
-    "sandbox": {
-      "title": "Sandbox do Desenvolvedor",
-      "description": "Ambiente Bitcoin testnet para desenvolvimento e testes",
-      "manager": "Interface de Gestão de Nós",
-      "wallet": "Integração de Carteira Bitcoin",
-      "scanner": "Monitor de Rede & Análise"
+      "main": "Plataforma Principal",
+      "lending": "Serviços de Empréstimo",
+      "exchange": "Troca de Tokens"
     }
-  },
-  "stats": {
-    "networks": "Redes Suportadas",
-    "pools": "Pools Ativos",
-    "miners": "Mineradores Conectados",
-    "volume": "Volume Diário"
   },
   "technical": {
     "title": "Implementação Técnica",
-    "tss": {
-      "title": "Federação TSS",
-      "description": "Esquema de assinatura de limiar 5-de-7 com protocolo FROST para custódia segura multi-partes"
+    "frost": {
+      "title": "Protocolo FROST",
+      "description": "Esquema de assinatura de limite para custódia segura multi-partes. 1-of-1 para auto-custódia, M-of-N para soluções federadas."
     },
-    "collateral": {
-      "title": "Garantia Automática",
-      "description": "Recompensas de mineração garantem automaticamente a emissão de tokens mp através de endereços coinbase federados"
+    "spv": {
+      "title": "Verificação SPV",
+      "description": "Verificação on-chain de transações Bitcoin sem pontes confiáveis. Prova criptográfica de depósitos e saques Bitcoin."
     },
-    "algorithms": {
-      "title": "Algoritmos Paramétricos",
-      "description": "PPLNS, PPS, FPPS, PPLNT com parâmetros configuráveis e incentivos para desenvolvedores"
+    "factory": {
+      "title": "Clonagem de Fábrica",
+      "description": "Contratos comprovados clonados com parâmetros únicos. Cada solução obtém sua própria economia, regras e configuração de custodiantes."
+    }
+  },
+  "custody_models": {
+    "title": "Modelos de Custódia Suportados",
+    "self": {
+      "scheme": "1-of-1",
+      "name": "Auto-Custódia",
+      "use_case": "Carteira pessoal",
+      "security": "Controle total"
+    },
+    "family": {
+      "scheme": "2-of-3",
+      "name": "Cofre Familiar",
+      "use_case": "Fundos familiares compartilhados",
+      "security": "Recuperação social"
+    },
+    "corporate": {
+      "scheme": "5-of-7",
+      "name": "Tesouraria Corporativa",
+      "use_case": "Fundos empresariais",
+      "security": "Governança multi-sig"
+    },
+    "pool": {
+      "scheme": "Baseado em pool",
+      "name": "Pool de Mineração",
+      "use_case": "Mineração coletiva",
+      "security": "Custódia federada"
     }
   },
   "footer": {

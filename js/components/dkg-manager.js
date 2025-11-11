@@ -77,36 +77,37 @@ class DKGManager {
 
             app.showLoading('Creating DKG session...');
 
-            const deadline = Math.floor(Date.now() / 1000) + (deadlineHours * 3600);
             const frost = contracts.getContract('frostCoordinator');
             if (!frost) {
                 throw new Error('FrostCoordinator contract not available');
             }
 
-            const groupPubkey = '0x0000000000000000000000000000000000000000000000000000000000000000';
-            const enforceSharesCheck = true;
-            const verifierOverride = ethers.constants.AddressZero;
-            const purpose = CONFIG.FROST_PURPOSES.DKG;
+            const frostWithSigner = frost.connect(wallet.provider.getSigner());
 
-            const origin = {
-                originContract: ethers.constants.AddressZero,
-                originId: 0,
-                networkId: 1155,
-                poolId: ethers.constants.HashZero
-            };
-
-            const tx = await frost.createSession(
-                groupPubkey,
-                participants,
+            console.log('Creating DKG session with parameters:', {
                 threshold,
-                deadline,
-                enforceSharesCheck,
-                verifierOverride,
-                purpose,
-                origin
+                participants,
+                participantsCount: participants.length
+            });
+
+            const tx = await frostWithSigner.createDKGSession(
+                threshold,
+                participants,
+                {
+                    gasLimit: CONFIG.GAS_LIMITS.DKG_SESSION_CREATE
+                }
             );
 
+            console.log('Transaction sent:', tx.hash);
+            app.showLoading('Waiting for confirmation...');
+
             const receipt = await tx.wait();
+            console.log('Transaction confirmed:', receipt);
+
+            if (receipt.status === 0) {
+                throw new Error('Transaction reverted. Please check parameters and try again.');
+            }
+
             const sessionId = this.extractSessionIdFromReceipt(receipt);
 
             if (sessionId) {
@@ -115,9 +116,9 @@ class DKGManager {
                     name: sessionName,
                     participants,
                     threshold,
-                    deadline,
+                    deadline: Math.floor(Date.now() / 1000) + (deadlineHours * 3600),
                     creator: wallet.account,
-                    state: 1, // OPENED
+                    state: 1,
                     created: Date.now(),
                     authorizationChecked: false,
                     allParticipantsAuthorized: false
@@ -137,39 +138,86 @@ class DKGManager {
         } catch (error) {
             app.hideLoading();
             console.error('DKG creation error:', error);
-            app.showNotification('error', `Failed to create DKG: ${error.message}`);
+
+            let errorMessage = 'Failed to create DKG session';
+
+            if (error.message.includes('Transaction reverted')) {
+                errorMessage = 'Transaction reverted. Check that all participants are valid addresses.';
+            } else if (error.message.includes('user rejected')) {
+                errorMessage = 'Transaction rejected by user';
+            } else if (error.code === 'CALL_EXCEPTION') {
+                errorMessage = 'Smart contract execution failed. Verify all parameters are correct.';
+            }
+
+            app.showNotification('error', errorMessage);
         }
     }
 
     // ========== PHASE LOGIC CONTROL ==========
 
-    async canSubmitShare(sessionId) {
+    async canSubmitCommitment(sessionId) {
         try {
             const frost = contracts.getContract('frostCoordinator');
-            const hasCommitted = await frost.hasCommitted(sessionId, wallet.account);
-            const hasSubmittedShare = await frost.hasSubmittedShare(sessionId, wallet.account);
-            const isParticipant = await frost.isParticipant(sessionId, wallet.account);
-            const session = await frost.getSession(sessionId);
 
-            // FIXED: using .toNumber() for BigNumber
-            return isParticipant && hasCommitted && !hasSubmittedShare && session.state.toNumber() === 1; // OPENED
+            // ИСПРАВЛЕНО: используем getSessionDetails для получения правильного state
+            const details = await frost.getSessionDetails(sessionId);
+            const session = {
+                state: details.state // SessionState.PENDING_COMMIT = 1
+            };
+
+            const participants = await frost.getSessionParticipants(sessionId);
+            const isParticipant = participants.some(p =>
+            p.toLowerCase() === wallet.account.toLowerCase()
+            );
+
+            const commitment = await frost.getNonceCommitment(sessionId, wallet.account);
+            const hasCommitted = commitment !== ethers.constants.HashZero;
+
+            // Проверяем: участник, не отправил коммитмент, сессия в фазе PENDING_COMMIT (1)
+            return isParticipant && !hasCommitted && session.state === 1;
         } catch (error) {
-            console.error('Error checking share status:', error);
+            console.error('Error checking commitment status:', error);
             return false;
         }
     }
 
-    async canSubmitCommitment(sessionId) {
+    async canSubmitShare(sessionId) {
         try {
             const frost = contracts.getContract('frostCoordinator');
-            const hasCommitted = await frost.hasCommitted(sessionId, wallet.account);
-            const isParticipant = await frost.isParticipant(sessionId, wallet.account);
-            const session = await frost.getSession(sessionId);
 
-            // FIXED: using .toNumber() for BigNumber
-            return isParticipant && !hasCommitted && session.state.toNumber() === 1; // OPENED
+            const details = await frost.getSessionDetails(sessionId);
+            const stateNum = details.state; // SessionState enum value
+
+            const commitment = await frost.getNonceCommitment(sessionId, wallet.account);
+            const hasCommitted = commitment !== ethers.constants.HashZero;
+
+            if (!hasCommitted || stateNum < 2) {
+                return false;
+            }
+
+            const participants = await frost.getSessionParticipants(sessionId);
+            const isParticipant = participants.some(p =>
+            p.toLowerCase() === wallet.account.toLowerCase()
+            );
+
+            if (!isParticipant) {
+                return false;
+            }
+
+            let allSharesSent = true;
+            for (const participant of participants) {
+                if (participant.toLowerCase() !== wallet.account.toLowerCase()) {
+                    const share = await frost.getDKGShare(sessionId, wallet.account, participant);
+                    if (!share || share === '0x' || share.length === 0) {
+                        allSharesSent = false;
+                        break;
+                    }
+                }
+            }
+
+            return !allSharesSent;
         } catch (error) {
-            console.error('Error checking commitment status:', error);
+            console.error('Error checking share status:', error);
             return false;
         }
     }
@@ -178,10 +226,16 @@ class DKGManager {
         try {
             const frost = contracts.getContract('frostCoordinator');
             const session = await frost.getSession(sessionId);
-            const isParticipant = await frost.isParticipant(sessionId, wallet.account);
 
-            // FIXED: using .toNumber() for BigNumber
-            return session.state.toNumber() === 2 && isParticipant; // FINALIZED + participant
+            // ИСПРАВЛЕНО: проверяем что state === 4 (FINALIZED)
+            const isFinalized = session.state.toNumber() === 4;
+
+            const participants = await frost.getSessionParticipants(sessionId);
+            const isParticipant = participants.some(p =>
+            p.toLowerCase() === wallet.account.toLowerCase()
+            );
+
+            return isFinalized && isParticipant;
         } catch (error) {
             console.error('Error checking pool creation status:', error);
             return false;
@@ -189,6 +243,53 @@ class DKGManager {
     }
 
     // ========== DKG PROTOCOL ACTIONS ==========
+
+    async renderSessionDetails() {
+        const container = document.getElementById('dkgSessionDetails');
+        if (!container || !this.activeSession) return;
+
+        container.className = 'dkg-session-details active';
+        const session = this.activeSession;
+
+        const actionsHTML = await this.renderDKGActionsOrStatus();
+
+        const creatorAddress = session.creator || wallet.account;
+
+        container.innerHTML = `
+        <div class="session-details-header">
+        <h3>DKG Session: ${session.name || `Session ${session.id}`}</h3>
+        <div class="session-status">
+        Current State: ${this.getDKGStateText(session.state)}
+        </div>
+        </div>
+
+        <div class="session-details-content">
+        <div class="session-info-grid">
+        <div class="info-item">
+        <label>Session ID:</label>
+        <input type="text" readonly value="${session.id}" class="form-input" onclick="this.select(); navigator.clipboard.writeText(this.value);">
+        </div>
+        <div class="info-item">
+        <label>Participants:</label>
+        <span>${session.participants.length}</span>
+        </div>
+        <div class="info-item">
+        <label>Threshold:</label>
+        <span>${session.threshold}</span>
+        </div>
+        <div class="info-item">
+        <label>Creator:</label>
+        <span>${wallet.formatAddress(creatorAddress)}</span>
+        </div>
+        </div>
+
+        ${actionsHTML}
+        ${this.renderParticipantsList()}
+        </div>
+        `;
+
+        this.bindDKGActionEvents();
+    }
 
     async submitCommitment() {
         try {
@@ -205,14 +306,24 @@ class DKGManager {
             app.showLoading('Submitting commitment...');
 
             const frost = contracts.getContract('frostCoordinator');
+            const frostWithSigner = frost.connect(wallet.provider.getSigner());
+
             const commitment = ethers.utils.randomBytes(32);
             const commitmentHash = ethers.utils.keccak256(commitment);
 
-            const tx = await frost.submitNonceCommit(this.activeSession.id, commitmentHash);
+            console.log('Submitting commitment:', commitmentHash);
+
+            const tx = await frostWithSigner.publishNonceCommitment(
+                this.activeSession.id,
+                commitmentHash
+            );
+
+            console.log('Transaction sent:', tx.hash);
             await tx.wait();
 
             app.hideLoading();
             app.showNotification('success', 'Commitment submitted successfully');
+
             await this.refreshActiveSession();
 
         } catch (error) {
@@ -230,58 +341,96 @@ class DKGManager {
 
             const canSubmit = await this.canSubmitShare(this.activeSession.id);
             if (!canSubmit) {
-                app.showNotification('error', 'Must submit commitment first');
+                app.showNotification('error', 'Must submit commitment first or wait for shares phase');
                 return;
             }
 
             app.showLoading('Submitting shares...');
 
             const frost = contracts.getContract('frostCoordinator');
+            const frostWithSigner = frost.connect(wallet.provider.getSigner());
+
+            let successCount = 0;
 
             for (const participant of this.activeSession.participants) {
                 if (participant.toLowerCase() !== wallet.account.toLowerCase()) {
-                    const mockShare = ethers.utils.randomBytes(64);
-                    const tx = await frost.submitDKGShare(
-                        this.activeSession.id,
-                        participant,
-                        mockShare
-                    );
-                    await tx.wait();
+                    try {
+                        const existingShare = await frost.getDKGShare(
+                            this.activeSession.id,
+                            wallet.account,
+                            participant
+                        );
+
+                        if (existingShare && existingShare !== '0x' && existingShare.length > 0) {
+                            console.log(`Share already sent to ${participant}`);
+                            successCount++;
+                            continue;
+                        }
+
+                        const mockShare = ethers.utils.randomBytes(64);
+
+                        console.log(`Submitting share to ${participant}`);
+
+                        const tx = await frostWithSigner.publishEncryptedShare(
+                            this.activeSession.id,
+                            participant,
+                            mockShare
+                        );
+
+                        await tx.wait();
+                        successCount++;
+                        console.log(`Share sent to ${participant}`);
+
+                    } catch (shareError) {
+                        console.error(`Failed to send share to ${participant}:`, shareError);
+                    }
                 }
             }
 
             app.hideLoading();
-            app.showNotification('success', 'Shares submitted successfully');
+
+            if (successCount === this.activeSession.participants.length - 1) {
+                app.showNotification('success', 'All shares submitted successfully');
+            } else {
+                app.showNotification('warning', `Submitted ${successCount} out of ${this.activeSession.participants.length - 1} shares`);
+            }
+
             await this.refreshActiveSession();
 
         } catch (error) {
             app.hideLoading();
             console.error('Share submission failed:', error);
-            app.showNotification('error', `Failed to submit share: ${error.message}`);
+            app.showNotification('error', `Failed to submit shares: ${error.message}`);
         }
     }
 
     async finalizeDKG() {
         try {
+            if (!this.activeSession) {
+                throw new Error('No active session');
+            }
+
             app.showLoading('Finalizing DKG...');
 
             const frost = contracts.getContract('frostCoordinator');
-            const groupPubKey = await this.computeGroupPublicKey();
+            const frostWithSigner = frost.connect(wallet.provider.getSigner());
 
-            if (!groupPubKey) {
-                throw new Error('Failed to compute group public key');
+            if (this.activeSession.creator.toLowerCase() !== wallet.account.toLowerCase()) {
+                throw new Error('Only the session creator can finalize DKG');
             }
 
-            const tx = await frost.finalizeDKG(this.activeSession.id, groupPubKey);
-            await tx.wait();
+            console.log('Finalizing DKG session:', this.activeSession.id);
 
-            this.activeSession.state = 2; // FINALIZED
-            this.activeSession.groupPubkey = groupPubKey;
-            this.activeSession.finalizedAt = Date.now();
+            // Используем точную сигнатуру функции
+            const tx = await frostWithSigner['finalizeDKG(uint256)'](this.activeSession.id);
+
+            console.log('Finalization transaction sent:', tx.hash);
+            await tx.wait();
 
             app.hideLoading();
             app.showNotification('success', 'DKG finalized successfully!');
-            this.renderSessionDetails();
+
+            await this.refreshActiveSession();
 
         } catch (error) {
             app.hideLoading();
@@ -290,46 +439,211 @@ class DKGManager {
         }
     }
 
+    async refreshActiveSession() {
+        if (!this.activeSession) return;
+
+        try {
+            const frost = contracts.getContract('frostCoordinator');
+            const sessionInfo = await frost.getSession(this.activeSession.id);
+            const details = await frost.getSessionDetails(this.activeSession.id);
+
+            this.activeSession.state = details.state;
+            this.activeSession.commitsCount = sessionInfo.commitsCount.toNumber();
+            this.activeSession.sharesCount = sessionInfo.sharesCount ? sessionInfo.sharesCount.toNumber() : 0;
+
+            this.sessionsCache.set(this.activeSession.id, this.activeSession);
+
+            await this.renderSessionDetails();
+            await this.loadUserSessions();
+
+        } catch (error) {
+            console.error('Failed to refresh session:', error);
+        }
+    }
+
+    getDKGStateText(state) {
+        const numState = parseInt(state) || 0;
+        const states = ['None', 'Pending Commit', 'Pending Shares', 'Ready', 'Finalized', 'Aborted'];
+        return states[numState] || 'Unknown';
+    }
+
     // ========== LOADING AND SESSION MANAGEMENT ==========
 
     async loadUserSessions() {
-        console.log('Loading user sessions for:', wallet.account);
-
         try {
-            const frostContract = contracts.getContract('frostCoordinator');
-            if (!frostContract) {
-                console.error('FrostCoordinator contract not available');
-                this.renderEmptySessionsList();
+            const container = document.getElementById('dkgSessionsList');
+            if (!container) {
+                console.error('Sessions container not found');
                 return;
             }
 
-            const contractWithSigner = frostContract.connect(wallet.provider.getSigner());
-            let userSessionIds = [];
+            container.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+            <div style="width: 40px; height: 40px; margin: 0 auto 20px; border: 4px solid rgba(0,0,0,0.1); border-top-color: #2196F3; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p>Loading sessions...</p>
+            </div>
+            `;
 
-            try {
-                const count = await contractWithSigner.getUserSessionCount(wallet.account);
-                const sessionCount = count.toNumber();
+            const userAddress = wallet.account;
+            console.log('Loading user sessions for:', userAddress);
 
-                if (sessionCount > 0) {
-                    const sessions = await contractWithSigner.getUserSessions(wallet.account);
-                    userSessionIds = sessions.map(id => id.toString());
+            const frost = contracts.getContract('frostCoordinator');
+            if (!frost) {
+                throw new Error('FrostCoordinator contract not available');
+            }
+
+            const nextId = await frost.nextSessionId();
+            const nextIdNum = nextId.toNumber();
+            console.log('Total sessions created:', nextIdNum - 1);
+
+            const userSessions = [];
+            const checkCount = Math.min(50, nextIdNum - 1);
+            const startId = Math.max(1, nextIdNum - checkCount);
+
+            for (let sessionId = startId; sessionId < nextIdNum; sessionId++) {
+                try {
+                    const participants = await frost.getSessionParticipants(sessionId);
+                    const isParticipant = participants.some(p =>
+                    p.toLowerCase() === userAddress.toLowerCase()
+                    );
+
+                    if (isParticipant) {
+                        const session = await frost.getSession(sessionId);
+
+                        const details = await frost.getSessionDetails(sessionId);
+                        const actualState = details.state;
+
+                        userSessions.push({
+                            id: sessionId,
+                            name: `DKG Session ${sessionId}`,
+                            state: actualState,
+                            threshold: session.threshold.toNumber(),
+                                          totalParticipants: session.total.toNumber(),
+                                          creator: details.creator,
+                                          participants: participants,
+                                          deadline: session.deadline.toNumber(),
+                                          commitsCount: session.commitsCount.toNumber(),
+                                          sharesCount: session.sharesCount ? session.sharesCount.toNumber() : 0,
+                                          dkgSharesCount: session.dkgSharesCount ? session.dkgSharesCount.toNumber() : 0
+                        });
+                    }
+                } catch (error) {
+                    console.log(`Skipping session ${sessionId}:`, error.message);
                 }
-            } catch (countError) {
-                console.log('getUserSessionCount failed, trying alternative approach');
             }
 
-            this.userSessions = userSessionIds;
+            console.log(`Found ${userSessions.length} sessions for user`);
 
-            if (this.userSessions.length > 0) {
-                await this.loadSessionDetails();
+            if (userSessions.length === 0) {
+                container.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; color: #666;">
+                <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">🔐</div>
+                <h3 style="color: #333; margin-bottom: 10px;">No DKG Sessions</h3>
+                <p style="margin: 5px 0; font-size: 14px;">You haven't participated in any DKG sessions yet.</p>
+                <p style="margin: 5px 0; font-size: 14px;">Create a new session to get started.</p>
+                </div>
+                `;
+            } else {
+                this.displaySessions(userSessions);
             }
-
-            this.renderSessionsList();
 
         } catch (error) {
-            console.error('Error in loadUserSessions:', error);
-            this.renderEmptySessionsList();
+            console.error('Failed to load user sessions:', error);
+            const container = document.getElementById('dkgSessionsList');
+            if (container) {
+                container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #d32f2f;">
+                <p>⚠️ Failed to load sessions</p>
+                <p style="font-size: 12px; margin-top: 10px;">${error.message}</p>
+                </div>
+                `;
+            }
         }
+    }
+
+    displaySessions(sessions) {
+        const container = document.getElementById('dkgSessionsList');
+        if (!container) return;
+
+        const stateLabels = ['None', 'Pending Commit', 'Pending Shares', 'Ready', 'Finalized', 'Aborted'];
+
+        container.innerHTML = sessions.map(session => `
+        <div style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s;"
+        onmouseover="this.style.borderColor='#2196F3'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'"
+        onmouseout="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'"
+        onclick="dkgManager.selectSession(${session.id})">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div style="font-weight: 600; font-size: 16px;">Session #${session.id}</div>
+        <div style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; background: ${session.state === 1 ? '#e3f2fd' : session.state === 4 ? '#e8f5e9' : '#f5f5f5'}; color: ${session.state === 1 ? '#1976d2' : session.state === 4 ? '#388e3c' : '#757575'};">
+        ${stateLabels[session.state] || 'Unknown'}
+        </div>
+        </div>
+        <div style="margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+        <span style="color: #666; font-size: 14px;">Threshold:</span>
+        <span style="color: #333; font-size: 14px; font-weight: 500;">${session.threshold} of ${session.totalParticipants}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+        <span style="color: #666; font-size: 14px;">Creator:</span>
+        <span style="color: #333; font-size: 14px; font-weight: 500; font-family: monospace;">${session.creator.slice(0, 6)}...${session.creator.slice(-4)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+        <span style="color: #666; font-size: 14px;">Participants:</span>
+        <span style="color: #333; font-size: 14px; font-weight: 500;">${session.totalParticipants} members</span>
+        </div>
+        </div>
+        <button style="width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer;"
+        onmouseover="this.style.background='#1976d2'"
+        onmouseout="this.style.background='#2196F3'">
+        View Details
+        </button>
+        </div>
+        `).join('');
+    }
+
+    async loadSessionData(sessionId) {
+        try {
+            const frost = contracts.getContract('frostCoordinator');
+
+            // Используем getSessionDetails вместо getSession
+            const details = await frost.getSessionDetails(sessionId);
+
+            // details = [state, threshold, totalParticipants, creator, groupPubKeyX, participants]
+            const [state, threshold, totalParticipants, creator, groupPubKeyX, participants] = details;
+
+            return {
+                id: sessionId,
+                name: `DKG Session ${sessionId}`,
+                state: state,
+                threshold: threshold.toNumber(),
+                totalParticipants: totalParticipants.toNumber(),
+                creator: creator,
+                groupPubKeyX: groupPubKeyX,
+                participants: participants,
+                created: Date.now(), // Placeholder
+                deadline: Math.floor(Date.now() / 1000) + (24 * 3600), // Placeholder
+                authorizationChecked: false,
+                allParticipantsAuthorized: false
+            };
+
+        } catch (error) {
+            console.error(`Failed to load session ${sessionId}:`, error);
+            return null;
+        }
+    }
+
+    displayEmptySessions() {
+        const container = document.getElementById('sessionsList');
+        if (!container) return;
+
+        container.innerHTML = `
+        <div class="empty-state">
+        <div class="empty-state-icon">🔐</div>
+        <h3>No DKG Sessions</h3>
+        <p>You haven't participated in any DKG sessions yet.</p>
+        <p>Create a new session to get started.</p>
+        </div>
+        `;
     }
 
     async loadSessionDetails() {
@@ -380,15 +694,19 @@ class DKGManager {
                 const frost = contracts.getContract('frostCoordinator');
                 const sessionInfo = await frost.getSession(sessionId);
                 const participants = await frost.getSessionParticipants(sessionId);
+                const details = await frost.getSessionDetails(sessionId);
 
                 sessionData = {
                     id: sessionId,
-                    name: `Session ${sessionId.slice(0, 8)}...`,
+                    name: `Session ${sessionId}`,
                     participants,
                     threshold: sessionInfo.threshold.toNumber(),
-                    creator: sessionInfo.creator,
-                    state: sessionInfo.state.toNumber(),
+                    creator: details.creator, // ИСПРАВЛЕНО: берем creator из getSessionDetails
+                    state: details.state,
                     deadline: sessionInfo.deadline.toNumber(),
+                    commitsCount: sessionInfo.commitsCount ? sessionInfo.commitsCount.toNumber() : 0,
+                    sharesCount: sessionInfo.sharesCount ? sessionInfo.sharesCount.toNumber() : 0,
+                    dkgSharesCount: sessionInfo.dkgSharesCount ? sessionInfo.dkgSharesCount.toNumber() : 0,
                     groupPubkey: sessionInfo.groupPubkey && sessionInfo.groupPubkey.length > 2 ?
                     sessionInfo.groupPubkey : null,
                     authorizationChecked: false,
@@ -399,7 +717,7 @@ class DKGManager {
             }
 
             this.activeSession = sessionData;
-            this.renderSessionDetails();
+            await this.renderSessionDetails();
             app.hideLoading();
 
         } catch (error) {
@@ -409,53 +727,63 @@ class DKGManager {
         }
     }
 
-    async refreshActiveSession() {
-        if (!this.activeSession) return;
-
-        try {
-            const frost = contracts.getContract('frostCoordinator');
-            const sessionInfo = await frost.getSession(this.activeSession.id);
-
-            this.activeSession.state = sessionInfo.state.toNumber();
-            this.activeSession.commitsCount = sessionInfo.commitsCount.toNumber();
-            this.activeSession.sharesCount = sessionInfo.sharesCount.toNumber();
-
-            this.sessionsCache.set(this.activeSession.id, this.activeSession);
-            this.renderSessionDetails();
-            this.renderSessionsList();
-
-        } catch (error) {
-            console.error('Failed to refresh session:', error);
-        }
-    }
-
     // ========== GROUP ROLE REQUESTS ==========
 
     async requestGroupPoolManagerRole(sessionId) {
         try {
-            const session = this.sessionsCache.get(sessionId);
-            if (!session || session.state !== 2) {
+            const numericSessionId = parseInt(sessionId);
+
+            const frost = contracts.getContract('frostCoordinator');
+            const details = await frost.getSessionDetails(numericSessionId);
+            const participants = await frost.getSessionParticipants(numericSessionId);
+
+            const session = {
+                id: numericSessionId,
+                state: details.state,
+                participants: participants,
+                threshold: details.threshold.toNumber(),
+                creator: details.creator
+            };
+
+            if (session.state !== 4) {
                 throw new Error('Session must be finalized');
             }
 
-            // ИСПРАВЛЕНО: проверяем существующие запросы для этой сессии
             if (session.requestPending || session.authorizationChecked) {
                 app.showNotification('info', 'Group request already submitted for this DKG session');
                 return;
             }
 
-            // Проверяем есть ли уже запросы для этой сессии в API
             try {
-                const checkResponse = await fetch(`${CONFIG.API.REQUESTS}${CONFIG.API.ENDPOINTS.DKG_REQUESTS}?sessionId=${sessionId}`);
+                const checkResponse = await fetch(`${CONFIG.API.REQUESTS}${CONFIG.API.ENDPOINTS.DKG_REQUESTS}`);
                 if (checkResponse.ok) {
-                    const existingRequests = await checkResponse.json();
-                    if (existingRequests.length > 0) {
-                        app.showNotification('info', 'Group request already exists for this DKG session');
+                    const allDkgRequests = await checkResponse.json();
 
-                        // Обновляем статус сессии
+                    // Check if request exists for THIS set of participants (not just sessionId)
+                    const participantsSet = new Set(session.participants.map(p => p.toLowerCase()));
+
+                    const matchingRequest = allDkgRequests.find(req => {
+                        // Only check pending requests
+                        if (req.status !== 'pending') return false;
+
+                        const reqParticipants = new Set(req.participants.map(p => p.toLowerCase()));
+
+                        // Check if sets are equal
+                        if (reqParticipants.size !== participantsSet.size) return false;
+
+                        for (const participant of participantsSet) {
+                            if (!reqParticipants.has(participant)) return false;
+                        }
+
+                        return true;
+                    });
+
+                    if (matchingRequest) {
+                        app.showNotification('info', 'Group request already exists for these participants');
+
                         session.authorizationChecked = true;
                         session.requestPending = true;
-                        session.requestId = existingRequests[0].request_id;
+                        session.requestId = matchingRequest.request_id;
                         this.sessionsCache.set(sessionId, session);
                         this.renderSessionDetails();
                         return;
@@ -500,11 +828,9 @@ class DKGManager {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
 
-                // Проверяем если это ошибка дубликата (409)
                 if (response.status === 409) {
                     app.showNotification('info', errorData.message || 'Request already exists for this session');
 
-                    // Обновляем статус сессии
                     session.authorizationChecked = true;
                     session.requestPending = true;
                     if (errorData.existingRequestId) {
@@ -523,7 +849,6 @@ class DKGManager {
 
             app.showNotification('success', `DKG group request submitted successfully (ID: ${result.requestId})`);
 
-            // Обновляем сессию
             session.authorizationChecked = true;
             session.requestPending = true;
             session.requestId = result.requestId;
@@ -572,16 +897,42 @@ class DKGManager {
 
     extractSessionIdFromReceipt(receipt) {
         try {
+            if (!receipt || !receipt.logs) {
+                console.error('Invalid receipt:', receipt);
+                return null;
+            }
+
             const frost = contracts.getContract('frostCoordinator');
-            const sessionCreatedTopic = frost.interface.getEventTopic('SessionCreated');
+            if (!frost) {
+                console.error('FrostCoordinator contract not available');
+                return null;
+            }
 
             for (const log of receipt.logs) {
-                if (log.topics[0] === sessionCreatedTopic) {
-                    const decoded = frost.interface.parseLog(log);
-                    return decoded.args.sessionId.toString();
+                try {
+                    const parsed = frost.interface.parseLog(log);
+
+                    // Проверяем имя события
+                    if (parsed.name === 'SessionCreated') {
+                        console.log('Found SessionCreated event:', parsed);
+
+                        // SessionCreated(uint256 indexed sessionId, address indexed creator, uint256 threshold, uint256 totalParticipants, uint8 purpose, uint64 deadline)
+                        const sessionId = parsed.args.sessionId || parsed.args[0];
+
+                        if (sessionId) {
+                            console.log('Extracted session ID:', sessionId.toString());
+                            return sessionId.toString();
+                        }
+                    }
+                } catch (e) {
+                    // Пропускаем логи от других контрактов
+                    continue;
                 }
             }
+
+            console.error('SessionCreated event not found in receipt logs');
             return null;
+
         } catch (error) {
             console.error('Error extracting session ID:', error);
             return null;
@@ -698,52 +1049,9 @@ class DKGManager {
             `;
     }
 
-    async renderSessionDetails() {
-        const container = document.getElementById('dkgSessionDetails');
-        if (!container || !this.activeSession) return;
-
-        container.className = 'dkg-session-details active';
-        const session = this.activeSession;
-
-        container.innerHTML = `
-        <div class="session-details-header">
-        <h3>DKG Session: ${session.name}</h3>
-        <div class="session-status">
-        Current State: ${this.getDKGStateText(session.state)}
-        </div>
-        </div>
-
-        <div class="session-details-content">
-        <div class="session-info-grid">
-        <div class="info-item">
-        <label>Session ID:</label>
-        <input type="text" readonly value="${session.id}" class="form-input" onclick="this.select(); navigator.clipboard.writeText(this.value);">
-        </div>
-        <div class="info-item">
-        <label>Participants:</label>
-        <span>${session.participants.length}</span>
-        </div>
-        <div class="info-item">
-        <label>Threshold:</label>
-        <span>${session.threshold}</span>
-        </div>
-        <div class="info-item">
-        <label>Creator:</label>
-        <span>${wallet.formatAddress(session.creator)}</span>
-        </div>
-        </div>
-
-        ${await this.renderDKGActionsOrStatus()}
-        ${this.renderParticipantsList()}
-        </div>
-        `;
-
-        setTimeout(() => this.bindDKGActionEvents(), 100);
-    }
-
     async renderDKGActionsOrStatus() {
         const session = this.activeSession;
-        const isFinalized = session.state >= 2;
+        const isFinalized = session.state === 4;
 
         if (isFinalized) {
             return await this.renderFinalizedSessionStatus();
@@ -815,12 +1123,50 @@ class DKGManager {
         const canCommit = await this.canSubmitCommitment(session.id);
         const canShare = await this.canSubmitShare(session.id);
 
-        // FIXED: getting actual data from contract
         const frost = contracts.getContract('frostCoordinator');
+
+        const details = await frost.getSessionDetails(session.id);
         const sessionInfo = await frost.getSession(session.id);
+
         const commitsCount = sessionInfo.commitsCount.toNumber();
-        const sharesCount = sessionInfo.sharesCount.toNumber();
-        const dkgSharesCount = sessionInfo.dkgSharesCount.toNumber();
+
+        // ИСПРАВЛЕНО: считаем шары вручную, так как контракт не хранит правильный счетчик
+        const participants = session.participants;
+        let dkgSharesCount = 0;
+        for (let i = 0; i < participants.length; i++) {
+            for (let j = 0; j < participants.length; j++) {
+                if (i !== j) {
+                    const share = await frost.getDKGShare(session.id, participants[i], participants[j]);
+                    if (share && share !== '0x' && share.length > 0) {
+                        dkgSharesCount++;
+                    }
+                }
+            }
+        }
+
+        const totalSharesNeeded = participants.length * (participants.length - 1);
+
+        const myCommitment = await frost.getNonceCommitment(session.id, wallet.account);
+        const hasMyCommitment = myCommitment !== ethers.constants.HashZero;
+
+        // Проверяем мои шары
+        let mySharesCount = 0;
+        for (const participant of participants) {
+            if (participant.toLowerCase() !== wallet.account.toLowerCase()) {
+                const share = await frost.getDKGShare(session.id, wallet.account, participant);
+                if (share && share !== '0x' && share.length > 0) {
+                    mySharesCount++;
+                }
+            }
+        }
+        const hasMyShares = mySharesCount === (participants.length - 1);
+
+        const isCreator = session.creator.toLowerCase() === wallet.account.toLowerCase();
+        const allCommitsDone = commitsCount === participants.length;
+        const allSharesDone = dkgSharesCount === totalSharesNeeded;
+
+        // Можно финализировать если все готово И state >= READY (3)
+        const canFinalize = isCreator && allCommitsDone && allSharesDone && details.state >= 3;
 
         return `
         <div class="dkg-actions-section">
@@ -828,22 +1174,71 @@ class DKGManager {
         <p>Complete the DKG protocol by submitting commitment, then shares.</p>
 
         <div class="action-buttons">
-        <button class="dkg-action-btn btn btn-primary" data-action="commitment" ${!canCommit ? 'disabled' : ''}>
-        ${canCommit ? 'Submit Commitment' : '✓ Commitment Sent'}
+        <button class="dkg-action-btn btn ${canCommit ? 'btn-primary' : 'btn-secondary'}"
+        data-action="commitment" data-enabled="${canCommit}">
+        ${hasMyCommitment ? '✓ Commitment Sent' : 'Submit Commitment'}
         </button>
-        <button class="dkg-action-btn btn btn-primary" data-action="share" ${!canShare ? 'disabled' : ''}>
-        ${canShare ? 'Submit Share' : (commitsCount > 0 ? '✓ Share Sent' : 'Submit Commitment First')}
+        <button class="dkg-action-btn btn ${canShare ? 'btn-primary' : 'btn-secondary'}"
+        data-action="share" data-enabled="${canShare}">
+        ${hasMyShares ? '✓ Shares Sent' : canShare ? 'Submit Shares' : hasMyCommitment ? 'Waiting for Share Phase' : 'Submit Commitment First'}
         </button>
-        <button class="dkg-action-btn btn btn-success" data-action="finalize-session">
-        Finalize DKG Session
+        <button class="dkg-action-btn btn ${canFinalize ? 'btn-success' : 'btn-secondary'}"
+        data-action="finalize-session" data-enabled="${canFinalize}">
+        Finalize DKG Session ${!isCreator ? '(Creator Only)' : ''}
         </button>
         </div>
 
         <div class="session-progress">
-        <p>Commits: ${commitsCount} | DKG Shares: ${dkgSharesCount} | Required: ${session.participants.length * (session.participants.length - 1)}</p>
+        <p><strong>Progress:</strong></p>
+        <p>State: ${this.getDKGStateText(details.state)}</p>
+        <p>Commitments: ${commitsCount} / ${participants.length}</p>
+        <p>DKG Shares: ${dkgSharesCount} / ${totalSharesNeeded}</p>
         </div>
         </div>
         `;
+    }
+
+    bindDKGActionEvents() {
+        const commitButton = document.querySelector('[data-action="commitment"]');
+        if (commitButton) {
+            commitButton.onclick = async (e) => {
+                e.preventDefault();
+                const enabled = commitButton.getAttribute('data-enabled') === 'true';
+                if (!enabled) {
+                    app.showNotification('info', 'Cannot submit commitment at this time');
+                    return;
+                }
+                await this.submitCommitment();
+            };
+        }
+
+        const shareButton = document.querySelector('[data-action="share"]');
+        if (shareButton) {
+            shareButton.onclick = async (e) => {
+                e.preventDefault();
+                const enabled = shareButton.getAttribute('data-enabled') === 'true';
+                if (!enabled) {
+                    app.showNotification('info', 'Must submit commitment first or wait for shares phase');
+                    return;
+                }
+                await this.submitShare();
+            };
+        }
+
+        const finalizeButton = document.querySelector('[data-action="finalize-session"]');
+        if (finalizeButton) {
+            finalizeButton.onclick = async (e) => {
+                e.preventDefault();
+                const enabled = finalizeButton.getAttribute('data-enabled') === 'true';
+                if (!enabled) {
+                    app.showNotification('info', 'Cannot finalize: waiting for all commitments and shares, or you are not the creator');
+                    return;
+                }
+                await this.finalizeDKG();
+            };
+        }
+
+        console.log('DKG action events bound');
     }
 
     renderParticipantsList() {
@@ -859,29 +1254,6 @@ class DKGManager {
             </div>
             </div>
             `;
-    }
-
-    bindDKGActionEvents() {
-        document.querySelectorAll('.dkg-action-btn').forEach(button => {
-            button.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const action = e.target.getAttribute('data-action');
-
-                switch (action) {
-                    case 'commitment':
-                        await this.submitCommitment();
-                        break;
-                    case 'share':
-                        await this.submitShare();
-                        break;
-                    case 'finalize-session':
-                        await this.finalizeDKG();
-                        break;
-                    default:
-                        console.log('Unknown DKG action:', action);
-                }
-            });
-        });
     }
 
     bindSessionCardEvents() {
@@ -952,29 +1324,50 @@ class DKGManager {
             const sessionName = document.getElementById('dkgSessionName').value.trim();
             const participantsText = document.getElementById('dkgParticipants').value.trim();
             const threshold = parseInt(document.getElementById('dkgThreshold').value);
+            const deadlineHours = parseInt(document.getElementById('dkgDeadline').value);
 
             const participants = participantsText
             .split('\n')
             .map(addr => addr.trim())
-            .filter(addr => addr.length > 0 && ethers.utils.isAddress(addr));
+            .filter(addr => addr.length > 0);
+
+            const invalidAddresses = participants.filter(addr => !ethers.utils.isAddress(addr));
+            if (invalidAddresses.length > 0) {
+                app.showNotification('error', `Invalid addresses: ${invalidAddresses.join(', ')}`);
+                return;
+            }
+
+            const uniqueParticipants = [...new Set(participants.map(addr => ethers.utils.getAddress(addr)))];
 
             if (!sessionName) {
                 app.showNotification('error', 'Please enter a session name');
                 return;
             }
 
-            if (participants.length < 2) {
-                app.showNotification('error', 'At least 2 valid participants required');
+            if (uniqueParticipants.length < 2) {
+                app.showNotification('error', 'At least 2 unique valid participants required');
                 return;
             }
 
-            if (threshold > participants.length) {
-                app.showNotification('error', 'Threshold cannot exceed number of participants');
+            if (threshold < 1 || threshold > uniqueParticipants.length) {
+                app.showNotification('error', `Threshold must be between 1 and ${uniqueParticipants.length}`);
                 return;
             }
+
+            if (deadlineHours < 1 || deadlineHours > 168) {
+                app.showNotification('error', 'Deadline must be between 1 and 168 hours');
+                return;
+            }
+
+            console.log('Creating DKG with validated parameters:', {
+                sessionName,
+                participants: uniqueParticipants,
+                threshold,
+                deadlineHours
+            });
 
             document.querySelector('.modal-overlay').remove();
-            await this.createDKGSession(participants);
+            await this.createDKGSession(uniqueParticipants);
 
         } catch (error) {
             console.error('Error submitting DKG creation:', error);
@@ -1050,12 +1443,6 @@ class DKGManager {
         app.showNotification('success', 'Sessions refreshed');
     }
 
-    getDKGStateText(state) {
-        const numState = parseInt(state) || 0;
-        const states = ['None', 'Opened', 'Finalized', 'Aborted'];
-        return states[numState] || 'Unknown';
-    }
-
     getDKGStateClass(state) {
         const numState = parseInt(state) || 0;
         switch (numState) {
@@ -1068,27 +1455,26 @@ class DKGManager {
 
     async checkGroupRequestStatus(sessionId) {
         try {
-            // Check status through new API
-            const response = await fetch(`${CONFIG.API.REQUESTS}${CONFIG.API.ENDPOINTS.DKG_REQUESTS}?sessionId=${sessionId}`);
+            const numericSessionId = parseInt(sessionId);
+
+            const frost = contracts.getContract('frostCoordinator');
+            const details = await frost.getSessionDetails(numericSessionId);
+            const participants = await frost.getSessionParticipants(numericSessionId);
+
+            const response = await fetch(`${CONFIG.API.REQUESTS}${CONFIG.API.ENDPOINTS.DKG_REQUESTS}?sessionId=${numericSessionId}`);
 
             if (response.ok) {
                 const requests = await response.json();
-                const sessionRequest = requests.find(req => req.session_id === sessionId);
+                const sessionRequest = requests.find(req => req.session_id === numericSessionId);
 
                 if (sessionRequest) {
                     if (sessionRequest.status === 'approved') {
-                        // Re-check participant roles
-                        const session = this.sessionsCache.get(sessionId);
-                        const participantStatuses = await this.checkParticipantStatuses(session.participants);
+                        const participantStatuses = await this.checkParticipantStatuses(participants);
                         const allAuthorized = participantStatuses.every(p => p.hasPoolManagerRole);
 
                         if (allAuthorized) {
-                            session.allParticipantsAuthorized = true;
-                            session.requestPending = false;
-                            this.sessionsCache.set(sessionId, session);
-
                             app.showNotification('success', 'All participants now have Pool Manager roles!');
-                            this.renderSessionDetails();
+                            await this.refreshActiveSession();
                             return;
                         }
                     } else if (sessionRequest.status === 'rejected') {
@@ -1106,6 +1492,5 @@ class DKGManager {
         }
     }
 }
-
 // Global instance
 window.dkgManager = new DKGManager();

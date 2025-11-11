@@ -1,82 +1,108 @@
 {
   "meta": {
-    "title": "SatoshiFi - Ethereumでのマイニングプール管理",
-    "description": "自動mp-トークン担保付き連合マイニングプール。Bitcoin、Dogecoin、Bitcoin Cash、Litecoinをサポート。"
+    "title": "SatoshiFi - EVMでのトラストレスビットコインカストディファクトリー",
+    "description": "EVMネットワークでセルフカストディと連邦型ビットコインソリューションを作成するための普遍的なファクトリー。トラストレス、ブリッジレスシステムで柔軟な経済性。"
   },
   "header": {
     "logo": "SatoshiFi",
     "nav": {
-      "pools": "プール管理",
-      "platform": "プラットフォーム",
-      "sandbox": "開発者サンドボックス",
+      "custody": "カストディファクトリー",
+      "pools": "マイニングプール",
+      "wallet": "ビットコインウォレット",
       "docs": "ドキュメント"
     },
     "connect": "ウォレット接続"
   },
   "hero": {
-    "title": "Ethereumでのマイニングプール管理",
-    "subtitle": "coinbaseアドレスを通じた自動mp-トークン担保付き連合マイニングプール。Bitcoin、Dogecoin、Bitcoin Cash、Litecoinをサポート。",
-    "cta_primary": "プラットフォーム開始",
-    "cta_secondary": "ドキュメント表示"
+    "title": "EVMでのトラストレスビットコインカストディファクトリー",
+    "subtitle": "セルフカストディと連邦型ビットコインソリューションを作成するための普遍的なファクトリー。しきい値スキームを設定し、カストディアンを選択し、カスタムルールで独自のソリューションを開始します。",
+    "cta_primary": "ファクトリーを起動",
+    "cta_secondary": "ドキュメントを表示"
   },
   "features": {
-    "title": "主要機能",
-    "multichain": {
-      "title": "マルチチェーンマイニングプール",
-      "description": "Bitcoin、Dogecoin、Bitcoin Cash、Litecoinプールと連合coinbaseアドレス、TSS制御資金管理。"
+    "title": "カストディモデル",
+    "self_custody": {
+      "title": "セルフカストディ (1-of-1)",
+      "description": "完全な制御を持つ個人的なビットコインウォレット。あなたの鍵、あなたのコイン。FROSTしきい値署名を介して制御されるネイティブビットコインアドレス。"
     },
-    "withdrawals": {
-      "title": "最小手数料出金",
-      "description": "プールインフラストラクチャを通じた特権出金処理により、取引コストをネットワーク最小値プラス最小運営費に削減。"
+    "federated": {
+      "title": "連邦型カストディ (M-of-N)",
+      "description": "分散された責任を持つグループ資金管理。ファミリーボールト (2-of-3)、企業財務 (5-of-7)、またはカスタムしきい値スキーム。"
     },
-    "staking": {
-      "title": "柔軟な支払いでのBitcoinステーキング",
-      "description": "BTCをステークし、現地通貨での銀行カードへの直接フィアット支払いを含む、お好みの通貨でリターンを受け取り。"
+    "trustless_bridge": {
+      "title": "トラストレスブリッジ",
+      "description": "ブリッジなし、信頼できる仲介者なし。自動担保付きでオンチェーンで直接ビットコイントランザクションのSPV検証。"
     },
-    "algorithms": {
-      "title": "オープンアルゴリズムシステム",
-      "description": "開発者への経済的インセンティブと透明な手数料構造を持つパラメトリック報酬配布アルゴリズム。"
+    "flexible_economics": {
+      "title": "柔軟な経済性",
+      "description": "作成者がすべての収益化パラメータを定義します。非営利のファミリーボールトからカスタマイズ可能な手数料構造を持つ商業カストディサービスまで。"
     }
   },
   "sections": {
+    "custody": {
+      "title": "カストディファクトリー",
+      "create": "新しいソリューションを作成",
+      "explore": "ソリューションを探索",
+      "manage": "カストディ管理"
+    },
     "pools": {
-      "title": "プール管理",
-      "management": "プール管理インターフェース",
-      "dashboard": "マイニングダッシュボード＆分析"
+      "title": "マイニングプール",
+      "management": "プール管理",
+      "dashboard": "マイニングダッシュボード"
+    },
+    "wallet": {
+      "title": "ビットコインウォレット",
+      "self": "セルフカストディウォレット",
+      "federated": "連邦型カストディ",
+      "group": "グループ管理"
     },
     "platform": {
       "title": "SatoshiFiプラットフォーム",
-      "main": "メインプラットフォームインターフェース",
-      "lending": "トラストレス貸出サービス",
-      "exchange": "mp-トークン取引所"
-    },
-    "sandbox": {
-      "title": "開発者サンドボックス",
-      "description": "開発とテスト用のBitcoin testnet環境",
-      "manager": "ノード管理インターフェース",
-      "wallet": "Bitcoinウォレット統合",
-      "scanner": "ネットワークモニター＆分析"
+      "main": "メインプラットフォーム",
+      "lending": "レンディングサービス",
+      "exchange": "トークン取引所"
     }
-  },
-  "stats": {
-    "networks": "サポート対象ネットワーク",
-    "pools": "アクティブプール",
-    "miners": "接続マイナー",
-    "volume": "日次ボリューム"
   },
   "technical": {
     "title": "技術実装",
-    "tss": {
-      "title": "TSS連合",
-      "description": "安全なマルチパーティ管理のためのFROSTプロトコルを用いた5-of-7閾値署名スキーム"
+    "frost": {
+      "title": "FROSTプロトコル",
+      "description": "安全なマルチパーティカストディのためのしきい値署名スキーム。セルフカストディには1-of-1、連邦型ソリューションにはM-of-N。"
     },
-    "collateral": {
-      "title": "自動担保",
-      "description": "マイニング報酬が連合coinbaseアドレスを通じてmp-トークン発行を自動的に担保"
+    "spv": {
+      "title": "SPV検証",
+      "description": "信頼できるブリッジなしでオンチェーンビットコイントランザクション検証。ビットコインの預金と引き出しの暗号証明。"
     },
-    "algorithms": {
-      "title": "パラメトリックアルゴリズム",
-      "description": "設定可能パラメータと開発者インセンティブを持つPPLNS、PPS、FPPS、PPLNT"
+    "factory": {
+      "title": "ファクトリークローニング",
+      "description": "一意のパラメータで実証済みの契約をクローン。各ソリューションは独自の経済性、ルール、カストディアン構成を取得します。"
+    }
+  },
+  "custody_models": {
+    "title": "サポートされているカストディモデル",
+    "self": {
+      "scheme": "1-of-1",
+      "name": "セルフカストディ",
+      "use_case": "個人ウォレット",
+      "security": "完全な制御"
+    },
+    "family": {
+      "scheme": "2-of-3",
+      "name": "ファミリーボールト",
+      "use_case": "共有家族資金",
+      "security": "ソーシャルリカバリー"
+    },
+    "corporate": {
+      "scheme": "5-of-7",
+      "name": "企業財務",
+      "use_case": "ビジネス資金",
+      "security": "マルチシグガバナンス"
+    },
+    "pool": {
+      "scheme": "プールベース",
+      "name": "マイニングプール",
+      "use_case": "集団マイニング",
+      "security": "連邦型カストディ"
     }
   },
   "footer": {

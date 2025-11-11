@@ -1,82 +1,108 @@
 {
   "meta": {
-    "title": "SatoshiFi - Mining-Pool-Management auf Ethereum",
-    "description": "Föderierte Mining-Pools mit automatischer mp-Token-Besicherung. Unterstützung für Bitcoin, Dogecoin, Bitcoin Cash und Litecoin."
+    "title": "SatoshiFi - Vertrauenslose Bitcoin-Verwahrungsfabrik auf EVM",
+    "description": "Universelle Fabrik zur Erstellung von Self-Custody- und föderierten Bitcoin-Lösungen auf EVM-Netzwerken. Vertrauensloses, brückenloses System mit flexibler Ökonomie."
   },
   "header": {
     "logo": "SatoshiFi",
     "nav": {
-      "pools": "Pool-Management",
-      "platform": "Plattform",
-      "sandbox": "Entwickler-Sandbox",
+      "custody": "Verwahrungsfabrik",
+      "pools": "Mining-Pools",
+      "wallet": "Bitcoin-Wallet",
       "docs": "Dokumentation"
     },
     "connect": "Wallet verbinden"
   },
   "hero": {
-    "title": "Mining-Pool-Management auf Ethereum",
-    "subtitle": "Föderierte Mining-Pools mit automatischer mp-Token-Besicherung durch Coinbase-Adressen. Unterstützung für Bitcoin, Dogecoin, Bitcoin Cash und Litecoin.",
-    "cta_primary": "Plattform starten",
+    "title": "Vertrauenslose Bitcoin-Verwahrungsfabrik auf EVM",
+    "subtitle": "Universelle Fabrik zur Erstellung von Self-Custody- und föderierten Bitcoin-Lösungen. Konfigurieren Sie Schwellwertschemata, wählen Sie Verwahrer und starten Sie Ihre eigene Lösung mit benutzerdefinierten Regeln.",
+    "cta_primary": "Fabrik starten",
     "cta_secondary": "Dokumentation ansehen"
   },
   "features": {
-    "title": "Kernfunktionen",
-    "multichain": {
-      "title": "Multi-Chain Mining-Pools",
-      "description": "Bitcoin-, Dogecoin-, Bitcoin Cash-, Litecoin-Pools mit föderierten Coinbase-Adressen und TSS-gesteuerter Mittelverwaltung."
+    "title": "Verwahrungsmodelle",
+    "self_custody": {
+      "title": "Self-Custody (1-of-1)",
+      "description": "Persönliche Bitcoin-Wallet mit voller Kontrolle. Ihre Schlüssel, Ihre Coins. Native Bitcoin-Adressen, die über FROST-Schwellwertsignaturen gesteuert werden."
     },
-    "withdrawals": {
-      "title": "Auszahlungen mit minimalen Gebühren",
-      "description": "Privilegierte Auszahlungsverarbeitung durch Pool-Infrastruktur reduziert Transaktionskosten auf Netzwerk-Minima plus minimale Betriebskosten."
+    "federated": {
+      "title": "Föderierte Verwahrung (M-of-N)",
+      "description": "Gruppenfondsverwaltung mit verteilter Verantwortung. Familientresore (2-of-3), Unternehmenskasse (5-of-7) oder benutzerdefinierte Schwellwertschemata."
     },
-    "staking": {
-      "title": "Bitcoin-Staking mit flexiblen Auszahlungen",
-      "description": "Staken Sie BTC und erhalten Sie Erträge in Ihrer bevorzugten Währung, einschließlich direkter Fiat-Auszahlungen auf Bankkarten in Ihrer Landeswährung."
+    "trustless_bridge": {
+      "title": "Vertrauenslose Brücke",
+      "description": "Keine Brücken, keine vertrauenswürdigen Vermittler. SPV-Verifizierung von Bitcoin-Transaktionen direkt on-chain mit automatischer Besicherung."
     },
-    "algorithms": {
-      "title": "Offenes Algorithmus-System",
-      "description": "Parametrische Belohnungsverteilungsalgorithmen mit wirtschaftlichen Anreizen für Entwickler und transparenten Gebührenstrukturen."
+    "flexible_economics": {
+      "title": "Flexible Ökonomie",
+      "description": "Ersteller definiert alle Monetarisierungsparameter. Von gemeinnützigen Familientresoren bis zu kommerziellen Custody-Services mit anpassbaren Gebührenstrukturen."
     }
   },
   "sections": {
+    "custody": {
+      "title": "Verwahrungsfabrik",
+      "create": "Neue Lösung erstellen",
+      "explore": "Lösungen durchsuchen",
+      "manage": "Verwahrung verwalten"
+    },
     "pools": {
-      "title": "Pool-Management",
-      "management": "Pool-Management-Interface",
-      "dashboard": "Mining-Dashboard & Analytik"
+      "title": "Mining-Pools",
+      "management": "Pool-Verwaltung",
+      "dashboard": "Mining-Dashboard"
+    },
+    "wallet": {
+      "title": "Bitcoin-Wallet",
+      "self": "Self-Custody Wallet",
+      "federated": "Föderierte Verwahrung",
+      "group": "Gruppenverwaltung"
     },
     "platform": {
       "title": "SatoshiFi-Plattform",
-      "main": "Haupt-Plattform-Interface",
-      "lending": "Vertrauenslose Kreditdienstleistungen",
-      "exchange": "mp-Token-Börse"
-    },
-    "sandbox": {
-      "title": "Entwickler-Sandbox",
-      "description": "Bitcoin-Testnet-Umgebung für Entwicklung und Tests",
-      "manager": "Node-Management-Interface",
-      "wallet": "Bitcoin-Wallet-Integration",
-      "scanner": "Netzwerk-Monitor & Analytik"
+      "main": "Hauptplattform",
+      "lending": "Kreditdienstleistungen",
+      "exchange": "Token-Börse"
     }
-  },
-  "stats": {
-    "networks": "Unterstützte Netzwerke",
-    "pools": "Aktive Pools",
-    "miners": "Verbundene Miner",
-    "volume": "Tägliches Volumen"
   },
   "technical": {
     "title": "Technische Umsetzung",
-    "tss": {
-      "title": "TSS-Föderation",
-      "description": "5-von-7-Schwellwert-Signaturschema mit FROST-Protokoll für sichere Multi-Party-Verwahrung"
+    "frost": {
+      "title": "FROST-Protokoll",
+      "description": "Schwellwert-Signaturschema für sichere Multi-Party-Verwahrung. 1-of-1 für Self-Custody, M-of-N für föderierte Lösungen."
     },
-    "collateral": {
-      "title": "Automatische Besicherung",
-      "description": "Mining-Belohnungen sichern automatisch die mp-Token-Ausgabe durch föderierte Coinbase-Adressen"
+    "spv": {
+      "title": "SPV-Verifizierung",
+      "description": "On-chain Bitcoin-Transaktionsverifizierung ohne vertrauenswürdige Brücken. Kryptographischer Nachweis von Bitcoin-Ein- und Auszahlungen."
     },
-    "algorithms": {
-      "title": "Parametrische Algorithmen",
-      "description": "PPLNS, PPS, FPPS, PPLNT mit konfigurierbaren Parametern und Entwickler-Anreizen"
+    "factory": {
+      "title": "Factory-Klonen",
+      "description": "Bewährte Verträge mit eindeutigen Parametern geklont. Jede Lösung erhält ihre eigene Ökonomie, Regeln und Verwahrer-Konfiguration."
+    }
+  },
+  "custody_models": {
+    "title": "Unterstützte Verwahrungsmodelle",
+    "self": {
+      "scheme": "1-of-1",
+      "name": "Self-Custody",
+      "use_case": "Persönliche Wallet",
+      "security": "Volle Kontrolle"
+    },
+    "family": {
+      "scheme": "2-of-3",
+      "name": "Familientresor",
+      "use_case": "Gemeinsame Familienmittel",
+      "security": "Soziale Wiederherstellung"
+    },
+    "corporate": {
+      "scheme": "5-of-7",
+      "name": "Unternehmenskasse",
+      "use_case": "Geschäftsmittel",
+      "security": "Multi-Sig-Governance"
+    },
+    "pool": {
+      "scheme": "Pool-basiert",
+      "name": "Mining-Pool",
+      "use_case": "Kollektives Mining",
+      "security": "Föderierte Verwahrung"
     }
   },
   "footer": {

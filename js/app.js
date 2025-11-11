@@ -1254,7 +1254,16 @@ class SatoshiFiApp {
 
     showNotification(type, message) {
         const container = document.getElementById('notifications');
-        if (!container) return;
+        if (!container) {
+            // FALLBACK: Если контейнер не найден, выводим в консоль
+            const emoji = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+            console.warn(`[Notification Container Missing] ${emoji} ${type.toUpperCase()}: ${message}`);
+            // Показываем через alert как last resort для критичных ошибок
+            if (type === 'error') {
+                alert(`Error: ${message}`);
+            }
+            return;
+        }
 
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;

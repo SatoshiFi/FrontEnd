@@ -7,9 +7,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f7931a">
-    <meta name="description" data-i18n-attr="content:meta.description" content="Federated mining pools with automatic mp-token collateralization. Multi-chain support for Bitcoin, Dogecoin, Bitcoin Cash, and Litecoin.">
+    <meta name="description" data-i18n-attr="content:meta.description" content="Universal factory for creating self-custody and federated Bitcoin solutions on EVM networks. Trustless, bridgeless system with flexible economics.">
 
-    <title>SatoshiFi - Bitcoin Mining Pool Management on Ethereum</title>
+    <title>SatoshiFi - Trustless Bitcoin Custody Factory on EVM</title>
 
     <link rel="stylesheet" href="/css/landing.css">
     <link rel="stylesheet" href="/css/i18n-styles.css">
@@ -24,7 +24,7 @@
     <header>
         <div class="container">
             <div class="header-container">
-                <a href="/index.html" class="logo">
+                <a href="/default.html" class="logo">
                     Satoshi<span>Fi</span>
                 </a>
 
@@ -36,41 +36,41 @@
             </div>
         </div>
 
-        <!-- Навигация -->
+        <!-- Navigation -->
         <nav class="nav-menu">
             <div class="container">
                 <div class="nav-container">
-                    <!-- Колонка 1: Маскот -->
+                    <!-- Column 1: Mascot -->
                     <div class="nav-mascot">
-                        <a href="/index.html" class="mascot-link">
+                        <a href="/default.html" class="mascot-link">
                             <img src="/img/favicon.png" alt="SatoshiFi" class="mascot-image">
                         </a>
                     </div>
 
-                    <!-- Колонка 2: Pool Management -->
+                    <!-- Column 2: Custody Factory -->
                     <div class="nav-column">
-                        <span class="nav-column-title" data-i18n="sections.pools.title">Pool Management</span>
-                        <a href="/index.html" data-i18n="sections.pools.management">Pool Management Interface</a>
-                        <a href="/index.html" data-i18n="sections.pools.dashboard">Mining Dashboard & Analytics</a>
+                        <span class="nav-column-title" data-i18n="sections.custody.title">Custody Factory</span>
+                        <a href="/custody.html" data-i18n="sections.custody.create">Create New Solution</a>
+                        <a href="/custody.html#explore" data-i18n="sections.custody.explore">Browse Solutions</a>
+                        <a href="/custody.html#manage" data-i18n="sections.custody.manage">Manage Custody</a>
                     </div>
 
-                    <!-- Колонка 3: SatoshiFi Platform -->
+                    <!-- Column 3: Mining Pools -->
                     <div class="nav-column">
-                        <span class="nav-column-title" data-i18n="sections.platform.title">SatoshiFi Platform</span>
-                        <a href="/index.html" data-i18n="sections.platform.main">Main Platform Interface</a>
-                        <a href="/index.html" data-i18n="sections.platform.lending">Trustless Lending Services</a>
-                        <a href="/index.html" data-i18n="sections.platform.exchange">S-Token Exchange</a>
+                        <span class="nav-column-title" data-i18n="sections.pools.title">Mining Pools</span>
+                        <a href="/index.html" data-i18n="sections.pools.management">Pool Management</a>
+                        <a href="/dashboard.html" data-i18n="sections.pools.dashboard">Mining Dashboard</a>
                     </div>
 
-                    <!-- Колонка 4: Bitcoin Testnet -->
+                    <!-- Column 4: Bitcoin Wallet -->
                     <div class="nav-column">
-                        <span class="nav-column-title" data-i18n="sections.sandbox.title">Bitcoin Testnet</span>
-                        <a href="/mining-simulator.html" data-i18n="sections.sandbox.manager">Node Manager</a>
-                        <a href="/wallet.html" data-i18n="sections.sandbox.wallet">BTC Wallet</a>
-                        <a href="/mining-pool-manager.html" data-i18n="sections.sandbox.scanner">Pool Manager</a>
+                        <span class="nav-column-title" data-i18n="sections.wallet.title">Bitcoin Wallet</span>
+                        <a href="/wallet.html" data-i18n="sections.wallet.self">Self-Custody Wallet</a>
+                        <a href="/wallet.html#federated" data-i18n="sections.wallet.federated">Federated Custody</a>
+                        <a href="/wallet.html#group" data-i18n="sections.wallet.group">Group Management</a>
                     </div>
 
-                    <!-- Колонка 5: Выбор языка -->
+                    <!-- Column 5: Language Selector -->
                     <div class="nav-language">
                         <div id="language-selector"></div>
                     </div>
@@ -83,11 +83,11 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1 data-i18n="hero.title">Mining Pool Management on Ethereum</h1>
-                <p data-i18n="hero.subtitle">Federated mining pools with automatic mp-token collateralization through coinbase addresses. Multi-chain support for Bitcoin, Dogecoin, Bitcoin Cash, and Litecoin.</p>
+                <h1 data-i18n="hero.title">Trustless Bitcoin Custody Factory on EVM</h1>
+                <p data-i18n="hero.subtitle">Universal factory for creating self-custody and federated Bitcoin solutions. Configure threshold schemes, select custodians, and launch your own solution with custom rules.</p>
 
                 <div class="hero-buttons">
-                    <a href="/index.html" class="btn btn-primary" data-i18n="hero.cta_primary">Launch Platform</a>
+                    <a href="/custody.html" class="btn btn-primary" data-i18n="hero.cta_primary">Launch Factory</a>
                     <a href="https://github.com/SatoshiFi/BackEnd" target="_blank" class="btn btn-outline" data-i18n="hero.cta_secondary">View Documentation</a>
                 </div>
             </div>
@@ -97,25 +97,25 @@
     <!-- Features Section -->
     <section id="features" class="features">
         <div class="container">
-            <h2 class="section-title" data-i18n="features.title">Core Features</h2>
+            <h2 class="section-title" data-i18n="features.title">Custody Models</h2>
 
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">⛓️</div>
-                    <h3 data-i18n="features.multichain.title">Multi-chain Mining Pools</h3>
-                    <p data-i18n="features.multichain.description">Bitcoin, Dogecoin, Bitcoin Cash, Litecoin pools with federated coinbase addresses and TSS-controlled fund management.</p>
+                    <div class="feature-icon">🔐</div>
+                    <h3 data-i18n="features.self_custody.title">Self-Custody (1-of-1)</h3>
+                    <p data-i18n="features.self_custody.description">Personal Bitcoin wallet with full control. Your keys, your coins. Native Bitcoin addresses controlled via FROST threshold signatures.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">💸</div>
-                    <h3 data-i18n="features.withdrawals.title">Minimal-fee Withdrawals</h3>
-                    <p data-i18n="features.withdrawals.description">Privileged withdrawal processing through pool infrastructure reduces transaction costs to network minimums plus minimal operational overhead.</p>
+                    <div class="feature-icon">👥</div>
+                    <h3 data-i18n="features.federated.title">Federated Custody (M-of-N)</h3>
+                    <p data-i18n="features.federated.description">Group fund management with distributed responsibility. Family vaults (2-of-3), corporate treasury (5-of-7), or custom threshold schemes.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3 data-i18n="features.staking.title">Flexible Payouts</h3>
-                    <p data-i18n="features.staking.description">Stake BTC and receive yields in your preferred currency, including direct fiat payouts to bank cards in your local currency.</p>
+                    <div class="feature-icon">💼</div>
+                    <h3 data-i18n="features.flexible_economics.title">Flexible Economics</h3>
+                    <p data-i18n="features.flexible_economics.description">Creator defines all monetization parameters. From non-profit family vaults to commercial custody services with customizable fee structures.</p>
                 </div>
             </div>
         </div>
@@ -129,123 +129,121 @@
             <div class="technical-grid">
                 <div class="technical-card">
                     <div class="tech-header">
-                        <div class="tech-icon">🔐</div>
-                        <h3 data-i18n="technical.tss.title">TSS Federation</h3>
+                        <div class="tech-icon">❄️</div>
+                        <h3 data-i18n="technical.frost.title">FROST Protocol</h3>
                     </div>
-                    <p data-i18n="technical.tss.description">5-of-7 threshold signature scheme with FROST protocol for secure multi-party custody</p>
+                    <p data-i18n="technical.frost.description">Threshold signature scheme for secure multi-party custody. 1-of-1 for self-custody, M-of-N for federated solutions.</p>
                     <div class="tech-details">
-                        <span class="tech-badge">FROST Protocol</span>
-                        <span class="tech-badge">5-of-7 Threshold</span>
+                        <span class="tech-badge">Threshold Signatures</span>
+                        <span class="tech-badge">Multi-Party</span>
                     </div>
                 </div>
 
                 <div class="technical-card">
                     <div class="tech-header">
-                        <div class="tech-icon">🏦</div>
-                        <h3 data-i18n="technical.collateral.title">Automatic Collateralization</h3>
+                        <div class="tech-icon">✅</div>
+                        <h3 data-i18n="technical.spv.title">SPV Verification</h3>
                     </div>
-                    <p data-i18n="technical.collateral.description">Mining rewards automatically secure mp-token issuance through federated coinbase addresses</p>
+                    <p data-i18n="technical.spv.description">On-chain Bitcoin transaction verification without trusted bridges. Cryptographic proof of Bitcoin deposits and withdrawals.</p>
                     <div class="tech-details">
-                        <span class="tech-badge">Auto-Collateral</span>
-                        <span class="tech-badge">Coinbase Integration</span>
+                        <span class="tech-badge">SPV Proofs</span>
+                        <span class="tech-badge">No Bridges</span>
                     </div>
                 </div>
 
                 <div class="technical-card">
                     <div class="tech-header">
-                        <div class="tech-icon">📊</div>
-                        <h3 data-i18n="technical.algorithms.title">Parametric Algorithms</h3>
+                        <div class="tech-icon">🏭</div>
+                        <h3 data-i18n="technical.factory.title">Factory Cloning</h3>
                     </div>
-                    <p data-i18n="technical.algorithms.description">PPLNS, PPS, FPPS, PPLNT with configurable parameters and developer incentives</p>
+                    <p data-i18n="technical.factory.description">Proven contracts cloned with unique parameters. Each solution gets its own economics, rules, and custodian configuration.</p>
                     <div class="tech-details">
-                        <span class="tech-badge">PPLNS</span>
-                        <span class="tech-badge">PPS</span>
-                        <span class="tech-badge">FPPS</span>
-                        <span class="tech-badge">PPLNT</span>
+                        <span class="tech-badge">Smart Contracts</span>
+                        <span class="tech-badge">Configurable</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Networks Section -->
+    <!-- Custody Models Section -->
     <section class="networks-section">
         <div class="container">
-            <h2 class="section-title">Supported Networks</h2>
+            <h2 class="section-title" data-i18n="custody_models.title">Supported Custody Models</h2>
 
             <div class="networks-grid-2x2">
                 <div class="network-card">
-                    <div class="network-icon">₿</div>
-                    <h3>Bitcoin</h3>
+                    <div class="network-icon">👤</div>
+                    <h3 data-i18n="custody_models.self.name">Self-Custody</h3>
                     <div class="network-details">
                         <div class="network-stat">
-                            <span>mpBTC</span>
-                            <span>1:1</span>
+                            <span data-i18n="custody_models.self.scheme">Scheme</span>
+                            <span>1-of-1</span>
                         </div>
                         <div class="network-stat">
-                            <span>Block Reward</span>
-                            <span>3.125 BTC</span>
+                            <span>Use Case</span>
+                            <span data-i18n="custody_models.self.use_case">Personal wallet</span>
                         </div>
                         <div class="network-stat">
-                            <span>Confirmations</span>
-                            <span>6 blocks</span>
+                            <span>Security</span>
+                            <span data-i18n="custody_models.self.security">Full control</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="network-card">
-                    <div class="network-icon">Ð</div>
-                    <h3>Dogecoin</h3>
+                    <div class="network-icon">👨‍👩‍👧</div>
+                    <h3 data-i18n="custody_models.family.name">Family Vault</h3>
                     <div class="network-details">
                         <div class="network-stat">
-                            <span>mpDOGE</span>
-                            <span>1:1</span>
+                            <span data-i18n="custody_models.family.scheme">Scheme</span>
+                            <span>2-of-3</span>
                         </div>
                         <div class="network-stat">
-                            <span>Block Reward</span>
-                            <span>10,000 DOGE</span>
+                            <span>Use Case</span>
+                            <span data-i18n="custody_models.family.use_case">Shared family funds</span>
                         </div>
                         <div class="network-stat">
-                            <span>Confirmations</span>
-                            <span>6 blocks</span>
+                            <span>Security</span>
+                            <span data-i18n="custody_models.family.security">Social recovery</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="network-card">
-                    <div class="network-icon">₿</div>
-                    <h3>Bitcoin Cash</h3>
+                    <div class="network-icon">🏢</div>
+                    <h3 data-i18n="custody_models.corporate.name">Corporate Treasury</h3>
                     <div class="network-details">
                         <div class="network-stat">
-                            <span>mpBCH</span>
-                            <span>1:1</span>
+                            <span data-i18n="custody_models.corporate.scheme">Scheme</span>
+                            <span>5-of-7</span>
                         </div>
                         <div class="network-stat">
-                            <span>Block Reward</span>
-                            <span>6.25 BCH</span>
+                            <span>Use Case</span>
+                            <span data-i18n="custody_models.corporate.use_case">Business funds</span>
                         </div>
                         <div class="network-stat">
-                            <span>Confirmations</span>
-                            <span>6 blocks</span>
+                            <span>Security</span>
+                            <span data-i18n="custody_models.corporate.security">Multi-sig governance</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="network-card">
-                    <div class="network-icon">Ł</div>
-                    <h3>Litecoin</h3>
+                    <div class="network-icon">⛏️</div>
+                    <h3 data-i18n="custody_models.pool.name">Mining Pool</h3>
                     <div class="network-details">
                         <div class="network-stat">
-                            <span>mpLTC</span>
-                            <span>1:1</span>
+                            <span data-i18n="custody_models.pool.scheme">Scheme</span>
+                            <span>Pool-based</span>
                         </div>
                         <div class="network-stat">
-                            <span>Block Reward</span>
-                            <span>12.5 LTC</span>
+                            <span>Use Case</span>
+                            <span data-i18n="custody_models.pool.use_case">Collective mining</span>
                         </div>
                         <div class="network-stat">
-                            <span>Confirmations</span>
-                            <span>6 blocks</span>
+                            <span>Security</span>
+                            <span data-i18n="custody_models.pool.security">Federated custody</span>
                         </div>
                     </div>
                 </div>
@@ -262,30 +260,30 @@
 
             <div class="footer-links">
                 <div class="footer-column">
-                    <h4>Platform</h4>
-                    <a href="/index.html" data-i18n="sections.platform.main">Main Interface</a>
-                    <a href="/index.html" data-i18n="sections.platform.lending">Lending</a>
-                    <a href="/index.html" data-i18n="sections.platform.exchange">Exchange</a>
+                    <h4 data-i18n="sections.custody.title">Custody Factory</h4>
+                    <a href="/custody.html" data-i18n="sections.custody.create">Create Solution</a>
+                    <a href="/custody.html#explore" data-i18n="sections.custody.explore">Browse</a>
+                    <a href="/custody.html#manage" data-i18n="sections.custody.manage">Manage</a>
                 </div>
 
                 <div class="footer-column">
-                    <h4>Pools</h4>
+                    <h4 data-i18n="sections.pools.title">Mining Pools</h4>
                     <a href="/index.html" data-i18n="sections.pools.management">Management</a>
-                    <a href="/index.html" data-i18n="sections.pools.dashboard">Dashboard</a>
+                    <a href="/dashboard.html" data-i18n="sections.pools.dashboard">Dashboard</a>
                 </div>
 
                 <div class="footer-column">
-                    <h4>Developer</h4>
-                    <a href="/mining-simulator.html" data-i18n="sections.sandbox.manager">Node Manager</a>
-                    <a href="/wallet.html" data-i18n="sections.sandbox.wallet">BTC Wallet</a>
-                    <a href="/mining-pool-manager.html" data-i18n="sections.sandbox.scanner">Pool Manager</a>
+                    <h4 data-i18n="sections.wallet.title">Bitcoin Wallet</h4>
+                    <a href="/wallet.html" data-i18n="sections.wallet.self">Self-Custody</a>
+                    <a href="/wallet.html#federated" data-i18n="sections.wallet.federated">Federated</a>
+                    <a href="/wallet.html#group" data-i18n="sections.wallet.group">Group</a>
                 </div>
 
                 <div class="footer-column">
                     <h4>Resources</h4>
                     <a href="https://github.com/SatoshiFi" target="_blank" data-i18n="footer.github">GitHub Repository</a>
                     <a href="/op.html" data-i18n="footer.documentation">One Pager</a>
-                    <a href="/wp.html" data-i18n="footer.whitepaper">Technical Whitepaper (English only)</a>
+                    <a href="/wp.html" data-i18n="footer.whitepaper">Technical Whitepaper</a>
                     <a href="https://github.com/SatoshiFi/BackEnd" target="_blank" data-i18n="footer.community">Community Discord</a>
                 </div>
             </div>

@@ -312,24 +312,43 @@ class DashboardManager {
                 return;
             }
 
-            // ИСПРАВЛЕНО: Используем правильный FROST_COORDINATOR из конфига
             const frostCoordinator = contracts.getContract('frostCoordinator');
+            const contractWithSigner = frostCoordinator.connect(wallet.provider.getSigner());
 
-            // Получаем сессии пользователя
-            const userSessions = await frostCoordinator.getUserSessions(wallet.account);
             let activeSessions = 0;
 
-            // Проверяем статус каждой сессии
-            for (const sessionId of userSessions) {
-                try {
-                    const session = await frostCoordinator.getSession(sessionId);
-                    // Состояние 0-3 = активные, 4 = завершенная
-                    if (session.state < 4) {
-                        activeSessions++;
-                    }
-                } catch (error) {
-                    console.warn(`Error checking session ${sessionId}:`, error.message);
+            try {
+                // #1: БЕЗОПАСНАЯ ПРОВЕРКА - сначала получаем количество
+                const sessionCount = await contractWithSigner.getUserSessionCount(wallet.account);
+                const count = sessionCount.toNumber();
+
+                // #2: Если сессий нет - сразу выходим
+                if (count === 0) {
+                    if (element) element.textContent = '0';
+                    return;
                 }
+
+                // #3: Только если есть сессии - получаем их список
+                const userSessions = await contractWithSigner.getUserSessions(wallet.account);
+
+                // #4: Проверяем статус каждой сессии
+                for (const sessionId of userSessions) {
+                    try {
+                        const session = await frostCoordinator.getSession(sessionId);
+                        // State: 1 = OPENED (активная), 2 = FINALIZED, 3 = ABORTED
+                        if (session.state.toNumber() === 1) {
+                            activeSessions++;
+                        }
+                    } catch (sessionError) {
+                        console.warn(`Error checking session ${sessionId}:`, sessionError.message);
+                    }
+                }
+
+            } catch (countError) {
+                // Если getUserSessionCount не работает - значит сессий нет
+                console.log('No sessions found for user:', wallet.account);
+                if (element) element.textContent = '0';
+                return;
             }
 
             if (element) {
@@ -339,7 +358,7 @@ class DashboardManager {
         } catch (error) {
             console.error('Failed to load DKG stats:', error);
             if (element) {
-                element.textContent = 'Error';
+                element.textContent = '0'; // Вместо 'Error' показываем 0
             }
         }
     }
@@ -356,22 +375,40 @@ class DashboardManager {
             }
 
             const frostCoordinator = contracts.getContract('frostCoordinator');
-            const userSessions = await frostCoordinator.getUserSessions(wallet.account);
+            const contractWithSigner = frostCoordinator.connect(wallet.provider.getSigner());
 
             let activeSessions = 0;
             let completedSessions = 0;
 
-            for (const sessionId of userSessions) {
-                try {
-                    const session = await frostCoordinator.getSession(sessionId);
-                    if (session.state < 4) {
-                        activeSessions++;
-                    } else {
-                        completedSessions++;
-                    }
-                } catch (error) {
-                    console.warn(`Error checking session ${sessionId}:`, error.message);
+            try {
+                const sessionCount = await contractWithSigner.getUserSessionCount(wallet.account);
+                const count = sessionCount.toNumber();
+
+                if (count === 0) {
+                    if (activeElement) activeElement.textContent = '0';
+                    if (completedElement) completedElement.textContent = '0';
+                    return;
                 }
+
+                const userSessions = await contractWithSigner.getUserSessions(wallet.account);
+
+                for (const sessionId of userSessions) {
+                    try {
+                        const session = await frostCoordinator.getSession(sessionId);
+                        const state = session.state.toNumber();
+
+                        if (state === 1) { // OPENED
+                            activeSessions++;
+                        } else if (state === 2 || state === 3) { // FINALIZED or ABORTED
+                            completedSessions++;
+                        }
+                    } catch (sessionError) {
+                        console.warn(`Error checking session ${sessionId}:`, sessionError.message);
+                    }
+                }
+
+            } catch (countError) {
+                console.log('No sessions found for user');
             }
 
             if (activeElement) activeElement.textContent = activeSessions.toString();
@@ -379,8 +416,8 @@ class DashboardManager {
 
         } catch (error) {
             console.error('Failed to load DKG sessions:', error);
-            if (activeElement) activeElement.textContent = 'Error';
-            if (completedElement) completedElement.textContent = 'Error';
+            if (activeElement) activeElement.textContent = '0';
+            if (completedElement) completedElement.textContent = '0';
         }
     }
 
@@ -579,50 +616,65 @@ class DashboardManager {
                 return;
             }
 
-            // ИСПРАВЛЕНО: Загружаем реальные FROST сессии
             const frostCoordinator = contracts.getContract('frostCoordinator');
-            const userSessions = await frostCoordinator.getUserSessions(wallet.account);
+            const contractWithSigner = frostCoordinator.connect(wallet.provider.getSigner());
 
-            if (userSessions.length === 0) {
+            try {
+                const sessionCount = await contractWithSigner.getUserSessionCount(wallet.account);
+                const count = sessionCount.toNumber();
+
+                if (count === 0) {
+                    sessionsContainer.innerHTML = `
+                    <div class="session-item">
+                    <span class="session-status inactive">●</span>
+                    <span class="session-id">No active sessions</span>
+                    </div>
+                    `;
+                    return;
+                }
+
+                const userSessions = await contractWithSigner.getUserSessions(wallet.account);
+                let sessionsHTML = '';
+                let activeSessions = 0;
+
+                // Показываем только первые 3 сессии
+                for (const sessionId of userSessions.slice(0, 3)) {
+                    try {
+                        const session = await frostCoordinator.getSession(sessionId);
+                        const state = session.state.toNumber();
+                        const isActive = state === 1; // OPENED
+                        if (isActive) activeSessions++;
+
+                        sessionsHTML += `
+                        <div class="session-item">
+                        <span class="session-status ${isActive ? 'active' : 'completed'}">●</span>
+                        <span class="session-id">Session ${sessionId.toString().slice(-6)} (${isActive ? 'Active' : 'Completed'})</span>
+                        </div>
+                        `;
+                    } catch (sessionError) {
+                        console.warn(`Error loading session ${sessionId}:`, sessionError.message);
+                    }
+                }
+
+                if (userSessions.length > 3) {
+                    sessionsHTML += `
+                    <div class="session-item">
+                    <span class="session-status">●</span>
+                    <span class="session-id">+${userSessions.length - 3} more sessions</span>
+                    </div>
+                    `;
+                }
+
+                sessionsContainer.innerHTML = sessionsHTML;
+
+            } catch (countError) {
                 sessionsContainer.innerHTML = `
                 <div class="session-item">
                 <span class="session-status inactive">●</span>
                 <span class="session-id">No active sessions</span>
                 </div>
                 `;
-                return;
             }
-
-            let sessionsHTML = '';
-            let activeSessions = 0;
-
-            for (const sessionId of userSessions.slice(0, 3)) { // Показываем только первые 3
-                try {
-                    const session = await frostCoordinator.getSession(sessionId);
-                    const isActive = session.state < 4;
-                    if (isActive) activeSessions++;
-
-                    sessionsHTML += `
-                    <div class="session-item">
-                    <span class="session-status ${isActive ? 'active' : 'completed'}">●</span>
-                    <span class="session-id">Session ${sessionId.toString().slice(-6)} (${isActive ? 'Active' : 'Completed'})</span>
-                    </div>
-                    `;
-                } catch (error) {
-                    console.warn(`Error loading session ${sessionId}:`, error.message);
-                }
-            }
-
-            if (userSessions.length > 3) {
-                sessionsHTML += `
-                <div class="session-item">
-                <span class="session-status">●</span>
-                <span class="session-id">+${userSessions.length - 3} more sessions</span>
-                </div>
-                `;
-            }
-
-            sessionsContainer.innerHTML = sessionsHTML;
 
         } catch (error) {
             console.error('Failed to load FROST sessions:', error);

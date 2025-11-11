@@ -1,88 +1,114 @@
 {
   "meta": {
-    "title": "SatoshiFi - Gestion de pools de minage sur Ethereum",
-    "description": "Pools de minage fédérés avec garantie automatique des jetons mp. Support pour Bitcoin, Dogecoin, Bitcoin Cash et Litecoin."
+    "title": "SatoshiFi - Usine de Garde Bitcoin Sans Confiance sur EVM",
+    "description": "Usine universelle pour créer des solutions Bitcoin en auto-garde et fédérées sur les réseaux EVM. Système sans confiance, sans pont avec économie flexible."
   },
   "header": {
     "logo": "SatoshiFi",
     "nav": {
-      "pools": "Gestion des pools",
-      "platform": "Plateforme",
-      "sandbox": "Bac à sable développeur",
+      "custody": "Usine de Garde",
+      "pools": "Pools de Minage",
+      "wallet": "Portefeuille Bitcoin",
       "docs": "Documentation"
     },
-    "connect": "Connecter portefeuille"
+    "connect": "Connecter Portefeuille"
   },
   "hero": {
-    "title": "Gestion de pools de minage sur Ethereum",
-    "subtitle": "Pools de minage fédérés avec garantie automatique des jetons mp via les adresses coinbase. Support pour Bitcoin, Dogecoin, Bitcoin Cash et Litecoin.",
-    "cta_primary": "Lancer la plateforme",
-    "cta_secondary": "Voir la documentation"
+    "title": "Usine de Garde Bitcoin Sans Confiance sur EVM",
+    "subtitle": "Usine universelle pour créer des solutions Bitcoin en auto-garde et fédérées. Configurez des schémas de seuil, sélectionnez des gardiens et lancez votre propre solution avec des règles personnalisées.",
+    "cta_primary": "Lancer l'Usine",
+    "cta_secondary": "Voir la Documentation"
   },
   "features": {
-    "title": "Fonctionnalités principales",
-    "multichain": {
-      "title": "Pools de minage multi-chaînes",
-      "description": "Pools Bitcoin, Dogecoin, Bitcoin Cash, Litecoin avec adresses coinbase fédérées et gestion des fonds contrôlée par TSS."
+    "title": "Modèles de Garde",
+    "self_custody": {
+      "title": "Auto-Garde (1-of-1)",
+      "description": "Portefeuille Bitcoin personnel avec contrôle total. Vos clés, vos pièces. Adresses Bitcoin natives contrôlées via des signatures de seuil FROST."
     },
-    "withdrawals": {
-      "title": "Retraits à frais minimaux",
-      "description": "Traitement privilégié des retraits via l'infrastructure des pools réduit les coûts de transaction aux minimums réseau plus frais opérationnels minimaux."
+    "federated": {
+      "title": "Garde Fédérée (M-of-N)",
+      "description": "Gestion de fonds de groupe avec responsabilité distribuée. Coffres familiaux (2-of-3), trésorerie d'entreprise (5-of-7) ou schémas de seuil personnalisés."
     },
-    "staking": {
-      "title": "Staking Bitcoin avec paiements flexibles",
-      "description": "Stakez vos BTC et recevez des rendements dans votre devise préférée, y compris des paiements fiat directs sur cartes bancaires dans votre devise locale."
+    "trustless_bridge": {
+      "title": "Pont Sans Confiance",
+      "description": "Pas de ponts, pas d'intermédiaires de confiance. Vérification SPV des transactions Bitcoin directement on-chain avec collatéralisation automatique."
     },
-    "algorithms": {
-      "title": "Système d'algorithmes ouvert",
-      "description": "Algorithmes de distribution de récompenses paramétriques avec incitations économiques pour les développeurs et structures de frais transparentes."
+    "flexible_economics": {
+      "title": "Économie Flexible",
+      "description": "Le créateur définit tous les paramètres de monétisation. Des coffres familiaux à but non lucratif aux services de garde commerciaux avec structures de frais personnalisables."
     }
   },
   "sections": {
+    "custody": {
+      "title": "Usine de Garde",
+      "create": "Créer Nouvelle Solution",
+      "explore": "Parcourir les Solutions",
+      "manage": "Gérer la Garde"
+    },
     "pools": {
-      "title": "Gestion des pools",
-      "management": "Interface de gestion des pools",
-      "dashboard": "Tableau de bord mining & analytiques"
+      "title": "Pools de Minage",
+      "management": "Gestion des Pools",
+      "dashboard": "Tableau de Bord Minage"
+    },
+    "wallet": {
+      "title": "Portefeuille Bitcoin",
+      "self": "Portefeuille Auto-Garde",
+      "federated": "Garde Fédérée",
+      "group": "Gestion de Groupe"
     },
     "platform": {
       "title": "Plateforme SatoshiFi",
-      "main": "Interface principale de la plateforme",
-      "lending": "Services de prêt sans confiance",
-      "exchange": "Échange de jetons mp"
-    },
-    "sandbox": {
-      "title": "Bac à sable développeur",
-      "description": "Environnement Bitcoin testnet pour développement et tests",
-      "manager": "Interface de gestion des nœuds",
-      "wallet": "Intégration portefeuille Bitcoin",
-      "scanner": "Moniteur réseau & analytiques"
+      "main": "Plateforme Principale",
+      "lending": "Services de Prêt",
+      "exchange": "Échange de Tokens"
     }
   },
-  "stats": {
-    "networks": "Réseaux supportés",
-    "pools": "Pools actifs",
-    "miners": "Mineurs connectés",
-    "volume": "Volume quotidien"
-  },
   "technical": {
-    "title": "Implémentation technique",
-    "tss": {
-      "title": "Fédération TSS",
-      "description": "Schéma de signature à seuil 5-sur-7 avec protocole FROST pour garde multi-parties sécurisée"
+    "title": "Implémentation Technique",
+    "frost": {
+      "title": "Protocole FROST",
+      "description": "Schéma de signature de seuil pour garde multi-parties sécurisée. 1-of-1 pour auto-garde, M-of-N pour solutions fédérées."
     },
-    "collateral": {
-      "title": "Garantie automatique",
-      "description": "Les récompenses de minage sécurisent automatiquement l'émission de jetons mp via les adresses coinbase fédérées"
+    "spv": {
+      "title": "Vérification SPV",
+      "description": "Vérification on-chain des transactions Bitcoin sans ponts de confiance. Preuve cryptographique des dépôts et retraits Bitcoin."
     },
-    "algorithms": {
-      "title": "Algorithmes paramétriques",
-      "description": "PPLNS, PPS, FPPS, PPLNT avec paramètres configurables et incitations pour développeurs"
+    "factory": {
+      "title": "Clonage d'Usine",
+      "description": "Contrats éprouvés clonés avec paramètres uniques. Chaque solution obtient sa propre économie, règles et configuration de gardiens."
+    }
+  },
+  "custody_models": {
+    "title": "Modèles de Garde Supportés",
+    "self": {
+      "scheme": "1-of-1",
+      "name": "Auto-Garde",
+      "use_case": "Portefeuille personnel",
+      "security": "Contrôle total"
+    },
+    "family": {
+      "scheme": "2-of-3",
+      "name": "Coffre Familial",
+      "use_case": "Fonds familiaux partagés",
+      "security": "Récupération sociale"
+    },
+    "corporate": {
+      "scheme": "5-of-7",
+      "name": "Trésorerie d'Entreprise",
+      "use_case": "Fonds d'entreprise",
+      "security": "Gouvernance multi-sig"
+    },
+    "pool": {
+      "scheme": "Basé sur pool",
+      "name": "Pool de Minage",
+      "use_case": "Minage collectif",
+      "security": "Garde fédérée"
     }
   },
   "footer": {
     "documentation": "Documentation",
     "github": "Dépôt GitHub",
-    "whitepaper": "Livre blanc technique",
-    "community": "Discord communauté"
+    "whitepaper": "Livre Blanc Technique",
+    "community": "Discord Communauté"
   }
 }

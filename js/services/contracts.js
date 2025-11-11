@@ -66,8 +66,6 @@ class ContractsManager {
         console.log('Contracts initialized successfully');
     }
 
-    // =============== ИСПРАВЛЕННЫЕ МЕТОДЫ ДЛЯ ПРОВЕРКИ АДМИНСКИХ ПРАВ ===============
-
     async checkAdminRights(address = wallet.account) {
         try {
             if (!this.initialized) {
@@ -77,7 +75,6 @@ class ContractsManager {
 
             console.log('Checking admin rights for address:', address);
 
-            // ИСПРАВЛЕНО: используем MEMBERSHIP_SBT контракт, а не Factory
             const membershipSBT = this.getContract('membershipSBT');
 
             if (!membershipSBT) {
@@ -86,7 +83,6 @@ class ContractsManager {
             }
 
             try {
-                // Проверяем есть ли NFT у пользователя
                 const balance = await membershipSBT.balanceOf(address);
                 console.log('User NFT balance:', balance.toString());
 
@@ -95,27 +91,22 @@ class ContractsManager {
                     return { hasAdminRights: false, isAdmin: false, isPoolManager: false };
                 }
 
-                // Получаем токен ID пользователя
                 const tokenId = await membershipSBT.tokenOf(address);
                 console.log('User token ID:', tokenId.toString());
 
-                // Получаем данные membership NFT
                 const membershipData = await membershipSBT.membershipOf(tokenId);
                 console.log('Membership data:', membershipData);
 
-                // Извлекаем роль из NFT
                 let role = 'unknown';
                 try {
                     role = ethers.utils.parseBytes32String(membershipData.role);
                 } catch (roleError) {
                     console.warn('Failed to parse role from NFT:', roleError);
-                    // Пытаемся получить роль как строку
                     role = membershipData.role || 'unknown';
                 }
 
                 console.log('User role from NFT:', role);
 
-                // Определяем админские права на основе роли
                 const roleText = role.toLowerCase();
                 const isAdmin = ['admin', 'owner'].includes(roleText);
                 const isPoolManager = ['pool_manager', 'custodial', 'admin', 'owner'].includes(roleText);
@@ -136,7 +127,6 @@ class ContractsManager {
             } catch (nftError) {
                 console.warn('NFT-based admin check failed, trying fallback methods:', nftError);
 
-                // Fallback 1: Проверка через owner контракта
                 try {
                     const owner = await membershipSBT.owner();
                     if (owner.toLowerCase() === address.toLowerCase()) {
@@ -153,11 +143,9 @@ class ContractsManager {
                     console.warn('Owner check failed:', ownerError);
                 }
 
-                // Fallback 2: Проверка через Factory контракт (для совместимости)
                 try {
                     const factory = this.getContract('factory');
                     if (factory) {
-                        // Пытаемся найти админские роли в Factory
                         const DEFAULT_ADMIN_ROLE = ethers.utils.id("DEFAULT_ADMIN_ROLE");
                         const hasDefaultAdmin = await factory.hasRole(DEFAULT_ADMIN_ROLE, address);
 
@@ -172,7 +160,6 @@ class ContractsManager {
                             };
                         }
 
-                        // Проверяем POOL_MANAGER_ROLE
                         const POOL_MANAGER_ROLE = ethers.utils.id("POOL_MANAGER_ROLE");
                         const hasPoolManager = await factory.hasRole(POOL_MANAGER_ROLE, address);
 
@@ -191,7 +178,6 @@ class ContractsManager {
                     console.warn('Factory fallback check failed:', factoryError);
                 }
 
-                // Если все проверки не удались
                 console.log('All admin checks failed, user has no admin rights');
                 return { hasAdminRights: false, isAdmin: false, isPoolManager: false, error: nftError.message };
             }
@@ -216,8 +202,6 @@ class ContractsManager {
             return false;
         }
     }
-
-    // =============== ДОПОЛНИТЕЛЬНЫЕ ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===============
 
     async getUserNFTs(address = wallet.account) {
         try {
@@ -281,7 +265,6 @@ class ContractsManager {
         }
     }
 
-    // =============== МЕТОД ДЛЯ МИНТИНГА NFT ПРИ ОДОБРЕНИИ ЗАПРОСОВ ===============
 
     async mintMembershipNFTForUser(userAddress, poolId, role, reason = '') {
         try {
@@ -291,32 +274,26 @@ class ContractsManager {
 
             console.log('Minting NFT for user:', { userAddress, poolId, role, reason });
 
-            // Проверяем админские права текущего пользователя
             const adminRights = await this.checkAdminRights(wallet.account);
             if (!adminRights.hasAdminRights) {
                 throw new Error('Admin rights required to mint NFT');
             }
 
-            const membershipSBT = this.getContract('membershipSBT');
+            const membershipSBT = this.getContract('membershipSBT').connect(wallet.signer);
             if (!membershipSBT) {
                 throw new Error('MEMBERSHIP_SBT contract not available');
             }
 
-            // Проверяем, есть ли уже NFT у пользователя
             const existingBalance = await membershipSBT.balanceOf(userAddress);
             if (existingBalance.gt(0)) {
                 console.log('User already has NFT, checking if we can update role...');
 
-                // Если у пользователя уже есть NFT, можно попробовать обновить роль
-                // Это зависит от конкретной реализации контракта
                 const tokenId = await membershipSBT.tokenOf(userAddress);
 
-                // Попытка обновления роли (если контракт поддерживает)
                 try {
                     const roleBytes32 = ethers.utils.formatBytes32String(role);
                     const poolIdBytes32 = ethers.utils.formatBytes32String(poolId);
 
-                    // Вызываем функцию обновления, если она есть
                     const tx = await membershipSBT.updateMembership(tokenId, roleBytes32, poolIdBytes32);
                     const receipt = await tx.wait();
 
@@ -333,26 +310,21 @@ class ContractsManager {
             const roleBytes32 = ethers.utils.formatBytes32String(role);
             const poolIdBytes32 = ethers.utils.formatBytes32String(poolId);
 
-            // Параметры для минтинга (зависят от реализации контракта)
             const mintParams = {
                 to: userAddress,
                 role: roleBytes32,
                 poolId: poolIdBytes32,
-                // Дополнительные параметры в зависимости от контракта
             };
 
             console.log('Minting NFT with params:', mintParams);
 
-            // ИСПРАВЛЕНО: добавляем tokenURI (4-й параметр)
             const tokenURI = `https://satoshifi.io/nft/${poolId}/${role}`;
 
-            // Вызываем функцию минтинга с правильными параметрами: (to, poolId, role, tokenURI)
             const tx = await membershipSBT.mint(userAddress, poolIdBytes32, roleBytes32, tokenURI);
             const receipt = await tx.wait();
 
             console.log('NFT minted successfully:', receipt);
 
-            // Проверяем что NFT действительно создался
             const newBalance = await membershipSBT.balanceOf(userAddress);
             if (newBalance.eq(0)) {
                 throw new Error('NFT minting failed - balance still zero');
@@ -366,7 +338,6 @@ class ContractsManager {
         }
     }
 
-    // =============== МНОЖЕСТВЕННЫЙ МИНТИНГ ДЛЯ DKG ГРУПП ===============
 
     async mintNFTsForDKGParticipants(participants, sessionId, reason = '') {
         try {
@@ -419,8 +390,6 @@ class ContractsManager {
             throw error;
         }
     }
-
-    // =============== ДИАГНОСТИЧЕСКИЕ МЕТОДЫ ===============
 
     async diagnoseAdminRights(address = wallet.account) {
         console.log('=== ADMIN RIGHTS DIAGNOSTIC ===');

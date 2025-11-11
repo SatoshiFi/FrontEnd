@@ -1,82 +1,108 @@
 {
   "meta": {
-    "title": "SatoshiFi - 基于以太坊的矿池管理",
-    "description": "具有自动mp代币抵押的联邦矿池。支持比特币、狗狗币、比特币现金和莱特币。"
+    "title": "SatoshiFi - 基于EVM的无需信任比特币托管工厂",
+    "description": "在EVM网络上创建自我托管和联邦比特币解决方案的通用工厂。无需信任、无桥接系统，具有灵活的经济模型。"
   },
   "header": {
     "logo": "SatoshiFi",
     "nav": {
-      "pools": "矿池管理",
-      "platform": "平台",
-      "sandbox": "开发者沙盒",
+      "custody": "托管工厂",
+      "pools": "矿池",
+      "wallet": "比特币钱包",
       "docs": "文档"
     },
     "connect": "连接钱包"
   },
   "hero": {
-    "title": "基于以太坊的矿池管理",
-    "subtitle": "通过coinbase地址实现自动mp代币抵押的联邦矿池。支持比特币、狗狗币、比特币现金和莱特币。",
-    "cta_primary": "启动平台",
+    "title": "基于EVM的无需信任比特币托管工厂",
+    "subtitle": "创建自我托管和联邦比特币解决方案的通用工厂。配置阈值方案，选择托管人，并使用自定义规则启动您自己的解决方案。",
+    "cta_primary": "启动工厂",
     "cta_secondary": "查看文档"
   },
   "features": {
-    "title": "核心功能",
-    "multichain": {
-      "title": "多链矿池",
-      "description": "比特币、狗狗币、比特币现金、莱特币矿池，具有联邦coinbase地址和TSS控制的资金管理。"
+    "title": "托管模式",
+    "self_custody": {
+      "title": "自我托管 (1-of-1)",
+      "description": "完全控制的个人比特币钱包。您的密钥，您的币。通过FROST阈值签名控制的原生比特币地址。"
     },
-    "withdrawals": {
-      "title": "最低费用提取",
-      "description": "通过矿池基础设施的特权提取处理将交易成本降至网络最低值加最小运营开支。"
+    "federated": {
+      "title": "联邦托管 (M-of-N)",
+      "description": "分布式责任的集体资金管理。家庭金库 (2-of-3)、企业财务 (5-of-7) 或自定义阈值方案。"
     },
-    "staking": {
-      "title": "比特币质押与灵活支付",
-      "description": "质押BTC并以您偏好的货币获得收益，包括直接法币支付到您当地货币的银行卡。"
+    "trustless_bridge": {
+      "title": "无需信任的桥接",
+      "description": "无桥接，无信任中介。SPV验证比特币交易直接在链上进行，并自动抵押。"
     },
-    "algorithms": {
-      "title": "开放算法系统",
-      "description": "参数化奖励分配算法，为开发者提供经济激励和透明的费用结构。"
+    "flexible_economics": {
+      "title": "灵活的经济模型",
+      "description": "创建者定义所有货币化参数。从非营利家庭金库到具有可定制费用结构的商业托管服务。"
     }
   },
   "sections": {
+    "custody": {
+      "title": "托管工厂",
+      "create": "创建新解决方案",
+      "explore": "浏览解决方案",
+      "manage": "管理托管"
+    },
     "pools": {
-      "title": "矿池管理",
-      "management": "矿池管理界面",
-      "dashboard": "挖矿仪表板和分析"
+      "title": "矿池",
+      "management": "矿池管理",
+      "dashboard": "挖矿仪表板"
+    },
+    "wallet": {
+      "title": "比特币钱包",
+      "self": "自我托管钱包",
+      "federated": "联邦托管",
+      "group": "群组管理"
     },
     "platform": {
       "title": "SatoshiFi平台",
-      "main": "主平台界面",
-      "lending": "去信任借贷服务",
-      "exchange": "mp代币交易所"
-    },
-    "sandbox": {
-      "title": "开发者沙盒",
-      "description": "比特币测试网环境用于开发和测试",
-      "manager": "节点管理界面",
-      "wallet": "比特币钱包集成",
-      "scanner": "网络监控和分析"
+      "main": "主平台",
+      "lending": "借贷服务",
+      "exchange": "代币交易所"
     }
-  },
-  "stats": {
-    "networks": "支持的网络",
-    "pools": "活跃矿池",
-    "miners": "连接的矿工",
-    "volume": "日交易量"
   },
   "technical": {
     "title": "技术实现",
-    "tss": {
-      "title": "TSS联邦",
-      "description": "5-of-7门限签名方案，采用FROST协议实现安全的多方托管"
+    "frost": {
+      "title": "FROST协议",
+      "description": "安全多方托管的阈值签名方案。1-of-1用于自我托管，M-of-N用于联邦解决方案。"
     },
-    "collateral": {
-      "title": "自动抵押",
-      "description": "挖矿奖励通过联邦coinbase地址自动保障mp代币发行"
+    "spv": {
+      "title": "SPV验证",
+      "description": "链上比特币交易验证，无需信任桥接。比特币存款和取款的加密证明。"
     },
-    "algorithms": {
-      "title": "参数化算法",
-      "description": "PPLNS、PPS、FPPS、PPLNT，具有可配置参数和开发者激励"
+    "factory": {
+      "title": "工厂克隆",
+      "description": "使用独特参数克隆经过验证的合约。每个解决方案都有自己的经济模型、规则和托管人配置。"
+    }
+  },
+  "custody_models": {
+    "title": "支持的托管模式",
+    "self": {
+      "scheme": "1-of-1",
+      "name": "自我托管",
+      "use_case": "个人钱包",
+      "security": "完全控制"
+    },
+    "family": {
+      "scheme": "2-of-3",
+      "name": "家庭金库",
+      "use_case": "共享家庭资金",
+      "security": "社交恢复"
+    },
+    "corporate": {
+      "scheme": "5-of-7",
+      "name": "企业财务",
+      "use_case": "商业资金",
+      "security": "多重签名治理"
+    },
+    "pool": {
+      "scheme": "基于矿池",
+      "name": "矿池",
+      "use_case": "集体挖矿",
+      "security": "联邦托管"
     }
   },
   "footer": {

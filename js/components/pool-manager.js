@@ -6,6 +6,7 @@ class PoolManager {
         this.miningPools = [];
         this.initialized = false;
         this.refreshInterval = null;
+        this.switchPoolsCache = []; // Временное хранилище пулов для Switch Pool
     }
 
     async initialize() {
@@ -78,9 +79,10 @@ class PoolManager {
             <h3>Mining Pools</h3>
             <div class="pools-controls">
             <select id="poolFilter" class="form-select">
-            <option value="all">All Pools</option>
+            <option value="active" selected>Active Pools</option>
             <option value="my">My Pools</option>
-            <option value="active">Active Pools</option>
+            <option value="inactive">Inactive Pools</option>
+            <option value="all">All Pools</option>
             </select>
             </div>
             </div>
@@ -96,17 +98,16 @@ class PoolManager {
 
             if (this.pools.length > 0) {
                 this.updateStats();
-                this.renderPools();
+                this.filterPools('active');
             } else {
                 this.showEmptyState('No accessible pools found');
             }
         } else {
-            // ✅ ИСПРАВЛЕНО: Если нет доступа к пулам - просто скрываем
             container.innerHTML = '';
         }
     }
 
-    // ==================== MY WORKERS SECTION (ОТДЕЛЬНАЯ ИНИЦИАЛИЗАЦИЯ) ====================
+    // ==================== MY WORKERS SECTION ====================
 
     async initializeMyWorkersSection() {
         const container = document.getElementById('myWorkersContainer');
@@ -161,6 +162,9 @@ class PoolManager {
 
             const myWorkers = await stratumWorkerManager.loadMyWorkers();
             console.log(`Loaded ${myWorkers.length} workers for ${wallet.account}`);
+
+            // ИСПРАВЛЕНИЕ: Сохраняем воркеров в this.workers для использования в switchWorkerPool
+            this.workers = myWorkers;
 
             if (myWorkers.length === 0) {
                 container.innerHTML = `
@@ -538,6 +542,8 @@ class PoolManager {
                     return pool.userAccess !== 'None';
                 case 'active':
                     return pool.active;
+                case 'inactive':
+                    return !pool.active;
                 default:
                     return true;
             }
@@ -909,6 +915,46 @@ class PoolManager {
 
     // ==================== WORKER SWITCHING ====================
 
+    /**
+     * Загрузить ВСЕ активные пулы без проверки прав доступа
+     * Используется для Switch Pool, где майнер может выбрать любой активный пул
+     */
+    async loadAllActivePools() {
+        try {
+            console.log('Loading all active pools for worker switching...');
+
+            const factory = contracts.getContract('factory');
+            const poolCount = await factory.getPoolCount();
+
+            const allPools = [];
+
+            for (let i = 0; i < poolCount; i++) {
+                try {
+                    const poolAddress = await factory.getPoolAt(i);
+                    if (poolAddress === ethers.constants.AddressZero) continue;
+
+                    const poolData = await this.getPoolInfo(poolAddress);
+
+                    // Включаем ТОЛЬКО активные пулы, без проверки прав доступа
+                    if (poolData && poolData.active) {
+                        allPools.push(poolData);
+                        console.log(`✓ Including active pool ${poolData.poolId}`);
+                    }
+
+                } catch (error) {
+                    console.warn(`Error loading pool at index ${i}:`, error.message);
+                }
+            }
+
+            console.log(`Loaded ${allPools.length} active pools for switching`);
+            return allPools;
+
+        } catch (error) {
+            console.error('Error loading all active pools:', error);
+            return [];
+        }
+    }
+
     async switchWorkerPool(workerId, currentPoolId) {
         try {
             const worker = this.workers.find(w => w.id === workerId);
@@ -917,17 +963,19 @@ class PoolManager {
                 return;
             }
 
-            // Загрузить пулы если ещё не загружены
-            if (this.pools.length === 0) {
-                await this.loadPools();
-            }
-
-            const availablePools = this.pools.filter(p => p.active);
+            // ИСПРАВЛЕНИЕ: Загружаем ВСЕ активные пулы, а не только те, к которым есть доступ
+            console.log('Loading pools for worker switching...');
+            const availablePools = await this.loadAllActivePools();
 
             if (availablePools.length === 0) {
-                app.showNotification('warning', 'No active pools available.');
+                app.showNotification('warning', 'No active pools available for switching.');
                 return;
             }
+
+            console.log(`Found ${availablePools.length} active pools available for switching`);
+
+            // ИСПРАВЛЕНИЕ: Сохраняем пулы для использования в executePoolSwitch
+            this.switchPoolsCache = availablePools;
 
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
@@ -1026,7 +1074,8 @@ class PoolManager {
                 return;
             }
 
-            const targetPool = this.pools.find(p => p.address === poolAddress);
+            // ИСПРАВЛЕНИЕ: Ищем пул в switchPoolsCache, а не в this.pools
+            const targetPool = this.switchPoolsCache.find(p => p.address === poolAddress);
             if (!targetPool) {
                 app.showNotification('error', 'Target pool not found');
                 return;
@@ -1091,6 +1140,7 @@ class PoolManager {
         this.pools = [];
         this.workers = [];
         this.miningPools = [];
+        this.switchPoolsCache = [];
         this.initialized = false;
     }
 }

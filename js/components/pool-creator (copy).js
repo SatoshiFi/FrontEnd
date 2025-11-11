@@ -1,3 +1,4 @@
+
 class PoolCreator {
     constructor() {
         this.currentStep = 1;
@@ -1709,24 +1710,9 @@ class PoolCreator {
     async createMiningSimulatorPool(ethereumResult) {
         console.log('Creating pool in mining simulator');
 
-        // Decode payoutScript to get Bitcoin address for Mining Simulator
-        let bitcoinAddress = null;
-        if (this.poolData.payoutScript && window.bitcoinAddressCodec) {
-            try {
-                bitcoinAddress = bitcoinAddressCodec.decode(
-                    this.poolData.payoutScript,
-                    CONFIG.BITCOIN.NETWORK
-                );
-                console.log('Decoded Bitcoin address for Mining Simulator:', bitcoinAddress);
-            } catch (error) {
-                console.error('Error decoding payoutScript for Mining Simulator:', error);
-            }
-        }
-
         const miningPoolData = {
             pool_id: ethereumResult.poolId,
             name: this.poolData.name,
-            bitcoin_address: bitcoinAddress || 'tb1qdefaultaddress',
             fee_percentage: parseFloat(this.poolData.fee || 1.0) / 100,
             algorithm: this.getCalculatorName(this.poolData.calculatorId || 0),
             ethereum_contract: ethereumResult.addresses.core,

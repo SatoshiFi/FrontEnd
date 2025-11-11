@@ -1584,16 +1584,22 @@ class RequestManager {
             const request = requests.find(r => r.request_id === requestId);
             if (!request) throw new Error('DKG request not found');
 
+            app.showLoading('Granting POOL_MANAGER roles...');
+
             // Grant POOL_MANAGER roles to all participants
             const factory = contracts.getContract('factory');
+            const factoryWithSigner = factory.connect(wallet.provider.getSigner());
             const POOL_MANAGER_ROLE = await factory.POOL_MANAGER_ROLE();
 
             for (const participant of request.participants) {
                 const hasRole = await factory.hasRole(POOL_MANAGER_ROLE, participant);
                 if (!hasRole) {
                     console.log(`Granting POOL_MANAGER role to ${participant}`);
-                    const tx = await factory.grantRole(POOL_MANAGER_ROLE, participant);
+                    const tx = await factoryWithSigner.grantRole(POOL_MANAGER_ROLE, participant);
                     await tx.wait();
+                    console.log(`✅ Role granted to ${participant}`);
+                } else {
+                    console.log(`${participant} already has role, skipping`);
                 }
             }
 
@@ -1612,10 +1618,15 @@ class RequestManager {
                 throw new Error('Failed to update DKG request status');
             }
 
+            app.hideLoading();
             app.showNotification('success', `DKG request approved - Pool Manager roles granted to ${request.participants.length} participants`);
+
+            await this.loadAllRequests();
+
             return true;
 
         } catch (error) {
+            app.hideLoading();
             console.error('Failed to approve DKG request:', error);
             app.showNotification('error', `Failed to approve DKG request: ${error.message}`);
             return false;

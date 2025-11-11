@@ -5,6 +5,7 @@ class RewardManager {
         this.initialized = false;
         this.currentPool = null;
         this.poolBitcoinAddress = null;
+        this.poolId = null;
         this.availableCalculators = [];
         this.selectedCalculator = null;
         this.rewardHandlerAddress = null;
@@ -20,6 +21,7 @@ class RewardManager {
 
         await this.loadRewardHandlerFromPool();
         await this.loadPoolBitcoinAddress();
+        await this.loadPoolId();
         await this.loadPoolCalculator();
 
         this.initialized = true;
@@ -98,6 +100,28 @@ class RewardManager {
         } catch (error) {
             console.error('Error loading pool Bitcoin address:', error);
             this.poolBitcoinAddress = null;
+        }
+    }
+
+    async loadPoolId() {
+        try {
+            const factoryContract = new ethers.Contract(
+                CONFIG.CONTRACTS.FACTORY,
+                CONFIG.ABI.FACTORY,
+                wallet.provider
+            );
+
+            const poolInfo = await factoryContract.poolsInfo(this.currentPool);
+            this.poolId = poolInfo.poolId;
+
+            console.log('Pool ID loaded:', {
+                pool: this.currentPool,
+                poolId: this.poolId
+            });
+
+        } catch (error) {
+            console.error('Error loading pool ID from Factory:', error);
+            this.poolId = null;
         }
     }
 
@@ -243,13 +267,35 @@ class RewardManager {
 
             const data = await response.json();
 
-            // Фильтруем блоки: только для нашего пула и >= GENESIS_HEIGHT
-            const poolBlocks = data.blocks.filter(b =>
-            b.coinbase_address === this.poolBitcoinAddress &&
-            b.height >= CONFIG.BITCOIN.GENESIS_HEIGHT
-            );
+            // Filter blocks: check height, coinbase_address, and pool_id
+            const poolBlocks = data.blocks.filter(b => {
+                // Check genesis height
+                if (b.height < CONFIG.BITCOIN.GENESIS_HEIGHT) {
+                    return false;
+                }
 
-            console.log(`Found ${poolBlocks.length} blocks for pool (height >= ${CONFIG.BITCOIN.GENESIS_HEIGHT})`);
+                // Check coinbase address match
+                if (b.coinbase_address !== this.poolBitcoinAddress) {
+                    return false;
+                }
+
+                // If block has pool_id field and we have poolId loaded, check it
+                // This provides additional validation in testnet
+                if (b.pool_id && this.poolId) {
+                    return b.pool_id === this.poolId;
+                }
+
+                // If no pool_id information available, rely only on address match
+                // (for mainnet Bitcoin compatibility where pool_id doesn't exist)
+                return true;
+            });
+
+            console.log(`Found ${poolBlocks.length} blocks for pool (height >= ${CONFIG.BITCOIN.GENESIS_HEIGHT})`, {
+                totalBlocks: data.blocks.length,
+                poolBitcoinAddress: this.poolBitcoinAddress,
+                poolId: this.poolId,
+                filteredBlocks: poolBlocks.length
+            });
 
             if (!this.rewardHandlerAddress) {
                 console.warn('RewardHandler address not loaded');
@@ -282,7 +328,7 @@ class RewardManager {
                     }
                 } catch (error) {
                     console.warn(`Error checking UTXO for block ${block.height}:`, error);
-                    // Если ошибка при проверке - считаем незарегистрированным
+                    // If error checking registration - consider it unregistered
                     unregisteredBlocks.push(block);
                 }
             }
@@ -428,11 +474,26 @@ class RewardManager {
 
             const data = await response.json();
 
-            // Фильтруем блоки: только для нашего пула и >= GENESIS_HEIGHT
-            const poolBlocks = data.blocks.filter(b =>
-            b.coinbase_address === this.poolBitcoinAddress &&
-            b.height >= CONFIG.BITCOIN.GENESIS_HEIGHT
-            );
+            // Filter blocks: check height, coinbase_address, and pool_id
+            const poolBlocks = data.blocks.filter(b => {
+                // Check genesis height
+                if (b.height < CONFIG.BITCOIN.GENESIS_HEIGHT) {
+                    return false;
+                }
+
+                // Check coinbase address match
+                if (b.coinbase_address !== this.poolBitcoinAddress) {
+                    return false;
+                }
+
+                // If block has pool_id field and we have poolId loaded, check it
+                if (b.pool_id && this.poolId) {
+                    return b.pool_id === this.poolId;
+                }
+
+                // If no pool_id information available, rely only on address match
+                return true;
+            });
 
             console.log(`Checking ${poolBlocks.length} pool blocks (height >= ${CONFIG.BITCOIN.GENESIS_HEIGHT})`);
 
@@ -571,11 +632,26 @@ class RewardManager {
 
             const data = await response.json();
 
-            // Фильтруем блоки: только для нашего пула и >= GENESIS_HEIGHT
-            const poolBlocks = data.blocks.filter(b =>
-            b.coinbase_address === this.poolBitcoinAddress &&
-            b.height >= CONFIG.BITCOIN.GENESIS_HEIGHT
-            );
+            // Filter blocks: check height, coinbase_address, and pool_id
+            const poolBlocks = data.blocks.filter(b => {
+                // Check genesis height
+                if (b.height < CONFIG.BITCOIN.GENESIS_HEIGHT) {
+                    return false;
+                }
+
+                // Check coinbase address match
+                if (b.coinbase_address !== this.poolBitcoinAddress) {
+                    return false;
+                }
+
+                // If block has pool_id field and we have poolId loaded, check it
+                if (b.pool_id && this.poolId) {
+                    return b.pool_id === this.poolId;
+                }
+
+                // If no pool_id information available, rely only on address match
+                return true;
+            });
 
             if (!this.rewardHandlerAddress) {
                 console.warn('RewardHandler address not loaded');
@@ -1051,6 +1127,7 @@ class RewardManager {
         this.initialized = false;
         this.currentPool = null;
         this.poolBitcoinAddress = null;
+        this.poolId = null;
         this.availableCalculators = [];
         this.selectedCalculator = null;
         this.rewardHandlerAddress = null;

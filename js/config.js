@@ -46,68 +46,110 @@ const CONFIG = {
 
     CONTRACTS: {
         // Core Infrastructure
-        FROST_COORDINATOR: '0x4d195A05F2d79E27b310dFB24733d86ffb214867',
-        SPV_CONTRACT: '0xD7f2293659A000b37Fd3973B06d4699935c511e9',
-        MULTI_POOL_DAO: '0x032fec1b5E4179377c92243Bdd34F8f1EEA131b6',
+        FROST_COORDINATOR: '0x0465b6dA15608849d5FC91C1994cAf386637B8B6',
+        MULTI_POOL_DAO: '0x211D6C755D6820617Bd059a8a4D013a3eb61e8e6',
+        SPV_CONTRACT: '0x5996026B44305ABd5F55B69EBB59EfF9Dd81fA99',
 
         // Factory System
-        FACTORY: '0xb87DB5fF6802A8B0bd48fb314234916f1BA27C1a',
-        POOL_DEPLOYER: '0x06b6ce3BcCD8A344a7A8aE4040809Bac92B75bB1',
-        POOL_TOKEN_FACTORY: '0xfBf82b62d66B1a2a9aE90b50354abAa8d7a35134',
+        FACTORY: '0xDa329fDa8CF2CFeBCa17fbb75d478Bf696CB45D9',
+        TOKEN_FACTORY: '0xeB3487eB8231914E8a3a7e1180367a3D7ef4C224',
+        REWARD_HANDLER: '0xf69b0F330D5aFE4dfb91cb78CBc40fF3e0d63096',
+        REDEMPTION_HANDLER: '0x61b9f55FB8CE1304103d35315b7A83763fcB6B6C',
+        POOL_DEPLOYER: '0x38b4c78B61B471D007c7E00A5884c5feabc0512f',
 
         // Calculator System
-        CALCULATOR_REGISTRY: '0x9bB85b0134847Ca4f1976A3C58BAbb6fD69fE8E9',
-        FPPS_CALCULATOR: '0xaF00ee3F6D7BD83Ad8601714CF1d10671c8E2a7d',
-        PPLNS_CALCULATOR: '0xDE5bA623926AE2bB6Cac97E2687A58602e35978C',
-        PPS_CALCULATOR: '0x0E46C4c284480A983A2895D194d14Ce48515AaDf',
-        SCORE_CALCULATOR: '0x6a9dAf46Ba893749DD75F442438D195373125F72',
+        CALCULATOR_REGISTRY: '0x3B3f52Def04E8b835F762004089c396227CF9694',
+        FPPS_CALCULATOR: '0x18fEFf5E76DB9F7f30A5aE20D01c42d6f19CB65F',
+        PPLNS_CALCULATOR: '0x5ccE5E7f01b8b2A3829B1e6dAd16f5D8F1Fcc53b',
+        PPS_CALCULATOR: '0xb6a3d22c291Db603aC7e77Fd8aFAE03b2e6c25Fb',
+        SCORE_CALCULATOR: '0xd75433a8e4cf8c3dA3CB9C5f2C3BdB9cDE23C89B',
 
-        // Oracle Infrastructure
-        ORACLE_REGISTRY: '0x1E384f7112857C9e0437779f441F65853df7Eb26',
-        STRATUM_AGGREGATOR: '0x58F683F212175b0A942777cE4E82c9680aa3397D',
-        ORACLE_VALIDATOR: '0x65075C39BE930f605e6aca53add3852a1724cb64',
+        // Oracle System
+        ORACLE_REGISTRY: '0x0d5E386999edd42D6fa6739706cFE8DcF08587C1',
+        STRATUM_AGGREGATOR: '0x65E76f4efC92f13A63D6885383aC7A1D7B608A10',
+        VALIDATOR: '0x37Cdf3BB9d0B2bb62A833819110a24a661F58e41',
 
         // Synthetic Tokens
-        SBTC: '0x6259dE19c541829066ebeD373e1da25F7C5199B8',
-        SDOGE: '0x43F5C175a156d4E42dcBC93D63Be1096986b852E',
-        SLTC: '0xdfD5ED5a1Bf7bCB864Bd758a10f686d2b9268B9B',
+        SBTC: '0xc25D09B611CCb19Bcea4F3C4bA9A28b3097fa3bE',
+        SDOGE: '0xfCC39E2Afd6bE41cb1830c87d3EB596c375f2670',
+        SLTC: '0xD5a4Ed5fde46E17Da4e5cAa6a1204cA80a731771',
 
         // Proxy Implementations
-        CORE_IMPL_V2: '0x74ED7De4044a70c08d13Baad2A97ADc49cD1C942',
-        REWARDS_IMPL_V2: '0x2e3482562696f9E426869787E40570235D74729e',
-        REDEMPTION_IMPL_V2: '0xec19877F8329fd86a55fAF6e466CEd63b1FF5d4c',
-        EXTENSIONS_IMPL_V2: '0x1578bfB52486d0935A25de912b523D8f77807c4C',
-
-        // Handlers
-        REWARD_HANDLER: '0x6975De45FAb9870A3150bd3046c2cdD5A69f4b1B',
-        REDEMPTION_HANDLER: '0xd8386c37d0E53a275FE66964f40304caFcb9aBFc',
+        CORE_IMPL: '0x9fB6Af46ecfF3bBF41b95d0f0D99e7d73d9A5bd7',
+        REWARDS_IMPL: '0x1EDD5dCb416e74C7aa83F5A3702a98cdb05FE54B',
+        REDEMPTION_IMPL: '0xC45b90c92a53Df0d1AF2E0bE8B55bC14cf0b5f0f',
+        EXTENSIONS_IMPL: '0x16B95aDa55B4C6C61BBc73ba7D9097a2F1a3Aa13',
 
         // Legacy
         MEMBERSHIP_SBT: '0xF42F943746A2ba3E5b813bb2A4187417bCF56BE5',
         BRIDGE_INBOX: '0xB84d53Bae116fDEd1d35D71156489d6F5a6cf336',
         BRIDGE_OUTBOX: '0xb7F782CAB5242f7C7C97FC1361e381c48Cc19941',
-
     },
 
     ABI: {
         FROST_COORDINATOR: [
-            "function createSession(bytes groupPubkey, address[] participants, uint256 threshold, uint64 deadline, bool enforceSharesCheck, address verifierOverride, uint8 purpose, tuple(address originContract, uint256 originId, uint16 networkId, bytes32 poolId) origin) returns (uint256)",
-            "function getSession(uint256 sessionId) view returns (uint256 id, address creator, bytes groupPubkey, bytes32 messageHash, bool messageBound, uint256 threshold, uint256 total, uint64 deadline, bool enforceSharesCheck, address verifierOverride, uint256 state, uint256 commitsCount, uint256 sharesCount, uint256 refusalCount, uint256 purpose, address originContract, uint256 originId, uint16 networkId, bytes32 poolId, uint256 dkgSharesCount)",
-            "function getSessionParticipants(uint256 sessionId) view returns (address[])",
-            "function getUserSessions(address user) view returns (uint256[])",
-            "function getUserSessionCount(address user) view returns (uint256)",
+            // === DKG Session Management ===
+            "function createDKGSession(uint256 threshold, address[] participants) returns (uint256)",
+            "function publishNonceCommitment(uint256 sessionId, bytes32 commitment)",
+            "function publishEncryptedShare(uint256 sessionId, address recipient, bytes encryptedShare)",
+            "function finalizeDKG(uint256 sessionId)",
+            "function finalizeDKG(uint256 sessionId, bytes groupPubkey)",
+            "function cancelDKGSession(uint256 sessionId)",
+
+            // === Session Creation (Multiple Overloads) ===
+            "function createSession(uint256 sessionId, bytes groupPubkey, address[] participants, uint256 threshold, uint256 deadline)",
+            "function createSession(uint256 sessionId, bytes groupPubkey, bytes message, string signatureType, uint256 deadline)",
+            "function createSession(bytes32 pubKeyX, bytes32 pubKeyY, address[] initialParticipants, uint32 threshold, uint256 deadline, uint8 purpose)",
+            "function createSession(bytes32 pubKeyX, bytes32 pubKeyY, address[] initialParticipants, uint32 threshold, uint256 deadline, uint8 purpose, bytes32 messageHash) returns (uint256)",
+
+            // === Session Lifecycle ===
+            "function joinSession(uint256 sessionId)",
+            "function advancePhase(uint256 sessionId)",
             "function submitNonceCommit(uint256 sessionId, bytes32 commitment)",
             "function submitDKGShare(uint256 sessionId, address recipient, bytes encryptedShare)",
-            "function finalizeDKG(uint256 sessionId, bytes groupPubkey)",
-            "function isParticipant(uint256 sessionId, address who) view returns (bool)",
-            "function hasCommitted(uint256 sessionId, address who) view returns (bool)",
-            "function hasSubmittedShare(uint256 sessionId, address who) view returns (bool)",
-            "function isFinalized(uint256 sessionId) view returns (bool)",
+            "function submitSignatureShare(uint256 sessionId, bytes share)",
+            "function finalizeSession(uint256 sessionId, bytes signature, bytes32 messageHash)",
+            "function finalizeSession(uint256 sessionId, bytes[] shares, bytes aggregatedSignature)",
+            "function rejectSignatureRequest(uint256 sessionId, string reason)",
+
+            // === Session Info Getters ===
+            "function getSession(uint256 sessionId) view returns (uint256 id, address creator, bytes groupPubkey, bytes32 messageHash, bool messageBound, uint256 threshold, uint256 total, uint64 deadline, bool enforceSharesCheck, address verifierOverride, uint256 state, uint256 commitsCount, uint256 sharesCount, uint256 refusalCount, uint256 purpose, address originContract, uint256 originId, uint16 networkId, bytes32 poolId, uint256 dkgSharesCount)",
+            "function getSessionDetails(uint256 sessionId) view returns (uint8 state, uint256 threshold, uint256 totalParticipants, address creator, bytes32 groupPubKeyX, address[] participants)",
+            "function getSessionParticipants(uint256 sessionId) view returns (address[])",
+            "function nextSessionId() view returns (uint256)",
+
+            // === Participant Data Getters ===
             "function getDKGShare(uint256 sessionId, address sender, address recipient) view returns (bytes)",
-            "event SessionCreated(uint256 indexed sessionId, address indexed creator, bytes groupPubkey, bytes message, string signatureType, uint256 threshold, uint256 total, uint64 deadline, bool enforceSharesCheck, address verifierOverride, uint8 purpose, tuple(address originContract, uint256 originId, uint16 networkId, bytes32 poolId) origin)",
-            "event DKGCompleted(uint256 indexed sessionId, bytes groupPubkey)",
-            "event DKGShareSubmitted(uint256 indexed sessionId, address indexed sender, address indexed recipient, bytes encryptedShare)",
-            "event NonceCommitted(uint256 indexed sessionId, address indexed participant, bytes32 commitment)"
+            "function getNonceCommitment(uint256 sessionId, address participant) view returns (bytes32)",
+            "function getSignatureShare(uint256 sessionId, address participant) view returns (bytes)",
+            "function getAggregatedSignature(uint256 sessionId) view returns (bytes)",
+
+            // === Public Key Getters ===
+            "function getGroupPubKey(uint256 sessionId) view returns (bytes32 pubKeyX, bytes32 pubKeyY)",
+            "function getCompressedGroupPubKey(uint256 sessionId) view returns (bytes)",
+
+            // === Custodians ===
+            "function getCustodians() view returns (address[])",
+            "function sessionParticipants(uint256, uint256) view returns (address)",
+
+            // === Constants ===
+            "function MIN_THRESHOLD() view returns (uint256)",
+            "function MAX_PARTICIPANTS() view returns (uint256)",
+            "function SESSION_TIMEOUT() view returns (uint256)",
+            "function MAX_SHARE_SIZE() view returns (uint256)",
+
+            // === Events ===
+            "event SessionCreated(uint256 indexed sessionId, address indexed creator, uint256 threshold, uint256 totalParticipants, uint8 purpose, uint64 deadline)",
+            "event SessionOpened(uint256 indexed sessionId, address initiator, uint8 purpose)",
+            "event ParticipantJoined(uint256 indexed sessionId, address participant)",
+            "event PhaseStarted(uint256 indexed sessionId, uint32 phase)",
+            "event NonceCommitted(uint256 indexed sessionId, address participant, bytes32 commitmentHash)",
+            "event DKGShareSubmitted(uint256 indexed sessionId, address sender, address receiver, bytes encryptedShare)",
+            "event SignatureShareSubmitted(uint256 indexed sessionId, address participant, bytes share)",
+            "event SessionFinalized(uint256 indexed sessionId, bytes32 groupPubKey, bool success)",
+            "event SessionFailed(uint256 indexed sessionId, string reason)",
+            "event SessionProgressedToShares(uint256 indexed sessionId)",
+            "event SessionReadyForFinalization(uint256 indexed sessionId)"
         ],
 
         FACTORY: [
@@ -303,17 +345,13 @@ const CONFIG = {
         }
     },
 
-    // =============== ИСПРАВЛЕННАЯ API КОНФИГУРАЦИЯ ===============
+    // =============== API ===============
     API: {
-        // Mining API - работает с HTTPS
         MINING: 'https://api-mining.unilayer.solutions',
 
-        // Используем прямой API Gateway endpoint для requests
         REQUESTS: 'https://yg7ea875jj.execute-api.eu-north-1.amazonaws.com/prod',
 
-        // ПОЛНЫЕ ENDPOINTS - включая /api для mining, без /api для requests
         ENDPOINTS: {
-            // Mining API endpoints (с /api префиксом)
             HEALTH: '/api/health',
             STATS: '/api/stats',
             POOLS: '/api/pools',
@@ -326,32 +364,27 @@ const CONFIG = {
             MINING_START: '/api/mining/start',
             MINING_STOP: '/api/mining/stop',
 
-            // Wallet endpoints (с /api)
             WALLET_BALANCE: '/api/simple-wallet/balance/',
             WALLET_SEND: '/api/simple-wallet/send',
             WALLET_TRANSACTIONS: '/api/simple-wallet/transactions/',
             SIMULATE_RECEIVE: '/api/simple-wallet/simulate-receive',
 
-            // Transaction endpoints (с /api)
             TRANSACTION_SEND: '/api/transaction/send',
             TRANSACTION_MEMPOOL: '/api/transaction/mempool',
             TRANSACTION_BALANCE: '/api/transaction/balance/',
             TRANSACTION_HISTORY: '/api/transaction/history/',
             TRANSACTION_UTXOS: '/api/transaction/utxos/',
 
-            // SPV endpoints (с /api)
             SPV_PROOF: '/api/spv/proof/',
 
-            // Request system endpoints (БЕЗ /api - это API Gateway)
             REQUESTS: '/requests',
             MESSAGES: '/messages',
             DKG_REQUESTS: '/dkg-requests'
         },
 
-        // БЕЗОПАСНЫЕ МЕТОДЫ ДОСТУПА К API
         getMiningUrl: function(endpoint) {
             if (!this.ENDPOINTS[endpoint] && !endpoint.startsWith('/api/')) {
-                console.warn(`Endpoint ${endpoint} не найден в конфигурации`);
+                console.warn(`Endpoint ${endpoint} isn't available`);
             }
             const path = this.ENDPOINTS[endpoint] || endpoint;
             return this.MINING + path;
@@ -359,13 +392,12 @@ const CONFIG = {
 
         getRequestsUrl: function(endpoint) {
             if (!this.ENDPOINTS[endpoint] && !endpoint.startsWith('/')) {
-                console.warn(`Requests endpoint ${endpoint} не найден в конфигурации`);
+                console.warn(`Requests endpoint ${endpoint} isn't available`);
             }
             const path = this.ENDPOINTS[endpoint] || endpoint;
             return this.REQUESTS + path;
         },
 
-        // Универсальный метод для получения полного URL
         getFullUrl: function(type, endpoint, params = '') {
             let url;
             if (type === 'mining') {
@@ -373,7 +405,7 @@ const CONFIG = {
             } else if (type === 'requests') {
                 url = this.getRequestsUrl(endpoint);
             } else {
-                console.error(`Неизвестный тип API: ${type}`);
+                console.error(`API unknown: ${type}`);
                 return null;
             }
             return url + params;
